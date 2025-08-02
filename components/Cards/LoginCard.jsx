@@ -9,7 +9,7 @@ export default function LoginCard({ setIsLogin }) {
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <div className="w-full md:w-1/2 flex flex-col items-center justify-center px-4 min-h-screen bg-gray-100 font-poppins">
+        <div className="flex flex-col justify-center items-center w-full px-4 py-8">
             <img
                 src="/logo_camboo.png"
                 alt="Logo"
@@ -17,7 +17,7 @@ export default function LoginCard({ setIsLogin }) {
             />
             <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
                 <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center">Login</h2>
-                <p className="text-gray-500 mb-6 text-center">Login to access your Camboo Account</p>
+                <p className="text-gray-500 text-sm mb-6 text-center">Login to access your Camboo Account</p>
 
                 <TextField
                     label="Email"
@@ -26,10 +26,9 @@ export default function LoginCard({ setIsLogin }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="john.doe@gmail.com"
-                    className="mb-4"
                 />
 
-                <div className="mb-4 relative">
+                <div className="relative">
                     <TextField
                         label="Password"
                         name="password"
@@ -47,7 +46,7 @@ export default function LoginCard({ setIsLogin }) {
                     </button>
                 </div>
 
-                <div className="flex items-center justify-between text-sm text-gray-600 mb-6">
+                <div className="flex items-center justify-between text-sm text-gray-600 mt-4 mb-6">
                     <label className="flex items-center">
                         <input type="checkbox" className="mr-2" />
                         Remember me
@@ -57,9 +56,7 @@ export default function LoginCard({ setIsLogin }) {
                     </a>
                 </div>
 
-                <div className='w-full flex justify-center'>
-                    <Button className="w-full">Login</Button>
-                </div>
+                <Button className="w-full">Login</Button>
 
                 <p className="mt-4 text-sm text-black text-center">
                     Don’t have an account?{" "}
@@ -88,7 +85,6 @@ export default function LoginCard({ setIsLogin }) {
                         <img src="/apple.png" alt="Apple" className="w-5 h-5" />
                     </button>
                 </div>
-
             </div>
         </div>
     );

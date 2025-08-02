@@ -3,10 +3,11 @@ import LoginCard from '@/components/Cards/LoginCard';
 import SignupCard from '@/components/Cards/SignupCard';
 
 export default function Index() {
-  const [isLogin, setisLogin] = useState(true)
+  const [isLogin, setisLogin] = useState(true);
+
   return (
-    <div className="h-screen flex bg-gray-100">
-      <div className="w-1/2 hidden md:block">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+      <div className="hidden md:block md:w-1/2">
         <img
           src="/loginbg.png"
           alt="Login Visual"
@@ -14,11 +15,13 @@ export default function Index() {
         />
       </div>
 
-      {isLogin ?
-        <LoginCard setIsLogin={setisLogin} />
-        :
-        <SignupCard setIsLogin={setisLogin} />
-      }
+      <div className="w-full md:w-1/2 overflow-y-auto">
+        {isLogin ? (
+          <LoginCard setIsLogin={setisLogin} />
+        ) : (
+          <SignupCard setIsLogin={setisLogin} />
+        )}
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ const TextField = ({ label, type = 'text', value, onChange, name, placeholder })
         <div className="relative w-full mb-6">
             <label
                 htmlFor={name}
-                className="absolute -top-2.5 left-3 bg-white px-1 text-sm text-gray-500 z-10"
+                className="absolute -top-2.5 left-3 bg-white px-1 text-sm text-black z-10"
             >
                 {label}
             </label>

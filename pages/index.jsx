@@ -15,7 +15,7 @@ export default function Index() {
         />
       </div>
 
-      <div className="w-full md:w-1/2 overflow-y-auto">
+      <div className="w-full flex flex-justify items-center md:w-1/2 overflow-y-auto">
         {isLogin ? (
           <LoginCard setIsLogin={setisLogin} />
         ) : (

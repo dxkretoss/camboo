@@ -15,7 +15,7 @@ export default function LoginCard({ setIsLogin }) {
                 alt="Logo"
                 className="mx-auto mb-6 w-32 h-auto"
             />
-            <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+            <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-xl">
                 <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center">Login</h2>
                 <p className="text-gray-500 text-sm mb-6 text-center">Login to access your Camboo Account</p>
 
@@ -62,7 +62,7 @@ export default function LoginCard({ setIsLogin }) {
                     Don’t have an account?{" "}
                     <button
                         onClick={() => setIsLogin(false)}
-                        className="text-blue-600 hover:underline"
+                        className="text-blue-600 hover:underline cursor-pointer"
                     >
                         Sign up
                     </button>
@@ -75,13 +75,13 @@ export default function LoginCard({ setIsLogin }) {
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 w-full">
-                    <button className="border border-gray-300 rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
+                    <button className="border border-gray-300 cursor-pointer rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
                         <img src="/facebook.png" alt="Facebook" className="w-5 h-5" />
                     </button>
-                    <button className="border border-gray-300 rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
+                    <button className="border border-gray-300 cursor-pointer rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
                         <img src="/google.png" alt="Google" className="w-5 h-5" />
                     </button>
-                    <button className="border border-gray-300 rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
+                    <button className="border border-gray-300 cursor-pointer rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
                         <img src="/apple.png" alt="Apple" className="w-5 h-5" />
                     </button>
                 </div>

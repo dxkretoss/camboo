@@ -23,7 +23,7 @@ export default function SignupCard({ setIsLogin }) {
                 alt="Logo"
                 className="mx-auto mb-6 w-32 h-auto"
             />
-            <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+            <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-xl">
                 <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center">Register</h2>
                 <p className="text-gray-500 text-sm mb-6 text-center">Let's get you all set up so you can access your account</p>
 
@@ -103,14 +103,22 @@ export default function SignupCard({ setIsLogin }) {
 
                 <div className="flex items-center text-sm text-gray-600 mt-4 mb-6">
                     <input type="checkbox" className="mr-2" />
-                    <span>I agree to all the Terms and Privacy Policies</span>
+                    <span>I agree to all the
+                        <a href='#' className="text-blue-600 hover:underline cursor-pointer">
+                            Terms
+                        </a>
+                        {" "}and{" "}
+                        <a href='#' className="text-blue-600 hover:underline cursor-pointer">
+                            Privacy Policies
+                        </a>
+                    </span>
                 </div>
 
-                <Button className="w-full">Register</Button>
+                <Button className="w-full">Sign up</Button>
 
                 <p className="mt-4 text-sm text-black text-center">
                     Already have an account?{" "}
-                    <button onClick={() => setIsLogin(true)} className="text-blue-600 hover:underline">
+                    <button onClick={() => setIsLogin(true)} className="text-blue-600 hover:underline cursor-pointer">
                         Login
                     </button>
                 </p>
@@ -122,13 +130,13 @@ export default function SignupCard({ setIsLogin }) {
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 w-full">
-                    <button className="border border-gray-300 rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
+                    <button className="border border-gray-300 cursor-pointer rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
                         <img src="/facebook.png" alt="Facebook" className="w-5 h-5" />
                     </button>
-                    <button className="border border-gray-300 rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
+                    <button className="border border-gray-300 cursor-pointer rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
                         <img src="/google.png" alt="Google" className="w-5 h-5" />
                     </button>
-                    <button className="border border-gray-300 rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
+                    <button className="border border-gray-300 cursor-pointer rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
                         <img src="/apple.png" alt="Apple" className="w-5 h-5" />
                     </button>
                 </div>

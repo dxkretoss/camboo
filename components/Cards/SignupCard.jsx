@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import TextField from '../ui/TextField';
 import Button from '../ui/Button';
 import { Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/router';
 
 export default function SignupCard({ setIsLogin }) {
+    const router = useRouter();
     const [userData, setuserData] = useState({
         firstName: '',
         lastaName: '',
@@ -114,7 +116,9 @@ export default function SignupCard({ setIsLogin }) {
                     </span>
                 </div>
 
-                <Button className="w-full">Sign up</Button>
+                <Button className="w-full" onClick={() => {
+                    router.push('homePage')
+                }}>Sign up</Button>
 
                 <p className="mt-4 text-sm text-black text-center">
                     Already have an account?{" "}

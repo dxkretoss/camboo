@@ -2,11 +2,22 @@ import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
 import TextField from '@/components/ui/TextField';
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from 'next/router';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function LoginCard({ setIsLogin }) {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+
+    const handleLogin = () => {
+        toast.success('Successfully Login!')
+
+        setTimeout(() => {
+            router.push('homePage')
+        }, 2000)
+    }
 
     return (
         <div className="flex flex-col justify-center items-center w-full px-4 py-8">
@@ -56,7 +67,7 @@ export default function LoginCard({ setIsLogin }) {
                     </a>
                 </div>
 
-                <Button className="w-full">Login</Button>
+                <Button className="w-full" onClick={() => { handleLogin(); }}>Login</Button>
 
                 <p className="mt-4 text-sm text-black text-center">
                     Don’t have an account?{" "}
@@ -86,6 +97,7 @@ export default function LoginCard({ setIsLogin }) {
                     </button>
                 </div>
             </div>
-        </div>
+            <Toaster />
+        </div >
     );
 }

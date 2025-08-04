@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Layout from '@/components/Layout/Layout'
 import { Plus } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 export default function addProduct() {
     const [images, setImages] = useState([null, null, null, null]);
@@ -18,7 +19,7 @@ export default function addProduct() {
 
     return (
         <Layout>
-            <div className="relative min-h-screen bg-[url('/addproBg.png')] bg-no-repeat bg-contain bg-top">
+            <div className="relative min-h-screen bg-[url('/addproBg.png')] bg-no-repeat sm:bg-contain bg-cover bg-center">
                 <div className="py-10 px-4 md:px-10 max-w-6xl mx-auto flex flex-col md:flex-row gap-6 items-start">
                     <div className="bg-white rounded-xl shadow-md p-6 w-full md:w-1/2 space-y-4">
                         <h2 className="text-lg font-semibold text-gray-800">Product Images</h2>
@@ -77,86 +78,154 @@ export default function addProduct() {
                             ))}
                         </div>
 
+
                         <div className="space-y-4">
-                            <div className="space-y-1">
-                                <label className="block text-sm font-medium text-gray-700">Title</label>
-                                <input
-                                    type="text"
-                                    placeholder="ex: Yamaha Y12 2024 New Model"
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="block text-sm font-medium text-gray-700">Description</label>
-                                <textarea
-                                    rows="3"
-                                    placeholder="Describe your product here..."
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {selectedTab === 'Product' ? <>
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">Category</label>
+                                    <label className="block text-sm font-medium text-gray-700">Title</label>
                                     <input
                                         type="text"
-                                        placeholder="ex: Bike"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                                        placeholder="ex: Yamaha Y12 2024 New Model"
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
                                     />
                                 </div>
-                                <label className="flex items-center mt-1 space-x-2">
-                                    <input type="checkbox" className="accent-blue-600" />
-                                    <span className="text-sm text-gray-700">Produto Sem Marca</span>
-                                </label>
-                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">Brand</label>
-                                    <select className="w-full border border-gray-300 rounded-lg px-4 py-2">
-                                        <option>ex: Yamaha</option>
-                                    </select>
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">Model</label>
-                                    <input
-                                        type="text"
-                                        placeholder="ex: Y12 2024"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                                    <label className="block text-sm font-medium text-gray-700">Description</label>
+                                    <textarea
+                                        rows="3"
+                                        placeholder="Describe your product here..."
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
                                     />
                                 </div>
-                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex gap-4">
-                                    <label className="flex items-center space-x-2">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <label className="block text-sm font-medium text-gray-700">Category</label>
                                         <input
-                                            type="radio"
-                                            name="productType"
-                                            defaultChecked
-                                            className="accent-blue-600"
+                                            type="text"
+                                            placeholder="ex: Bike"
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2"
                                         />
-                                        <span className="text-sm text-gray-700">Old Product</span>
-                                    </label>
-                                    <label className="flex items-center space-x-2">
-                                        <input
-                                            type="radio"
-                                            name="productType"
-                                            className="accent-blue-600"
-                                        />
-                                        <span className="text-sm text-gray-700">New Product</span>
+                                    </div>
+                                    <label className="flex items-center mt-1 space-x-2">
+                                        <input type="checkbox" className="accent-blue-600" />
+                                        <span className="text-sm text-gray-700">Produto Sem Marca</span>
                                     </label>
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="block text-sm font-medium text-gray-700">Price</label>
-                                    <input
-                                        type="text"
-                                        placeholder="ex: $2000.00"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2"
-                                    />
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <label className="block text-sm font-medium text-gray-700">Brand</label>
+                                        <select className="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                            <option>ex: Yamaha</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="block text-sm font-medium text-gray-700">Model</label>
+                                        <input
+                                            type="text"
+                                            placeholder="ex: Y12 2024"
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="flex gap-4">
+                                        <label className="flex items-center space-x-2">
+                                            <input
+                                                type="radio"
+                                                name="productType"
+                                                defaultChecked
+                                                className="accent-blue-600"
+                                            />
+                                            <span className="text-sm text-gray-700">Old Product</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2">
+                                            <input
+                                                type="radio"
+                                                name="productType"
+                                                className="accent-blue-600"
+                                            />
+                                            <span className="text-sm text-gray-700">New Product</span>
+                                        </label>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="block text-sm font-medium text-gray-700">Price</label>
+                                        <input
+                                            type="text"
+                                            placeholder="ex: $2000.00"
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                                        />
+                                    </div>
+                                </div>
+
+                            </>
+                                :
+                                <>
+                                    <div className="space-y-1">
+                                        <label className="block text-sm font-medium text-gray-700">Title</label>
+                                        <input
+                                            type="text"
+                                            placeholder="ex: make the Swimming pool to my home"
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea
+                                            rows="3"
+                                            placeholder="Describe your service here..."
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="block text-sm font-medium text-gray-700">Category</label>
+                                        <input
+                                            type="text"
+                                            placeholder="ex: Civil Construction"
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="block text-sm font-medium text-gray-700">Cost of service</label>
+                                            <div className="flex gap-4">
+
+                                                <label className="flex items-center space-x-2">
+                                                    <input
+                                                        type="radio"
+                                                        name="costofservice"
+                                                        defaultChecked
+                                                        className="accent-blue-600"
+                                                    />
+                                                    <span className="text-sm text-gray-700">R$/hr</span>
+                                                </label>
+                                                <label className="flex items-center space-x-2">
+                                                    <input
+                                                        type="radio"
+                                                        name="costofservice"
+                                                        className="accent-blue-600"
+                                                    />
+                                                    <span className="text-sm text-gray-700">R$/Day</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="block text-sm font-medium text-gray-700">R$/hr</label>
+                                            <input
+                                                type="text"
+                                                placeholder="ex: $2000.00"
+                                                className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            }
 
                             <div className="bg-[#f7f9ff] p-6 rounded-xl space-y-4">
                                 <div className="space-y-1">
@@ -183,7 +252,7 @@ export default function addProduct() {
                                             <label className="block text-sm font-medium text-gray-700">Category</label>
                                             <input
                                                 type="text"
-                                                placeholder="ex: Civil Construction"
+                                                placeholder="ex: Bike"
                                                 className="w-full border border-gray-300 rounded-lg px-4 py-2"
                                             />
                                         </div>
@@ -226,9 +295,9 @@ export default function addProduct() {
                                 )}
 
                                 <div>
-                                    <button className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-lg font-semibold w-full md:w-auto">
+                                    <Button>
                                         Save Product
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>

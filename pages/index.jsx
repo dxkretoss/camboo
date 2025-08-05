@@ -6,7 +6,7 @@ export default function Index() {
   const [isLogin, setisLogin] = useState(true);
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+    <div className="flex md:flex-row h-screen bg-gray-100">
       <div className="hidden md:block md:w-1/2">
         <img
           src="/loginbg.png"

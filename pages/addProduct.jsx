@@ -297,7 +297,6 @@ export default function addProduct() {
                                     </>
                                 )}
 
-                                {/* Submit */}
                                 <div>
                                     <Button>
                                         Save Product

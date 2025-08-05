@@ -44,7 +44,7 @@ export default function editProfile() {
                                 alt="User"
                                 className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover"
                             />
-                            <div className="absolute bottom-0 right-0 bg-[#00136e] text-white p-2 rounded-full cursor-pointer"
+                            <div className="absolute bottom-0 right-0 bg-[#000F5C] text-white p-2 rounded-full cursor-pointer"
                                 onClick={handleIconClick}>
                                 <Pencil className="w-4 h-4" />
                             </div>

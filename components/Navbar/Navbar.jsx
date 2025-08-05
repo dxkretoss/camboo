@@ -31,7 +31,7 @@ export default function Navbar() {
 
             <div className="flex-1 mx-4 max-w-md hidden sm:block">
                 <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2">
-                    <Search className="w-5 h-5 text-[#00136e]" />
+                    <Search className="w-5 h-5 text-[#000F5C]" />
                     <input
                         type="text"
                         placeholder="Search here..."
@@ -48,7 +48,7 @@ export default function Navbar() {
                 </div>
 
                 <div className="md:hidden">
-                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#00136e] text-white"
+                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#000F5C] text-white"
                         onClick={() => router.push('addProduct')}>
                         <Plus className="w-5 h-5" />
                     </button>
@@ -56,7 +56,7 @@ export default function Navbar() {
 
                 <div className="hidden md:block">
                     <Button
-                        className="flex items-center gap-2 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                        className="flex items-center gap-2  px-4 py-2"
                         onClick={() => router.push('addProduct')}
                     >
                         <Plus className="w-4 h-4" />
@@ -64,7 +64,7 @@ export default function Navbar() {
                     </Button>
                 </div>
 
-                <div className="relative w-10 h-10 flex items-center justify-center bg-[#00136e] rounded-full cursor-pointer"
+                <div className="relative w-10 h-10 flex items-center justify-center bg-[#000F5C] rounded-full cursor-pointer"
                     onClick={() => router.push('notification')}>
                     <Bell className="w-5 h-5 text-white" />
                     <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />

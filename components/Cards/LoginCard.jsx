@@ -20,12 +20,7 @@ export default function LoginCard({ setIsLogin }) {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center w-full px-4 py-8">
-            <img
-                src="/logo_camboo.png"
-                alt="Logo"
-                className="mx-auto mb-6 w-32 h-auto"
-            />
+        <div className="flex justify-center items-center w-full px-4 py-8">
             <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-xl">
                 <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center">Login</h2>
                 <p className="text-gray-500 text-sm mb-6 text-center">Login to access your Camboo Account</p>

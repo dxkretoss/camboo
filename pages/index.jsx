@@ -15,7 +15,12 @@ export default function Index() {
         />
       </div>
 
-      <div className="w-full flex flex-justify items-center md:w-1/2 overflow-y-auto">
+      <div className="w-full flex flex-col  flex-justify items-center md:w-1/2 overflow-y-auto">
+        <img
+          src="/logo_camboo.png"
+          alt="Logo"
+          className="mx-auto mt-6 w-32 h-auto"
+        />
         {isLogin ? (
           <LoginCard setIsLogin={setisLogin} />
         ) : (

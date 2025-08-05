@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 
 export default function Profile() {
     const router = useRouter();
+
     return (
         <Layout>
             <div className="px-4 py-4 md:px-10 md:pt-6 min-h-screen">
@@ -19,8 +20,8 @@ export default function Profile() {
                     </span>
                 </div>
 
-                <div className="mt-6 rounded-xl p-4 md:p-6">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="mt-6 rounded-xl p-4 md:p-6 bg-white shadow-sm w-full max-w-4xl mx-auto">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
                         <div className="flex items-center gap-4">
                             <img
                                 src="https://randomuser.me/api/portraits/men/32.jpg"
@@ -29,10 +30,14 @@ export default function Profile() {
                             />
                             <div>
                                 <h2 className="text-lg md:text-xl font-semibold text-gray-800">Billy Roys</h2>
-                                <div className="flex items-center gap-1 text-sm mt-1">
+
+                                <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
                                     <div className="flex text-yellow-500">
                                         {[...Array(5)].map((_, index) => (
-                                            <Star key={index} className="h-4 w-4 fill-yellow-500 stroke-yellow-500" />
+                                            <Star
+                                                key={index}
+                                                className="h-4 w-4 fill-yellow-500 stroke-yellow-500"
+                                            />
                                         ))}
                                     </div>
                                     <span className="ml-2 text-gray-700 font-medium">5.0</span>
@@ -40,16 +45,21 @@ export default function Profile() {
                                 </div>
 
                                 <div className="flex gap-1 text-sm text-gray-500 mt-1 items-center">
-                                    <MapPin />
+                                    <MapPin className="w-4 h-4" />
                                     <span>Recife, PE</span>
                                 </div>
                             </div>
                         </div>
 
-                        <Button className="flex items-center gap-2 px-4 py-2" onClick={() => router.push('editProfile')}>
-                            <Pencil className="w-4 h-4" />
-                            Edit Profile
-                        </Button>
+                        <div className="w-full sm:w-auto">
+                            <Button
+                                className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2"
+                                onClick={() => router.push('/editProfile')}
+                            >
+                                <Pencil className="w-4 h-4" />
+                                Edit Profile
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>

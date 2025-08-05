@@ -48,7 +48,8 @@ export default function Navbar() {
                 </div>
 
                 <div className="md:hidden">
-                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#00136e] text-white">
+                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#00136e] text-white"
+                        onClick={() => router.push('addProduct')}>
                         <Plus className="w-5 h-5" />
                     </button>
                 </div>
@@ -63,7 +64,8 @@ export default function Navbar() {
                     </Button>
                 </div>
 
-                <div className="relative w-10 h-10 flex items-center justify-center bg-[#00136e] rounded-full">
+                <div className="relative w-10 h-10 flex items-center justify-center bg-[#00136e] rounded-full cursor-pointer"
+                    onClick={() => router.push('notification')}>
                     <Bell className="w-5 h-5 text-white" />
                     <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
                 </div>

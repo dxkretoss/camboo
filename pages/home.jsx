@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from '@/components/Sidebar/Sidebar'
 import Navbar from '@/components/Navbar/Navbar'
 import SectionCard from '@/components/Cards/SectionCard'
+import PostCard from '@/components/Cards/PostCard'
 
 export default function HomePage() {
     const suggestedTrades = [
@@ -37,7 +38,9 @@ export default function HomePage() {
 
                 <div className="flex flex-col lg:flex-row p-4 gap-6">
                     <div className="flex-1 space-y-6">
-                        <div className="bg-white rounded-lg shadow p-4">Main Content</div>
+                        <PostCard />
+                        <PostCard />
+                        <PostCard />
                     </div>
 
                     <div className="w-full lg:w-[300px] xl:w-[340px] space-y-4">

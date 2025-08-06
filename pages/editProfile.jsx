@@ -20,7 +20,7 @@ export default function editProfile() {
     };
     return (
         <Layout>
-            <div className="px-4 py-4 md:px-10 md:pt-6 min-h-screen">
+            <div className="px-4 md:px-10 min-h-screen">
                 <div className="flex items-center gap-1 text-gray-700">
                     <ChevronLeft className="w-5 h-5" />
                     <span

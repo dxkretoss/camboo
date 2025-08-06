@@ -28,7 +28,6 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
-            {/* Sidebar for large screens */}
             <div className="hidden lg:block w-[250px]">
                 <Sidebar />
             </div>
@@ -37,12 +36,10 @@ export default function HomePage() {
                 <Navbar />
 
                 <div className="flex flex-col lg:flex-row p-4 gap-6">
-                    {/* Main content */}
                     <div className="flex-1 space-y-6">
                         <div className="bg-white rounded-lg shadow p-4">Main Content</div>
                     </div>
 
-                    {/* Right sidebar */}
                     <div className="w-full lg:w-[300px] xl:w-[340px] space-y-4">
                         <SectionCard title="Suggested Trades" items={suggestedTrades} />
                         <SectionCard title="History of Trades" items={historyOfTrades} />

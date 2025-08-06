@@ -5,7 +5,7 @@ export default function SectionCard({ title, items = [] }) {
         <div className="bg-white shadow rounded-lg p-4 mb-4">
             <div className="flex justify-between items-center mb-3">
                 <h3 className="font-semibold text-sm">{title}</h3>
-                <button className="text-xs text-blue-600 hover:underline">View All</button>
+                <button className="text-xs cursor-pointer text-blue-600 hover:underline">View All</button>
             </div>
             <ul className="space-y-3">
                 {items.map((item, index) => (

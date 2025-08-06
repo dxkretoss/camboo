@@ -20,7 +20,7 @@ export default function Sidebar() {
     ];
     return (
         <div className="bg-white p-4 space-y-6 w-full">
-            <button className="w-full bg-[#4370C2] text-white py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2">
+            <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2">
                 <UserRoundPlus className="w-4 h-4" />
                 Send Invite
             </button>

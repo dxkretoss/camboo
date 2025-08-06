@@ -2,10 +2,10 @@ import React from 'react';
 
 const TextField = ({ label, type = 'text', value, onChange, name, placeholder }) => {
     return (
-        <div className="relative w-full mb-6">
+        <div className="relative w-full mb-4">
             <label
                 htmlFor={name}
-                className="absolute -top-2.5 left-3 bg-white px-1 text-sm text-black z-10"
+                className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-black z-10"
             >
                 {label}
             </label>

@@ -112,7 +112,7 @@ export default function SignupCard({ setIsLogin }) {
                 </div>
 
                 <Button className="w-full" onClick={() => {
-                    router.push('homePage')
+                    router.push('home')
                 }}>Sign up</Button>
 
                 <p className="mt-4 text-sm text-black text-center">

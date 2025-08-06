@@ -15,7 +15,7 @@ export default function LoginCard({ setIsLogin }) {
         toast.success('Successfully Login!')
 
         setTimeout(() => {
-            router.push('homePage')
+            router.push('home')
         }, 2000)
     }
 

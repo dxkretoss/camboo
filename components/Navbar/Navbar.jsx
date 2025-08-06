@@ -19,8 +19,8 @@ export default function Navbar() {
     }, []);
 
     return (
-        <nav className="fixed top-0 left-0 w-full h-16 bg-white z-50 px-4 md:px-6 py-3 flex items-center justify-between shadow-sm">
-            <div className="flex items-center gap-4" onClick={() => router.push('/homePage')}>
+        <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
+            <div className="flex items-center gap-4" onClick={() => router.push('/home')}>
                 <img
                     src="/logo_camboo.png"
                     alt="Logo"

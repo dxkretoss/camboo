@@ -133,8 +133,6 @@ export default function addProduct() {
                                             </div>
                                         </div>
 
-
-
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand</label>
@@ -167,13 +165,13 @@ export default function addProduct() {
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">Product Type</label>
-                                                <div className="flex flex-col xs:flex-row gap-2 xs:gap-4">
+                                                <div className="flex xs:flex-row gap-2 xs:gap-4">
                                                     <label className="flex items-center space-x-2">
-                                                        <input type="radio" name="productType" defaultChecked className="accent-blue-600 w-4 h-4" />
+                                                        <input type="radio" name="productType" defaultChecked className="accent-blue-600 cursor-pointer w-4 h-4" />
                                                         <span className="text-xs sm:text-sm text-gray-700">Old Product</span>
                                                     </label>
                                                     <label className="flex items-center space-x-2">
-                                                        <input type="radio" name="productType" className="accent-blue-600 w-4 h-4" />
+                                                        <input type="radio" name="productType" className="accent-blue-600 cursor-pointer w-4 h-4" />
                                                         <span className="text-xs sm:text-sm text-gray-700">New Product</span>
                                                     </label>
                                                 </div>
@@ -220,13 +218,13 @@ export default function addProduct() {
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">Cost of service</label>
-                                                <div className="flex flex-col xs:flex-row gap-2 xs:gap-4">
+                                                <div className="flex xs:flex-row gap-2 xs:gap-4">
                                                     <label className="flex items-center space-x-2">
-                                                        <input type="radio" name="costofservice" defaultChecked className="accent-blue-600 w-4 h-4" />
+                                                        <input type="radio" name="costofservice" defaultChecked className="accent-blue-600 cursor-pointer w-4 h-4" />
                                                         <span className="text-xs sm:text-sm text-gray-700">R$/hr</span>
                                                     </label>
                                                     <label className="flex items-center space-x-2">
-                                                        <input type="radio" name="costofservice" className="accent-blue-600 w-4 h-4" />
+                                                        <input type="radio" name="costofservice" className="accent-blue-600 cursor-pointer w-4 h-4" />
                                                         <span className="text-xs sm:text-sm text-gray-700">R$/Day</span>
                                                     </label>
                                                 </div>
@@ -246,7 +244,7 @@ export default function addProduct() {
                                 <div className="bg-[#f7f9ff] p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl space-y-3 sm:space-y-4">
                                     <div className="space-y-2">
                                         <label className="block text-xs sm:text-sm font-medium text-gray-700">Trade for what?</label>
-                                        <div className="flex flex-col xs:flex-row gap-2 xs:gap-6">
+                                        <div className="flex xs:flex-row gap-2 xs:gap-6">
                                             {['Product', 'Service'].map((type) => (
                                                 <label key={type} className="flex items-center space-x-2">
                                                     <input
@@ -254,7 +252,7 @@ export default function addProduct() {
                                                         name="tradeType"
                                                         checked={tradeType === type}
                                                         onChange={() => setTradeType(type)}
-                                                        className="accent-blue-600 w-4 h-4"
+                                                        className="accent-blue-600 w-4 h-4 cursor-pointer"
                                                     />
                                                     <span className="text-xs sm:text-sm text-gray-700">{type}</span>
                                                 </label>
@@ -272,12 +270,24 @@ export default function addProduct() {
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 />
                                             </div>
-                                            <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand</label>
-                                                    <select className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                                        <option>ex: Yamaha</option>
-                                                    </select>
+                                                    <div className="relative">
+                                                        <select className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 pr-8 sm:pr-10 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent  appearance-none cursor-pointer">
+                                                            <option value="">Select Brand</option>
+                                                            <option value="yamaha">Yamaha</option>
+                                                            <option value="honda">Honda</option>
+                                                            <option value="toyota">Toyota</option>
+                                                            <option value="samsung">Samsung</option>
+                                                            <option value="apple">Apple</option>
+                                                        </select>
+                                                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3 pointer-events-none">
+                                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">Model</label>
@@ -312,7 +322,8 @@ export default function addProduct() {
 
                                     <div className="pt-2">
                                         <Button className="w-full sm:w-auto">
-                                            Save Product
+                                            {selectedTab === 'Product' ? "Save Product" : " Save Service"}
+
                                         </Button>
                                     </div>
                                 </div>

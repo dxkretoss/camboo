@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, MapPin, ChevronDown, Plus } from 'lucide-react';
+import { Search, Bell, MapPin, ChevronDown, Plus, User, LogOut } from 'lucide-react';
 import Button from '../ui/Button';
 import { useRouter } from 'next/router';
 
@@ -93,8 +93,9 @@ export default function Navbar() {
                                             setDropdownOpen(false);
                                             router.push('/profile');
                                         }}
-                                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                                        className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
                                     >
+                                        <User size={16} />
                                         Profile
                                     </button>
                                 </li>
@@ -102,16 +103,18 @@ export default function Navbar() {
                                     <button
                                         onClick={() => {
                                             setDropdownOpen(false);
-                                            router.push('/')
+                                            router.push('/');
                                         }}
-                                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                                        className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
                                     >
+                                        <LogOut size={16} />
                                         Logout
                                     </button>
                                 </li>
                             </ul>
                         </div>
                     )}
+
                 </div>
             </div>
         </nav>

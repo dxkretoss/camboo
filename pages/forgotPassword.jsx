@@ -26,7 +26,6 @@ export default function forgotPassword() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isForgotting, setisForgotting] = useState(false)
-
     const [errors, setErrors] = useState({});
 
     const validateForm = () => {
@@ -46,8 +45,6 @@ export default function forgotPassword() {
     const handleForgotPass = async () => {
         if (!validateForm()) return;
         setisForgotting(true);
-
-        console.log(forgotData)
         try {
             const forgotPassword = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/create-new_password`, forgotData);
 

@@ -1,23 +1,197 @@
-import React, { useRef, useState } from 'react'
-import Layout from '@/components/Layout/Layout'
+import React, { useEffect, useRef, useState } from 'react';
+import Layout from '@/components/Layout/Layout';
 import { ChevronLeft, Pencil } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+import axios from 'axios';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import toast, { Toaster } from 'react-hot-toast';
 
-export default function editProfile() {
+export default function EditProfile() {
+    const token = Cookies.get('token');
+    const router = useRouter();
+
     const fileInputRef = useRef(null);
-    const [imageSrc, setImageSrc] = useState('https://randomuser.me/api/portraits/men/32.jpg');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [errors, setErrors] = useState({});
 
-    const handleIconClick = () => {
-        fileInputRef.current.click();
+    const allPlatforms = ['facebook', 'twitter', 'linkedin', 'github', 'instagram', 'website'];
+    const [socialLinks, setSocialLinks] = useState([]);
+
+    const [getProfileData, setgetProfileData] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone_number: '',
+        about_me: '',
+        what_are_you_interested_in: '',
+        professional_experience: '',
+        profile_image: '',
+    });
+
+    useEffect(() => {
+        if (!token) router.push('/');
+        getUserProfileData();
+    }, [token]);
+
+    const validateField = (field, value) => {
+        let error = '';
+
+        switch (field) {
+            case 'first_name':
+                if (!value.trim()) error = 'First name is required';
+                break;
+            case 'last_name':
+                if (!value.trim()) error = 'Last name is required';
+                break;
+            case 'email':
+                if (!value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    error = 'Valid email is required';
+                }
+                break;
+            case 'phone_number':
+                if (!value.trim()) error = 'Phone number is required';
+                break;
+            case 'about_me':
+                if (!value.trim()) error = 'About Me is required';
+                break;
+            case 'what_are_you_interested_in':
+                if (!value.trim()) error = 'This field is required';
+                break;
+            case 'professional_experience':
+                if (!value.trim()) error = 'Professional Experience is required';
+                break;
+            default:
+                break;
+        }
+
+        setErrors((prev) => ({ ...prev, [field]: error }));
     };
+
+    const validateForm = () => {
+        const newErrors = {};
+        const fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'about_me',
+            'what_are_you_interested_in',
+            'professional_experience',
+        ];
+
+        fields.forEach((field) => validateField(field, getProfileData[field]));
+
+        socialLinks.forEach((link, index) => {
+            if (!link.link.trim()) {
+                newErrors[`social_${index}`] = 'URL is required';
+            } else if (!/^https?:\/\//i.test(link.link)) {
+                newErrors[`social_${index}`] = 'URL must start with http:// or https://';
+            }
+        });
+
+        setErrors((prev) => ({ ...prev, ...newErrors }));
+        return Object.keys(newErrors).length === 0 && fields.every((field) => !errors[field]);
+    };
+
+    const handleIconClick = () => fileInputRef.current.click();
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setSelectedFile(file);
             const imageURL = URL.createObjectURL(file);
-            setImageSrc(imageURL);
+            setgetProfileData({ ...getProfileData, profile_image: imageURL });
         }
     };
+
+    const addSocialLink = () => {
+        const availablePlatforms = allPlatforms.filter(
+            (p) => !socialLinks.some((link) => link.platform === p)
+        );
+        if (availablePlatforms.length === 0) return;
+        setSocialLinks([...socialLinks, { platform: availablePlatforms[0], link: '' }]);
+    };
+
+    const handlePlatformChange = (index, value) => {
+        const updated = [...socialLinks];
+        updated[index].platform = value;
+        setSocialLinks(updated);
+    };
+
+    const handleUrlChange = (index, value) => {
+        const updated = [...socialLinks];
+        updated[index].link = value;
+        setSocialLinks(updated);
+    };
+
+    const removeSocialLink = (index) => {
+        const updated = [...socialLinks];
+        updated.splice(index, 1);
+        setSocialLinks(updated);
+        setErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors[`social_${index}`];
+            return newErrors;
+        });
+    };
+
+    const getUserProfileData = async () => {
+        try {
+            const getData = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-profile`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (getData?.data?.success) {
+                const data = getData?.data?.data;
+                setgetProfileData({
+                    first_name: data?.first_name || '',
+                    last_name: data?.last_name || '',
+                    email: data?.email || '',
+                    phone_number: data?.phone_number || '',
+                    about_me: data?.about_me || '',
+                    what_are_you_interested_in: data?.what_are_you_interested_in || '',
+                    professional_experience: data?.professional_experience || '',
+                    profile_image: data?.profile_image || '',
+                });
+                setSocialLinks(data?.social_links || []);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const updateUserProfileData = async () => {
+        if (!validateForm()) return;
+
+        try {
+            const formData = new FormData();
+            Object.entries(getProfileData).forEach(([key, value]) => formData.append(key, value));
+            formData.append('social_links', JSON.stringify(socialLinks));
+            if (selectedFile) formData.append('profile_image', selectedFile);
+
+            const updateData = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/edit-profile`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (updateData?.data?.success) {
+                toast.success("User profile edit successfully.")
+                getUserProfileData();
+            } else {
+                toast.error("Something went wrong.");
+            }
+
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong.");
+        }
+    };
+
     return (
         <Layout>
             <div className="px-4 md:px-10 min-h-screen">
@@ -25,7 +199,7 @@ export default function editProfile() {
                     <ChevronLeft className="w-5 h-5" />
                     <span
                         onClick={() => window.history.back()}
-                        className="text-sm md:text-base font-medium text-gray-700 hover:text-blue-600 cursor-pointer transition duration-200"
+                        className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer"
                     >
                         Back
                     </span>
@@ -33,19 +207,18 @@ export default function editProfile() {
 
                 <div className="flex justify-center px-4 pt-5 min-h-[70vh]">
                     <div className="flex flex-col w-full max-w-xl bg-white rounded-md p-6 space-y-6">
-
-                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 self-start">
-                            Edit Profile
-                        </h2>
+                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 self-start">Edit Profile</h2>
 
                         <div className="relative self-center mb-4">
                             <img
-                                src={imageSrc}
+                                src={getProfileData?.profile_image}
                                 alt="User"
-                                className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover"
+                                className="w-24 h-24 rounded-full object-cover"
                             />
-                            <div className="absolute bottom-0 right-0 bg-[#000F5C] text-white p-2 rounded-full cursor-pointer"
-                                onClick={handleIconClick}>
+                            <div
+                                className="absolute bottom-0 right-0 bg-[#000F5C] text-white p-2 rounded-full cursor-pointer"
+                                onClick={handleIconClick}
+                            >
                                 <Pencil className="w-4 h-4" />
                             </div>
                             <input
@@ -58,91 +231,146 @@ export default function editProfile() {
                         </div>
 
                         <div className="space-y-4 w-full">
-                            <div className="space-y-1">
-                                <label className="block text-sm md:text-base font-medium text-gray-700">Your Name</label>
-                                <input
-                                    type="text"
-                                    placeholder="Carlos Muvoka"
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
-                                />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium">First Name</label>
+                                    <input
+                                        type="text"
+                                        value={getProfileData.first_name}
+                                        onChange={(e) => setgetProfileData({ ...getProfileData, first_name: e.target.value })}
+                                        onBlur={(e) => validateField('first_name', e.target.value)}
+                                        className="w-full border rounded-lg px-4 py-2"
+                                    />
+                                    {errors.first_name && <p className="text-red-500 text-xs">{errors.first_name}</p>}
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium">Last Name</label>
+                                    <input
+                                        type="text"
+                                        value={getProfileData.last_name}
+                                        onChange={(e) => setgetProfileData({ ...getProfileData, last_name: e.target.value })}
+                                        onBlur={(e) => validateField('last_name', e.target.value)}
+                                        className="w-full border rounded-lg px-4 py-2"
+                                    />
+                                    {errors.last_name && <p className="text-red-500 text-xs">{errors.last_name}</p>}
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm md:text-base font-medium text-gray-700">Email Address</label>
+                                    <label className="block text-sm font-medium">Email</label>
                                     <input
                                         type="email"
-                                        placeholder="carlosmuvoka@gmail.com"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                                        value={getProfileData.email}
+                                        onChange={(e) => setgetProfileData({ ...getProfileData, email: e.target.value })}
+                                        onBlur={(e) => validateField('email', e.target.value)}
+                                        className="w-full border rounded-lg px-4 py-2"
                                     />
+                                    {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="block text-sm md:text-base font-medium text-gray-700">Telephone</label>
-                                    <input
-                                        type="tel"
-                                        placeholder="+101 6465 572 800"
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                                    <label className="block text-sm font-medium">Phone Number</label>
+                                    <PhoneInput
+                                        country={'in'}
+                                        value={getProfileData.phone_number}
+                                        onChange={(value, country) => {
+                                            const dialCode = country.dialCode;
+                                            const rawNumber = value.slice(dialCode.length);
+                                            const formatted = `+${dialCode} ${rawNumber}`;
+                                            setgetProfileData({ ...getProfileData, phone_number: formatted });
+                                            validateField('phone_number', formatted);
+                                        }}
+                                        inputStyle={{ width: '100%', height: '40px' }}
                                     />
+                                    {errors.phone_number && <p className="text-red-500 text-xs">{errors.phone_number}</p>}
                                 </div>
                             </div>
 
-                            <div className="space-y-1">
-                                <label className="block text-sm md:text-base font-medium text-gray-700">Profile Type</label>
-                                <div className="flex flex-wrap gap-4">
-                                    <label className="flex items-center space-x-2">
-                                        <input type="radio" name="profileType" defaultChecked className="accent-blue-600" />
-                                        <span className="text-sm text-gray-700">Personal profile</span>
-                                    </label>
-                                    <label className="flex items-center space-x-2">
-                                        <input type="radio" name="profileType" className="accent-blue-600" />
-                                        <span className="text-sm text-gray-700">Company profile</span>
-                                    </label>
-                                </div>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium">Social Links</label>
+                                {socialLinks.map((link, index) => {
+                                    const selected = socialLinks.map((l) => l.platform);
+                                    const available = allPlatforms.filter((p) => !selected.includes(p) || p === link.platform);
+
+                                    return (
+                                        <div key={index} className="flex items-center gap-2">
+                                            <select
+                                                value={link.platform}
+                                                onChange={(e) => handlePlatformChange(index, e.target.value)}
+                                                className="border rounded-lg px-2 py-2 w-1/3"
+                                            >
+                                                {available.map((p) => (
+                                                    <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>
+                                                ))}
+                                            </select>
+                                            <input
+                                                type="url"
+                                                value={link.link}
+                                                onChange={(e) => handleUrlChange(index, e.target.value)}
+                                                onBlur={(e) => {
+                                                    const val = e.target.value;
+                                                    if (!val.trim()) {
+                                                        setErrors((prev) => ({ ...prev, [`social_${index}`]: 'URL is required' }));
+                                                    } else if (!/^https?:\/\//i.test(val)) {
+                                                        setErrors((prev) => ({ ...prev, [`social_${index}`]: 'URL must start with http:// or https://' }));
+                                                    } else {
+                                                        setErrors((prev) => {
+                                                            const newErrors = { ...prev };
+                                                            delete newErrors[`social_${index}`];
+                                                            return newErrors;
+                                                        });
+                                                    }
+                                                }}
+                                                className="border rounded-lg px-4 py-2 w-2/3"
+                                            />
+                                            <button type="button" onClick={() => removeSocialLink(index)} className="text-red-600 text-sm">Remove</button>
+                                            {errors[`social_${index}`] && <p className="text-red-500 text-xs">{errors[`social_${index}`]}</p>}
+                                        </div>
+                                    );
+                                })}
+                                {socialLinks.length < allPlatforms.length && (
+                                    <button type="button" onClick={addSocialLink} className="text-blue-600 text-sm">+ Add Social Link</button>
+                                )}
                             </div>
 
                             <div className="space-y-1">
-                                <label className="block text-sm md:text-base font-medium text-gray-700">About Me</label>
+                                <label className="block text-sm font-medium">About Me</label>
                                 <textarea
                                     rows="3"
-                                    placeholder="Describe your self here..."
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
+                                    value={getProfileData.about_me}
+                                    onChange={(e) => setgetProfileData({ ...getProfileData, about_me: e.target.value })}
+                                    onBlur={(e) => validateField('about_me', e.target.value)}
+                                    className="w-full border rounded-lg px-4 py-2"
                                 />
+                                {errors.about_me && <p className="text-red-500 text-xs">{errors.about_me}</p>}
                             </div>
 
                             <div className="space-y-1">
-                                <label className="block text-sm md:text-base font-medium text-gray-700">What are you interested in?</label>
-                                <div className="flex flex-wrap gap-4">
-                                    <label className="flex items-center space-x-2">
-                                        <input type="radio" name="interested" defaultChecked className="accent-blue-600" />
-                                        <span className="text-sm text-gray-700">Computer</span>
-                                    </label>
-                                    <label className="flex items-center space-x-2">
-                                        <input type="radio" name="interested" className="accent-blue-600" />
-                                        <span className="text-sm text-gray-700">Household Appliance</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="block text-sm md:text-base font-medium text-gray-700">Household Appliance</label>
+                                <label className="block text-sm font-medium">What are you interested in?</label>
                                 <input
                                     type="text"
-                                    placeholder="ex. Juicer"
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
+                                    value={getProfileData.what_are_you_interested_in}
+                                    onChange={(e) => setgetProfileData({ ...getProfileData, what_are_you_interested_in: e.target.value })}
+                                    onBlur={(e) => validateField('what_are_you_interested_in', e.target.value)}
+                                    className="w-full border rounded-lg px-4 py-2"
                                 />
+                                {errors.what_are_you_interested_in && <p className="text-red-500 text-xs">{errors.what_are_you_interested_in}</p>}
                             </div>
 
                             <div className="space-y-1">
-                                <label className="block text-sm md:text-base font-medium text-gray-700">Professional Experience</label>
+                                <label className="block text-sm font-medium">Professional Experience</label>
                                 <textarea
                                     rows="3"
-                                    placeholder="Describe your experiences here..."
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring"
+                                    value={getProfileData.professional_experience}
+                                    onChange={(e) => setgetProfileData({ ...getProfileData, professional_experience: e.target.value })}
+                                    onBlur={(e) => validateField('professional_experience', e.target.value)}
+                                    className="w-full border rounded-lg px-4 py-2"
                                 />
+                                {errors.professional_experience && <p className="text-red-500 text-xs">{errors.professional_experience}</p>}
                             </div>
 
                             <div className="pt-2">
-                                <Button className="w-full md:w-auto">
+                                <Button className="w-full md:w-auto" onClick={() => { updateUserProfileData(); }}>
                                     Save Changes
                                 </Button>
                             </div>
@@ -150,6 +378,7 @@ export default function editProfile() {
                     </div>
                 </div>
             </div>
+            <Toaster />
         </Layout>
-    )
+    );
 }

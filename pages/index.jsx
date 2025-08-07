@@ -5,6 +5,7 @@ import { Eye, EyeOff, X } from "lucide-react";
 import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default function Index() {
   const router = useRouter();
@@ -36,16 +37,23 @@ export default function Index() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const now = new Date();
+  const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
   const handleLogin = async () => {
     if (!validateForm()) return;
     setisLogin(true);
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/login`, loginData);
-      if (response?.data?.success) {
+      const login = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/login`, loginData);
+      if (login?.data?.success) {
         toast.success('User logged in successfully.');
+        Cookies.set("token", login?.data?.data?.token, { expires: endOfDay });
         setTimeout(() => router.push('/home'), 2000);
+        setloginData({
+          email: '', password: ''
+        })
       } else {
-        toast.error(response?.data?.message || 'Login failed.');
+        toast.error(login?.data?.message || 'Login failed.');
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || 'Login failed.');
@@ -97,7 +105,7 @@ export default function Index() {
       });
 
       if (verifyOtp?.data?.success) {
-        toast.success("OTP verified.");
+        toast.success("OTP verified");
         setTimeout(() => {
           router.push(`/forgotPassword?email=${forgotEmail}`);
         }, 2000);
@@ -125,7 +133,6 @@ export default function Index() {
             <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center">Login</h2>
             <p className="text-gray-500 text-sm mb-6 text-center">Login to access your Camboo Account</p>
 
-            {/* Email */}
             <div>
               <TextField
                 label="Email"
@@ -138,7 +145,6 @@ export default function Index() {
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
 
-            {/* Password */}
             <div className="relative mt-4">
               <TextField
                 label="Password"
@@ -163,7 +169,7 @@ export default function Index() {
                 <input type="checkbox" className="mr-2" />
                 Remember me
               </label>
-              <button onClick={() => setForgotOpen(true)} className="text-red-600 hover:underline">
+              <button onClick={() => setForgotOpen(true)} className="text-red-600 cursor-pointer hover:underline">
                 Forgot Password
               </button>
             </div>

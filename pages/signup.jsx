@@ -255,7 +255,7 @@ export default function signup() {
                         </div>
                         {errors.terms && <p className="text-red-500 text-xs mt-1">{errors.terms}</p>}
 
-                        <Button className="w-full mt-6 disabled:cursor-not-allowed" disabled={isSignup} onClick={handleSignup}>
+                        <Button className="w-full mt-6 disabled:cursor-not-allowed" disabled={isSignup} onClick={() => { handleSignup() }}>
                             {isSignup ? 'Processing...' : 'Sign up'}
                         </Button>
 

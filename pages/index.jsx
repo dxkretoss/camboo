@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
 import TextField from '@/components/ui/TextField';
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
@@ -9,14 +9,17 @@ import axios from 'axios';
 export default function Index() {
   const router = useRouter();
 
-  const [loginData, setloginData] = useState({
-    email: '',
-    password: ''
-  });
-
+  const [loginData, setloginData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [isLogin, setisLogin] = useState(false)
+  const [isLogin, setisLogin] = useState(false);
+
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [isOtpSending, setIsOtpSending] = useState(false);
+  const [isOtpVerifying, setIsOtpVerifying] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -38,7 +41,6 @@ export default function Index() {
     setisLogin(true);
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/login`, loginData);
-
       if (response?.data?.success) {
         toast.success('User logged in successfully.');
         setTimeout(() => router.push('/home'), 2000);
@@ -47,42 +49,76 @@ export default function Index() {
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || 'Login failed.');
-      console.error(error);
     } finally {
-      setisLogin(false)
+      setisLogin(false);
     }
   };
 
   const handleChange = (field, value) => {
-    setloginData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-
+    setloginData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: ''
-      }));
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const handleForgotSubmit = async () => {
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(forgotEmail)) {
+      toast.error("Please enter a valid email.");
+      return;
+    }
+
+    setIsOtpSending(true);
+    try {
+      const forgot = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/forget-Password`, { email: forgotEmail });
+      if (forgot?.data?.success) {
+        toast.success("OTP sent to your email.");
+        setShowOtpField(true);
+      } else {
+        toast.error(forgot?.data?.message || "Failed to send OTP.");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Error sending OTP.");
+    } finally {
+      setIsOtpSending(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp) {
+      toast.error("Please enter the OTP.");
+      return;
+    }
+
+    setIsOtpVerifying(true);
+    try {
+      const verifyOtp = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/email-verification`, {
+        email: forgotEmail,
+        otp: otp
+      });
+
+      if (verifyOtp?.data?.success) {
+        toast.success("OTP verified.");
+        setTimeout(() => {
+          router.push(`/forgotPassword?email=${forgotEmail}`);
+        }, 2000);
+      } else {
+        toast.error(verifyOtp.data.message || "OTP verification failed.");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "OTP verification error.");
+    } finally {
+      setIsOtpVerifying(false);
     }
   };
 
   return (
     <div className="flex md:flex-row h-screen bg-gray-100">
       <div className="hidden md:block md:w-1/2">
-        <img
-          src="/loginbg.png"
-          alt="Login Visual"
-          className="w-full h-full object-cover"
-        />
+        <img src="/loginbg.png" alt="Login Visual" className="w-full h-full object-cover" />
       </div>
 
       <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
-        <img
-          src="/logo_camboo.png"
-          alt="Logo"
-          className="mx-auto mt-6 w-32 h-auto"
-        />
+        <img src="/logo_camboo.png" alt="Logo" className="mx-auto mt-6 w-32 h-auto" />
 
         <div className="flex justify-center items-center w-full px-4 py-8">
           <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-xl">
@@ -127,12 +163,12 @@ export default function Index() {
                 <input type="checkbox" className="mr-2" />
                 Remember me
               </label>
-              <a href="#" className="text-red-600 hover:underline">
+              <button onClick={() => setForgotOpen(true)} className="text-red-600 hover:underline">
                 Forgot Password
-              </a>
+              </button>
             </div>
 
-            <Button className="w-full disabled:cursor-not-allowed" disabled={isLogin} onClick={handleLogin}>
+            <Button className="w-full disabled:cursor-not-allowed" disabled={isLogin} onClick={() => { handleLogin() }}>
               {isLogin ? 'Processing...' : 'Login'}
             </Button>
 
@@ -160,6 +196,58 @@ export default function Index() {
           <Toaster />
         </div>
       </div>
+
+      {forgotOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm relative">
+            <button className="absolute cursor-pointer top-2 right-2 text-gray-400 hover:text-black" onClick={() => {
+              setForgotOpen(false);
+              setForgotEmail('');
+              setOtp('');
+              setShowOtpField(false);
+            }}>
+              <X size={20} />
+            </button>
+            <h3 className="text-lg font-semibold mb-4">Forgot Password</h3>
+
+            <TextField
+              label="Email"
+              type="email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              placeholder="Enter your email"
+            />
+
+            {!showOtpField ? (
+              <Button
+                onClick={() => { handleForgotSubmit() }}
+                className="w-full mt-4"
+                disabled={isOtpSending}
+              >
+                {isOtpSending ? "Sending OTP..." : "Send OTP"}
+              </Button>
+            ) : (
+              <>
+                <TextField
+                  label="OTP"
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter OTP"
+                  className="mt-4"
+                />
+                <Button
+                  onClick={() => { handleVerifyOtp() }}
+                  className="w-full mt-4"
+                  disabled={isOtpVerifying}
+                >
+                  {isOtpVerifying ? "Verifying..." : "Verify OTP"}
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

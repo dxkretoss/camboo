@@ -37,7 +37,7 @@ export default function Index() {
     if (!validateForm()) return;
     setisLogin(true);
     try {
-      const response = await axios.post('https://ecaf05949177.ngrok-free.app/api/login', loginData);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/login`, loginData);
 
       if (response?.data?.success) {
         toast.success('User logged in successfully.');
@@ -46,7 +46,7 @@ export default function Index() {
         toast.error(response?.data?.message || 'Login failed.');
       }
     } catch (error) {
-      toast.error('Something went wrong.');
+      toast.error(error?.response?.data?.message || 'Login failed.');
       console.error(error);
     } finally {
       setisLogin(false)

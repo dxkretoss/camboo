@@ -84,7 +84,7 @@ export default function addProduct() {
                                     <button
                                         key={tab}
                                         onClick={() => setSelectedTab(tab)}
-                                        className={`py-2 sm:py-3 px-4 sm:px-6 -mb-px cursor-pointer border-b-2 transition text-sm sm:text-base ${selectedTab === tab
+                                        className={`flex-1 text-center py-2 sm:py-3 px-4 sm:px-6 -mb-px cursor-pointer border-b-2 transition text-sm sm:text-base ${selectedTab === tab
                                             ? 'border-blue-600 text-blue-600 font-medium'
                                             : 'border-transparent text-gray-500 hover:text-blue-600'
                                             }`}
@@ -93,6 +93,7 @@ export default function addProduct() {
                                     </button>
                                 ))}
                             </div>
+
 
                             <div className="space-y-3 sm:space-y-4">
                                 {selectedTab === 'Product' ? (
@@ -163,21 +164,35 @@ export default function addProduct() {
                                         </div>
 
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
-                                            <div className="space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Product Type</label>
-                                                <div className="flex xs:flex-row gap-2 xs:gap-4">
+                                            <div className="space-y-1 sm:space-y-2">
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                    Product Type
+                                                </label>
+                                                <div className="flex items-center h-[42px] gap-4">
                                                     <label className="flex items-center space-x-2">
-                                                        <input type="radio" name="productType" defaultChecked className="accent-blue-600 cursor-pointer w-4 h-4" />
+                                                        <input
+                                                            type="radio"
+                                                            name="productType"
+                                                            defaultChecked
+                                                            className="accent-blue-600 cursor-pointer w-4 h-4"
+                                                        />
                                                         <span className="text-xs sm:text-sm text-gray-700">Old Product</span>
                                                     </label>
                                                     <label className="flex items-center space-x-2">
-                                                        <input type="radio" name="productType" className="accent-blue-600 cursor-pointer w-4 h-4" />
+                                                        <input
+                                                            type="radio"
+                                                            name="productType"
+                                                            className="accent-blue-600 cursor-pointer w-4 h-4"
+                                                        />
                                                         <span className="text-xs sm:text-sm text-gray-700">New Product</span>
                                                     </label>
                                                 </div>
                                             </div>
+
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Price</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                    Price
+                                                </label>
                                                 <input
                                                     type="text"
                                                     placeholder="ex: $2000.00"
@@ -185,6 +200,7 @@ export default function addProduct() {
                                                 />
                                             </div>
                                         </div>
+
                                     </>
                                 ) : (
                                     <>
@@ -216,21 +232,35 @@ export default function addProduct() {
                                         </div>
 
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
-                                            <div className="space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Cost of service</label>
-                                                <div className="flex xs:flex-row gap-2 xs:gap-4">
+                                            <div className="space-y-1 sm:space-y-2">
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                    Cost of service
+                                                </label>
+                                                <div className="flex items-center h-[42px] gap-4">
                                                     <label className="flex items-center space-x-2">
-                                                        <input type="radio" name="costofservice" defaultChecked className="accent-blue-600 cursor-pointer w-4 h-4" />
+                                                        <input
+                                                            type="radio"
+                                                            name="costofservice"
+                                                            defaultChecked
+                                                            className="accent-blue-600 cursor-pointer w-4 h-4"
+                                                        />
                                                         <span className="text-xs sm:text-sm text-gray-700">R$/hr</span>
                                                     </label>
                                                     <label className="flex items-center space-x-2">
-                                                        <input type="radio" name="costofservice" className="accent-blue-600 cursor-pointer w-4 h-4" />
+                                                        <input
+                                                            type="radio"
+                                                            name="costofservice"
+                                                            className="accent-blue-600 cursor-pointer w-4 h-4"
+                                                        />
                                                         <span className="text-xs sm:text-sm text-gray-700">R$/Day</span>
                                                     </label>
                                                 </div>
                                             </div>
+
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">R$/hr</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                    R$/hr
+                                                </label>
                                                 <input
                                                     type="text"
                                                     placeholder="ex: $2000.00"

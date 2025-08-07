@@ -57,7 +57,7 @@ export default function signup() {
         if (!validateForm()) return;
         setisSignup(true);
         try {
-            const signup = await axios.post('https://ecaf05949177.ngrok-free.app/api/register', userData);
+            const signup = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/register`, userData);
 
             if (signup?.data?.success) {
                 toast.success("User registered successfully.");

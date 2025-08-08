@@ -13,9 +13,10 @@ import { useUser } from '@/context/UserContext';
 export default function EditProfile() {
     const token = Cookies.get('token');
     const router = useRouter();
-    const { profile } = useUser();
+    const { profile, getUserProfileData } = useUser();
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isEditing, setisEditing] = useState(false);
     const [errors, setErrors] = useState({});
     const allPlatforms = ['facebook', 'twitter', 'linkedin', 'github', 'instagram', 'website'];
     const [socialLinks, setSocialLinks] = useState([]);
@@ -154,6 +155,7 @@ export default function EditProfile() {
 
     const updateUserProfileData = async () => {
         if (!validateForm()) return;
+        setisEditing(true);
         try {
             const formData = new FormData();
 
@@ -182,12 +184,15 @@ export default function EditProfile() {
 
             if (updateData?.data?.success) {
                 toast.success("User profile updated successfully.");
+                await getUserProfileData();
             } else {
                 toast.error("Something went wrong.");
             }
         } catch (error) {
             console.log(error);
             toast.error("Something went wrong.");
+        } finally {
+            setisEditing(false);
         }
     };
 
@@ -392,8 +397,9 @@ export default function EditProfile() {
                             </div>
 
                             <div className="pt-2">
-                                <Button className="w-full md:w-auto" onClick={() => { updateUserProfileData(); }}>
-                                    Save Changes
+                                <Button className={`w-full md:w-auto ${isEditing ? "cursor-not-allowed opacity-70" : ""}`}
+                                    disabled={isEditing} onClick={() => { updateUserProfileData(); }}>
+                                    {isEditing ? "Updating" : 'Save Changes'}
                                 </Button>
                             </div>
                         </div>

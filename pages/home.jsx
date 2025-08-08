@@ -72,6 +72,37 @@ export default function HomePage() {
         { title: 'Iphone 16 Pro Max', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/1.jpg' },
     ];
 
+    function DescriptionToggle({ text }) {
+        const [expanded, setExpanded] = useState(false);
+
+        if (!text) return null;
+
+        return (
+            <div>
+                <p
+                    className="text-sm text-gray-600 mt-1"
+                    style={{
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                        WebkitLineClamp: expanded ? 'none' : 2,
+                        overflow: 'hidden',
+                    }}
+                >
+                    {text}
+                </p>
+                {text.length > 100 && (
+                    <button
+                        onClick={() => setExpanded(!expanded)}
+                        className="text-blue-600 cursor-pointer hover:underline mt-1 text-xs font-medium"
+                        type="button"
+                    >
+                        {expanded ? 'See less' : 'See more'}
+                    </button>
+                )}
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
             <div className="hidden lg:block w-[250px]">
@@ -110,7 +141,8 @@ export default function HomePage() {
 
                                         <div className="mt-3">
                                             <h3 className="text-base font-semibold text-gray-800">{user?.title}</h3>
-                                            <p className="text-sm text-gray-600 mt-1">{user?.description}</p>
+                                            <DescriptionToggle text={user?.description} />
+                                            {/* <p className="text-sm text-gray-600 mt-1">{user?.description}</p> */}
                                         </div>
 
                                         {user?.images?.length > 0 && (

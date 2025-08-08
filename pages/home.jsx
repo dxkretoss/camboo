@@ -1,15 +1,54 @@
-import React, { useState } from 'react'
-import Sidebar from '@/components/Sidebar/Sidebar'
-import Navbar from '@/components/Navbar/Navbar'
-import SectionCard from '@/components/Cards/SectionCard'
-import { PhoneCall, ThumbsDown, Inbox, ChevronLeft, ChevronRight, SendHorizonal } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import Sidebar from '@/components/Sidebar/Sidebar';
+import Navbar from '@/components/Navbar/Navbar';
+import SectionCard from '@/components/Cards/SectionCard';
+import { PhoneCall, ThumbsDown, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
-
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 export default function HomePage() {
+    const router = useRouter();
+    const token = Cookies.get('token');
+
+    useEffect(() => {
+        if (!token) {
+            router.push('/');
+        }
+    }, [token]);
 
     const { allProductandService } = useUser();
+
+    const [startIndexes, setStartIndexes] = useState({});
+
+    const imagesPerPage = 2;
+
+    const handlePrev = (id, totalImages) => {
+        setStartIndexes(prev => {
+            const currentIndex = prev[id] || 0;
+            return {
+                ...prev,
+                [id]:
+                    currentIndex - imagesPerPage < 0
+                        ? Math.max(totalImages - imagesPerPage, 0)
+                        : currentIndex - imagesPerPage
+            };
+        });
+    };
+
+    const handleNext = (id, totalImages) => {
+        setStartIndexes(prev => {
+            const currentIndex = prev[id] || 0;
+            return {
+                ...prev,
+                [id]:
+                    currentIndex + imagesPerPage >= totalImages
+                        ? 0
+                        : currentIndex + imagesPerPage
+            };
+        });
+    };
 
     const suggestedTrades = [
         { title: 'Iphone 16 Pro max', subtitle: 'lorem ipsum dummy content', image: 'https://randomuser.me/api/portraits/men/1.jpg' },
@@ -45,25 +84,8 @@ export default function HomePage() {
                 <div className="flex flex-col lg:flex-row p-4 gap-6">
                     <div className="flex-1 space-y-6">
                         {allProductandService?.length > 0 ? (
-                            allProductandService?.map((user, idx) => {
-                                const [startIndex, setStartIndex] = useState(0);
-                                const imagesPerPage = 2;
-
-                                const handlePrev = () => {
-                                    setStartIndex((prev) =>
-                                        prev - imagesPerPage < 0
-                                            ? Math.max(user.images.length - imagesPerPage, 0)
-                                            : prev - imagesPerPage
-                                    );
-                                };
-
-                                const handleNext = () => {
-                                    setStartIndex((prev) =>
-                                        prev + imagesPerPage >= user.images.length
-                                            ? 0
-                                            : prev + imagesPerPage
-                                    );
-                                };
+                            allProductandService.map((user, idx) => {
+                                const startIndex = startIndexes[user.id] || 0;
 
                                 return (
                                     <div key={idx} className="bg-white rounded-xl shadow p-4 mb-6">
@@ -80,6 +102,9 @@ export default function HomePage() {
                                                     </h2>
                                                     <p className="text-xs text-gray-500">{user?.created}</p>
                                                 </div>
+                                            </div>
+                                            <div>
+                                                <EllipsisVertical />
                                             </div>
                                         </div>
 
@@ -107,18 +132,17 @@ export default function HomePage() {
                                                         ))}
                                                 </div>
 
-
                                                 {user.images.length > imagesPerPage && (
                                                     <>
                                                         <button
-                                                            onClick={handlePrev}
+                                                            onClick={() => handlePrev(user.id, user.images.length)}
                                                             className="absolute cursor-pointer left-0 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow hover:bg-gray-100"
                                                         >
                                                             <ChevronLeft size={20} />
                                                         </button>
                                                         <button
-                                                            onClick={handleNext}
-                                                            className="absolute  cursor-pointer right-0 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow hover:bg-gray-100"
+                                                            onClick={() => handleNext(user.id, user.images.length)}
+                                                            className="absolute cursor-pointer right-0 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow hover:bg-gray-100"
                                                         >
                                                             <ChevronRight size={20} />
                                                         </button>
@@ -169,8 +193,8 @@ export default function HomePage() {
                                         </div>
                                     </div>
                                 );
-                            })) : (
-
+                            })
+                        ) : (
                             <div className="flex flex-col items-center justify-center h-64 bg-white rounded-xl shadow">
                                 <Inbox className="w-20 h-20 mb-3 text-gray-400" />
                                 <p className="text-gray-500 text-sm">No products or services found</p>

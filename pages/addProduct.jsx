@@ -227,6 +227,7 @@ export default function addProduct() {
 
             if (addSer?.data?.success) {
                 toast.success("Service created successfully");
+                await getallProdandSer();
                 clearState();
             } else {
                 toast.error("Something went wrong.");

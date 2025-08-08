@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     getUserProfileData();
-    geallProdandSer();
+    getallProdandSer();
   }, []);
 
   const getUserProfileData = async () => {
@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const geallProdandSer = async () => {
+  const getallProdandSer = async () => {
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service`,
@@ -48,7 +48,15 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ profile, setProfile, allProductandService }}>
+    <UserContext.Provider
+      value={{
+        profile,
+        setProfile,
+        allProductandService,
+        getallProdandSer,
+        getUserProfileData,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

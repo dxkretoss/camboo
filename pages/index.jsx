@@ -6,10 +6,11 @@ import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { useUser } from '@/context/UserContext';
 
 export default function Index() {
   const router = useRouter();
-
+  const { getUserProfileData, getallProdandSer } = useUser();
   const [loginData, setloginData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -47,6 +48,8 @@ export default function Index() {
       const login = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/login`, loginData);
       if (login?.data?.success) {
         toast.success('User logged in successfully.');
+        await getallProdandSer();
+        await getUserProfileData();
         Cookies.set("token", login?.data?.data?.token, { expires: endOfDay });
         setTimeout(() => router.push('/home'), 2000);
         setloginData({
@@ -141,6 +144,12 @@ export default function Index() {
                 value={loginData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
                 placeholder="john.doe@gmail.com"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleLogin();
+                  }
+                }}
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>

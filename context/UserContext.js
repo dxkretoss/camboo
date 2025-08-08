@@ -5,8 +5,6 @@ import Cookies from "js-cookie";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const token = Cookies.get("token");
-
   const [profile, setProfile] = useState(null);
   const [allProductandService, setallProductandService] = useState(null);
 
@@ -17,6 +15,8 @@ export const UserProvider = ({ children }) => {
 
   const getUserProfileData = async () => {
     try {
+      const token = Cookies.get("token");
+
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-profile`,
         {
@@ -33,6 +33,8 @@ export const UserProvider = ({ children }) => {
 
   const getallProdandSer = async () => {
     try {
+      const token = Cookies.get("token");
+
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service`,
         {

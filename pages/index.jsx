@@ -48,9 +48,9 @@ export default function Index() {
       const login = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/login`, loginData);
       if (login?.data?.success) {
         toast.success('User logged in successfully.');
+        Cookies.set("token", login?.data?.data?.token, { expires: endOfDay });
         await getallProdandSer();
         await getUserProfileData();
-        Cookies.set("token", login?.data?.data?.token, { expires: endOfDay });
         setTimeout(() => router.push('/home'), 2000);
         setloginData({
           email: '', password: ''

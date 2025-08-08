@@ -71,7 +71,7 @@ export default function addProduct() {
             newErrors.price = "Enter a valid price (e.g. 1199 or 115.90)";
         }
 
-        if (images.every(img => !img?.file)) newErrors.images = "All images are required";
+        if (images.length !== 4 || images.some(img => !img?.file)) newErrors.images = "All images are required";
 
         if (tradeType === '1') {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
@@ -106,7 +106,7 @@ export default function addProduct() {
             }
         }
 
-        if (images.every(img => !img?.file)) newErrors.images = "All images are required";
+        if (images.length !== 4 || images.some(img => !img?.file)) newErrors.images = "All images are required";
 
         if (tradeType === '1') {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";

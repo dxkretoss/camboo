@@ -18,7 +18,7 @@ export default function HomePage() {
         }
     }, [token]);
 
-    const { allProductandService } = useUser();
+    const { allProductandService, profile } = useUser();
 
     const [startIndexes, setStartIndexes] = useState({});
 
@@ -104,7 +104,7 @@ export default function HomePage() {
                                                 </div>
                                             </div>
                                             <div>
-                                                <EllipsisVertical />
+                                                <EllipsisVertical className='cursor-pointer' />
                                             </div>
                                         </div>
 
@@ -153,7 +153,7 @@ export default function HomePage() {
 
                                         <div className="flex items-center gap-2 mt-3 rounded-full py-2">
                                             <img
-                                                src={user?.profile_image}
+                                                src={profile?.profile_image}
                                                 alt="User"
                                                 className="w-8 h-8 rounded-full object-cover"
                                             />

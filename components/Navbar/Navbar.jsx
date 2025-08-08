@@ -3,12 +3,13 @@ import { Search, Bell, MapPin, ChevronDown, Plus, User, LogOut } from 'lucide-re
 import Button from '../ui/Button';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
+import { useUser } from '@/context/UserContext';
 
 export default function Navbar() {
     const router = useRouter();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
-
+    const { profile } = useUser();
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -77,11 +78,11 @@ export default function Navbar() {
                         className="flex items-center gap-2 cursor-pointer"
                     >
                         <img
-                            src="https://randomuser.me/api/portraits/men/32.jpg"
+                            src={profile?.profile_image}
                             alt="User"
                             className="w-8 h-8 rounded-full object-cover"
                         />
-                        <span className="text-gray-700 text-sm hidden sm:inline">Billy Roys</span>
+                        <span className="text-gray-700 text-sm hidden sm:inline">{profile?.first_name}</span>
                         <ChevronDown className="w-4 h-4 text-gray-600" />
                     </div>
 

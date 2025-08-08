@@ -1,11 +1,12 @@
 import React from 'react'
 import {
-    MapPin,
     UserRoundPlus,
     Star
 } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
 
 export default function Sidebar() {
+    const { profile } = useUser();
     const interests = [
         "iPhone 15", "Audi A500", "Vivo All", "Yamaha 1800", "Mercedes Benz",
         "iPhone 15 Pro", "Samsung A14", "AC", "Huawei AC", "OPPO M1",
@@ -28,13 +29,13 @@ export default function Sidebar() {
 
             <div className="flex items-center gap-4">
                 <img
-                    src="https://randomuser.me/api/portraits/men/32.jpg"
+                    src={profile?.profile_image}
                     alt="User"
                     className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
                 />
 
                 <div>
-                    <h2 className="text-md md:text-md font-semibold text-gray-800">Billy Roys</h2>
+                    <h2 className="text-md md:text-md font-semibold text-gray-800">{profile?.first_name}</h2>
                     <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
                         <div className="flex text-yellow-500">
                             {[...Array(5)].map((_, index) => (

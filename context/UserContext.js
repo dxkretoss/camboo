@@ -5,11 +5,14 @@ import Cookies from "js-cookie";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [profile, setProfile] = useState(null);
   const token = Cookies.get("token");
+
+  const [profile, setProfile] = useState(null);
+  const [allProductandService, setallProductandService] = useState(null);
 
   useEffect(() => {
     getUserProfileData();
+    geallProdandSer();
   }, []);
 
   const getUserProfileData = async () => {
@@ -27,8 +30,25 @@ export const UserProvider = ({ children }) => {
       console.error(err);
     }
   };
+
+  const geallProdandSer = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (res.data.success) {
+        setallProductandService(res.data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ profile, setProfile }}>
+    <UserContext.Provider value={{ profile, setProfile, allProductandService }}>
       {children}
     </UserContext.Provider>
   );

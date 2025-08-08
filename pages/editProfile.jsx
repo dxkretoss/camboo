@@ -8,15 +8,15 @@ import axios from 'axios';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import toast, { Toaster } from 'react-hot-toast';
+import { useUser } from '@/context/UserContext';
 
 export default function EditProfile() {
     const token = Cookies.get('token');
     const router = useRouter();
-
+    const { profile } = useUser();
     const fileInputRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [errors, setErrors] = useState({});
-
     const allPlatforms = ['facebook', 'twitter', 'linkedin', 'github', 'instagram', 'website'];
     const [socialLinks, setSocialLinks] = useState([]);
 
@@ -33,12 +33,26 @@ export default function EditProfile() {
 
     useEffect(() => {
         if (!token) router.push('/');
-        getUserProfileData();
-    }, [token]);
+    }, [token, router]);
+
+    useEffect(() => {
+        if (profile) {
+            setgetProfileData({
+                first_name: profile?.first_name || '',
+                last_name: profile?.last_name || '',
+                email: profile?.email || '',
+                phone_number: profile?.phone_number || '',
+                about_me: profile?.about_me || '',
+                what_are_you_interested_in: profile?.what_are_you_interested_in || '',
+                professional_experience: profile?.professional_experience || '',
+                profile_image: profile?.profile_image || '',
+            });
+            setSocialLinks(profile?.social_links || []);
+        }
+    }, [profile]);
 
     const validateField = (field, value) => {
         let error = '';
-
         switch (field) {
             case 'first_name':
                 if (!value.trim()) error = 'First name is required';
@@ -52,7 +66,11 @@ export default function EditProfile() {
                 }
                 break;
             case 'phone_number':
-                if (!value.trim()) error = 'Phone number is required';
+                if (!value.trim()) {
+                    error = 'Phone number is required';
+                } else if (!/^\+\d{1,3} \d{7,14}$/.test(value)) {
+                    error = 'Enter valid phone number';
+                }
                 break;
             case 'about_me':
                 if (!value.trim()) error = 'About Me is required';
@@ -66,7 +84,6 @@ export default function EditProfile() {
             default:
                 break;
         }
-
         setErrors((prev) => ({ ...prev, [field]: error }));
     };
 
@@ -81,9 +98,7 @@ export default function EditProfile() {
             'what_are_you_interested_in',
             'professional_experience',
         ];
-
         fields.forEach((field) => validateField(field, getProfileData[field]));
-
         socialLinks.forEach((link, index) => {
             if (!link.link.trim()) {
                 newErrors[`social_${index}`] = 'URL is required';
@@ -91,7 +106,6 @@ export default function EditProfile() {
                 newErrors[`social_${index}`] = 'URL must start with http:// or https://';
             }
         });
-
         setErrors((prev) => ({ ...prev, ...newErrors }));
         return Object.keys(newErrors).length === 0 && fields.every((field) => !errors[field]);
     };
@@ -138,54 +152,39 @@ export default function EditProfile() {
         });
     };
 
-    const getUserProfileData = async () => {
-        try {
-            const getData = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-profile`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (getData?.data?.success) {
-                const data = getData?.data?.data;
-                setgetProfileData({
-                    first_name: data?.first_name || '',
-                    last_name: data?.last_name || '',
-                    email: data?.email || '',
-                    phone_number: data?.phone_number || '',
-                    about_me: data?.about_me || '',
-                    what_are_you_interested_in: data?.what_are_you_interested_in || '',
-                    professional_experience: data?.professional_experience || '',
-                    profile_image: data?.profile_image || '',
-                });
-                setSocialLinks(data?.social_links || []);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     const updateUserProfileData = async () => {
         if (!validateForm()) return;
-
         try {
             const formData = new FormData();
-            Object.entries(getProfileData).forEach(([key, value]) => formData.append(key, value));
-            formData.append('social_links', JSON.stringify(socialLinks));
-            if (selectedFile) formData.append('profile_image', selectedFile);
 
-            const updateData = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/edit-profile`, formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data',
-                },
+            Object.entries(getProfileData).forEach(([key, value]) => {
+                if (key !== "profile_image") {
+                    formData.append(key, value);
+                }
             });
 
+            formData.append("social_links", JSON.stringify(socialLinks));
+
+            if (selectedFile) {
+                formData.append("profile_image", selectedFile);
+            }
+
+            const updateData = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/edit-profile`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
             if (updateData?.data?.success) {
-                toast.success("User profile edit successfully.")
-                getUserProfileData();
+                toast.success("User profile updated successfully.");
             } else {
                 toast.error("Something went wrong.");
             }
-
         } catch (error) {
             console.log(error);
             toast.error("Something went wrong.");
@@ -262,12 +261,11 @@ export default function EditProfile() {
                                     <input
                                         type="email"
                                         value={getProfileData.email}
-                                        onChange={(e) => setgetProfileData({ ...getProfileData, email: e.target.value })}
-                                        onBlur={(e) => validateField('email', e.target.value)}
-                                        className="w-full border rounded-lg px-4 py-2"
+                                        disabled
+                                        className="w-full border rounded-lg px-4 py-2 bg-gray-100 cursor-not-allowed"
                                     />
-                                    {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
                                 </div>
+
                                 <div className="space-y-1">
                                     <label className="block text-sm font-medium">Phone Number</label>
                                     <PhoneInput
@@ -293,43 +291,67 @@ export default function EditProfile() {
                                     const available = allPlatforms.filter((p) => !selected.includes(p) || p === link.platform);
 
                                     return (
-                                        <div key={index} className="flex items-center gap-2">
-                                            <select
-                                                value={link.platform}
-                                                onChange={(e) => handlePlatformChange(index, e.target.value)}
-                                                className="border rounded-lg px-2 py-2 w-1/3"
-                                            >
-                                                {available.map((p) => (
-                                                    <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>
-                                                ))}
-                                            </select>
-                                            <input
-                                                type="url"
-                                                value={link.link}
-                                                onChange={(e) => handleUrlChange(index, e.target.value)}
-                                                onBlur={(e) => {
-                                                    const val = e.target.value;
-                                                    if (!val.trim()) {
-                                                        setErrors((prev) => ({ ...prev, [`social_${index}`]: 'URL is required' }));
-                                                    } else if (!/^https?:\/\//i.test(val)) {
-                                                        setErrors((prev) => ({ ...prev, [`social_${index}`]: 'URL must start with http:// or https://' }));
-                                                    } else {
-                                                        setErrors((prev) => {
-                                                            const newErrors = { ...prev };
-                                                            delete newErrors[`social_${index}`];
-                                                            return newErrors;
-                                                        });
-                                                    }
-                                                }}
-                                                className="border rounded-lg px-4 py-2 w-2/3"
-                                            />
-                                            <button type="button" onClick={() => removeSocialLink(index)} className="text-red-600 text-sm">Remove</button>
-                                            {errors[`social_${index}`] && <p className="text-red-500 text-xs">{errors[`social_${index}`]}</p>}
+                                        <div key={index} className="flex flex-col gap-1 w-full">
+                                            <div className="flex items-center gap-2">
+                                                <select
+                                                    value={link.platform}
+                                                    onChange={(e) => handlePlatformChange(index, e.target.value)}
+                                                    className="border rounded-lg px-2 py-2 w-1/3"
+                                                >
+                                                    {available.map((p) => (
+                                                        <option key={p} value={p}>
+                                                            {p.charAt(0).toUpperCase() + p.slice(1)}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                                <input
+                                                    type="url"
+                                                    value={link.link}
+                                                    onChange={(e) => handleUrlChange(index, e.target.value)}
+                                                    onBlur={(e) => {
+                                                        const val = e.target.value;
+                                                        if (!val.trim()) {
+                                                            setErrors((prev) => ({
+                                                                ...prev,
+                                                                [`social_${index}`]: 'URL is required',
+                                                            }));
+                                                        } else if (!/^https?:\/\//i.test(val)) {
+                                                            setErrors((prev) => ({
+                                                                ...prev,
+                                                                [`social_${index}`]: 'URL must start with http:// or https://',
+                                                            }));
+                                                        } else {
+                                                            setErrors((prev) => {
+                                                                const newErrors = { ...prev };
+                                                                delete newErrors[`social_${index}`];
+                                                                return newErrors;
+                                                            });
+                                                        }
+                                                    }}
+                                                    className="border rounded-lg px-4 py-2 w-2/3"
+                                                />
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeSocialLink(index)}
+                                                    className="text-red-600 cursor-pointer text-sm"
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+
+                                            {errors[`social_${index}`] && (
+                                                <p className="text-red-500 text-xs ml-[calc(33.333%+0.5rem)]">
+                                                    {errors[`social_${index}`]}
+                                                </p>
+                                            )}
                                         </div>
+
                                     );
                                 })}
                                 {socialLinks.length < allPlatforms.length && (
-                                    <button type="button" onClick={addSocialLink} className="text-blue-600 text-sm">+ Add Social Link</button>
+                                    <button type="button" onClick={addSocialLink} className="text-blue-600 cursor-pointer text-sm">+ Add Social Link</button>
                                 )}
                             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout/Layout';
 import {
     ChevronLeft,
@@ -8,53 +8,58 @@ import {
     BriefcaseBusiness,
     Linkedin,
     Twitter,
-    Facebook
+    Facebook,
+    Instagram, Github, Globe
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/router';
+import { useUser } from '@/context/UserContext';
+import Cookies from 'js-cookie';
 
 export default function Profile() {
+    const token = Cookies.get('token');
     const router = useRouter();
+    const { profile } = useUser();
+    const [socialLinks, setSocialLinks] = useState([]);
+    const [getProfileData, setgetProfileData] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone_number: '',
+        about_me: '',
+        what_are_you_interested_in: '',
+        professional_experience: '',
+        profile_image: '',
+    });
 
-    const professionalExperience = [
-        {
-            title: 'Sr. Marketing Manager',
-            duration: 'Mar 2022 – Current',
-        },
-        {
-            title: 'Marketing Manager',
-            duration: 'Feb 2018 – Feb 2022',
-        },
-        {
-            title: 'Jr. Marketing Manager',
-            duration: 'April 2014 – Feb 2016',
-        },
-    ];
+    useEffect(() => {
+        if (!token) router.push('/');
+    }, [token, router]);
 
-    const socialLinks = [
-        {
-            name: 'LinkedIn',
-            icon: Linkedin,
-            url: 'https://linkedin.com',
-        },
-        {
-            name: 'Twitter',
-            icon: Twitter,
-            url: 'https://twitter.com',
-        },
-        {
-            name: 'Facebook',
-            icon: Facebook,
-            url: 'https://facebook.com',
-        },
-    ];
+    useEffect(() => {
+        if (profile) {
+            setgetProfileData({
+                first_name: profile?.first_name || '',
+                last_name: profile?.last_name || '',
+                email: profile?.email || '',
+                phone_number: profile?.phone_number || '',
+                about_me: profile?.about_me || '',
+                what_are_you_interested_in: profile?.what_are_you_interested_in || '',
+                professional_experience: profile?.professional_experience || '',
+                profile_image: profile?.profile_image || '',
+            });
+            setSocialLinks(profile?.social_links || []);
+        }
+    }, [profile]);
 
 
-    const user_interests = [
-        'IPhone 16', 'Audi A600', 'Vivo A1', 'Yamaha 1900',
-        'Mercedez Benz', 'IPhone 15 Pro', 'Samsung A36', 'AC',
-        'Mitsubishi AC', 'OPPO M1'
-    ];
+    const platformMap = {
+        linkedin: { name: "LinkedIn", icon: Linkedin },
+        twitter: { name: "Twitter", icon: Twitter },
+        facebook: { name: "Facebook", icon: Facebook },
+        instagram: { name: "Instagram", icon: Instagram },
+        github: { name: "GitHub", icon: Github },
+    };
 
     const tabs = ['My Ads', 'My History of Trades', 'Saved Items'];
     const [activeTab, setActiveTab] = useState('My Ads');
@@ -76,12 +81,12 @@ export default function Profile() {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
                         <div className="flex items-center gap-4">
                             <img
-                                src="https://randomuser.me/api/portraits/men/32.jpg"
+                                src={getProfileData?.profile_image}
                                 alt="User"
                                 className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
                             />
                             <div>
-                                <h2 className="text-lg md:text-xl font-semibold text-gray-800">Billy Roys</h2>
+                                <h2 className="text-lg md:text-xl font-semibold text-gray-800">{`${getProfileData?.first_name} ${getProfileData?.last_name}`}</h2>
                                 <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
                                     <div className="flex text-yellow-500">
                                         {[...Array(5)].map((_, index) => (
@@ -113,7 +118,8 @@ export default function Profile() {
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-1">About Me</h3>
                             <p className="text-sm text-gray-600">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                {getProfileData?.about_me}
+                                {/* Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. */}
                             </p>
                         </div>
                         <hr />
@@ -121,7 +127,9 @@ export default function Profile() {
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Professional Experience</h3>
                             <ul className="space-y-4 text-sm">
-                                {professionalExperience.map((exp, index) => (
+                                {getProfileData?.professional_experience}
+
+                                {/* {professionalExperience.map((exp, index) => (
                                     <li key={index} className="flex items-start gap-2">
                                         <div className="bg-blue-100 p-2 rounded-full">
                                             <BriefcaseBusiness className="w-4 h-4 text-[#000F5C]" />
@@ -131,7 +139,7 @@ export default function Profile() {
                                             <span className="text-[#464E5F]">{exp.duration}</span>
                                         </div>
                                     </li>
-                                ))}
+                                ))} */}
                             </ul>
                         </div>
                         <hr />
@@ -139,18 +147,23 @@ export default function Profile() {
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Social Links</h3>
                             <div className="flex gap-3">
-                                {socialLinks.map(({ name, icon: Icon, url }, index) => (
-                                    <a
-                                        key={index}
-                                        href={url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-blue-200 transition"
-                                        aria-label={name}
-                                    >
-                                        <Icon className="w-4 h-4" />
-                                    </a>
-                                ))}
+                                {socialLinks?.map(({ platform, link }, index) => {
+                                    const data = platformMap[platform?.toLowerCase()] || { name: platform, icon: Globe };
+                                    const Icon = data?.icon;
+
+                                    return (
+                                        <a
+                                            key={index}
+                                            href={link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-blue-200 transition"
+                                            aria-label={data.name}
+                                        >
+                                            <Icon className="w-4 h-4" />
+                                        </a>
+                                    );
+                                })}
                             </div>
                         </div>
                         <hr />
@@ -158,11 +171,7 @@ export default function Profile() {
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
                             <div className="flex flex-wrap gap-2">
-                                {user_interests.map((interest, index) => (
-                                    <span key={index} className="px-3 py-1 text-xs font-semibold bg-[#06145D1A] text-[#000F5C] rounded-md">
-                                        {interest}
-                                    </span>
-                                ))}
+                                {getProfileData?.what_are_you_interested_in}
                             </div>
                         </div>
                     </div>

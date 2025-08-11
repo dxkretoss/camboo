@@ -9,7 +9,8 @@ import {
     Linkedin,
     Twitter,
     Facebook,
-    Instagram, Github, Globe
+    Instagram, Github, Globe,
+    Package
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/router';
@@ -179,7 +180,7 @@ export default function Profile() {
                     </div>
 
                     <div className="w-full lg:w-3/4">
-                        <div className="bg-white shadow-sm rounded-xl p-4">
+                        <div className="p-4">
                             <div className="flex flex-wrap gap-4 border-b mb-4">
                                 {tabs.map((tab) => (
                                     <button
@@ -196,9 +197,63 @@ export default function Profile() {
                             </div>
 
                             <div className="text-sm text-gray-600">
-                                {/* {activeTab === 'My Ads' && <p>📦 My Ads content here (grid of cards)...</p>}
-                                {activeTab === 'My History of Trades' && <p>📜 Trade history content...</p>}
-                                {activeTab === 'Saved Items' && <p>💾 Saved items content...</p>} */}
+                                {activeTab === 'My Ads' && (
+                                    clientsProductandService?.length > 0 ? (
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                            {clientsProductandService.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    className="bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-gray-200 group relative"
+                                                >
+                                                    <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
+                                                        <img
+                                                            src={item.images[0]}
+                                                            alt={item.title}
+                                                            className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                                        />
+                                                        {item.model && (
+                                                            <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
+                                                                {item.model}
+                                                            </span>
+                                                        )}
+
+                                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                            <span className="text-white text-sm font-medium">
+                                                                Show details
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="p-3">
+                                                        <h3 className="text-sm font-semibold text-gray-800 truncate">
+                                                            {item.title}
+                                                        </h3>
+                                                        <p className="text-xs text-gray-500 mt-1">{item.time_display}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                                            <Package size={48} className="mb-3 text-gray-400" />
+                                            <p className="text-sm font-medium">No product or service added yet</p>
+                                        </div>
+                                    )
+                                )}
+
+                                {activeTab === 'My History of Trades' &&
+                                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                                        <Package size={48} className="mb-3 text-gray-400" />
+                                        <p className="text-sm font-medium">No trades yet</p>
+                                    </div>
+                                }
+
+                                {activeTab === 'Saved Items' &&
+                                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                                        <Package size={48} className="mb-3 text-gray-400" />
+                                        <p className="text-sm font-medium">No items saved yet</p>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

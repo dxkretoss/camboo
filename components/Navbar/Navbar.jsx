@@ -4,9 +4,12 @@ import Button from '../ui/Button';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import { useUser } from '@/context/UserContext';
+import axios from 'axios';
 
 export default function Navbar() {
     const router = useRouter();
+    const token = Cookies.get("token");
+
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
     const { profile } = useUser();
@@ -19,6 +22,24 @@ export default function Navbar() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const logOutUser = async () => {
+        try {
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/logout`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            if (res.data.success) {
+                Cookies.remove('token');
+                router.push('/')
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
@@ -104,9 +125,8 @@ export default function Navbar() {
                                 <li>
                                     <button
                                         onClick={() => {
+                                            logOutUser();
                                             setDropdownOpen(false);
-                                            Cookies.remove('token')
-                                            router.push('/');
                                         }}
                                         className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
                                     >

@@ -5,12 +5,15 @@ import Cookies from "js-cookie";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const token = Cookies.get("token");
   const [profile, setProfile] = useState(null);
   const [allProductandService, setallProductandService] = useState(null);
   const [clientsProductandService, setclientsProductandService] =
     useState(null);
 
   useEffect(() => {
+    if (!token) return;
+
     getUserProfileData();
     getallProdandSer();
     getClientsProdandSer();

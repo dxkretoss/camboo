@@ -7,6 +7,10 @@ import axios from 'axios';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import toast, { Toaster } from 'react-hot-toast';
+// import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+
 
 export default function signup() {
     const router = useRouter();
@@ -87,6 +91,62 @@ export default function signup() {
             setisSignup(false);
         }
     };
+
+    const getDeviceType = () => {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return 2;
+        if (/android/i.test(userAgent)) return 1;
+        return 1;
+    };
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        try {
+            let email;
+            let deviceToken;
+
+            if (credentialResponse.credential) {
+                const decoded = jwtDecode(credentialResponse.credential);
+                email = decoded.email;
+                deviceToken = credentialResponse.credential;
+            } else if (credentialResponse.access_token) {
+                const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                    headers: {
+                        Authorization: `Bearer ${credentialResponse.access_token}`,
+                    },
+                });
+                const profile = await res.json();
+                email = profile.email;
+                deviceToken = credentialResponse.access_token;
+            } else {
+                toast.error("No Google credential or token returned!");
+                return;
+            }
+
+            const payload = {
+                device_token: deviceToken,
+                device_type: getDeviceType(),
+                email: email,
+                provider_type: 2
+            };
+
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/social-login`, payload);
+
+            if (res?.data?.success) {
+                toast.success("User registered successfully.");
+                setTimeout(() => router.push('/'), 2000);
+            } else {
+                toast.error("Google login failed");
+            }
+
+        } catch (err) {
+            console.error(err);
+            toast.error("Error with Google login");
+        }
+    };
+    const loginGoogle = useGoogleLogin({
+        onSuccess: handleGoogleSuccess,
+        onError: () => toast.error("Google login failed!")
+    });
 
     return (
         <div className="flex md:flex-row h-screen bg-gray-100">
@@ -308,11 +368,18 @@ export default function signup() {
                         </div>
 
                         <div className="grid grid-cols-3 gap-4 w-full">
-                            {['facebook', 'google', 'apple'].map((icon) => (
-                                <button key={icon} className="border border-gray-300 rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
-                                    <img src={`/${icon}.png`} alt={icon} className="w-5 h-5" />
-                                </button>
-                            ))}
+                            <button className="border border-gray-300 cursor-pointer  rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
+                                <img src={`/facebook.png`} alt={"facebook"} className="w-5 h-5" />
+                            </button>
+                            <button className="border border-gray-300 cursor-pointer rounded-md h-12 flex items-center justify-center hover:shadow-sm transition"
+                                onClick={() => {
+                                    loginGoogle()
+                                }}>
+                                <img src={`/google.png`} alt={"google"} className="w-5 h-5" />
+                            </button>
+                            <button className="border border-gray-300 cursor-pointer  rounded-md h-12 flex items-center justify-center hover:shadow-sm transition">
+                                <img src={`/apple.png`} alt={"apple"} className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
                 </div>

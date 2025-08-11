@@ -125,18 +125,20 @@ export default function Index() {
   };
 
   const getDeviceType = () => {
+    if (typeof window === 'undefined') return 1;
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return 2;
     if (/android/i.test(userAgent)) return 1;
     return 1;
   };
 
+
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       let email;
       let deviceToken;
 
-      if (credentialResponse.credential) {
+      if (credentialResponse?.credential) {
         const decoded = jwtDecode(credentialResponse.credential);
         email = decoded.email;
         deviceToken = credentialResponse.credential;

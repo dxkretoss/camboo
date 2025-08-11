@@ -9,7 +9,6 @@ import axios from 'axios';
 export default function Navbar() {
     const router = useRouter();
     const token = Cookies.get("token");
-
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
     const { profile } = useUser();

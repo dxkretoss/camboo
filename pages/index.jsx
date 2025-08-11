@@ -125,11 +125,22 @@ export default function Index() {
   return (
     <div className="flex md:flex-row h-screen bg-gray-100">
       <div className="hidden md:block md:w-1/2">
-        <img src="/loginbg.png" alt="Login Visual" className="w-full h-full object-cover" />
+        <img
+          src="/loginbg.png"
+          alt="Login Visual"
+          className="w-full h-full object-cover" onContextMenu={(event) => {
+            event.preventDefault();
+          }} />
       </div>
 
       <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
-        <img src="/logo_camboo.png" alt="Logo" className="mx-auto mt-6 w-32 h-auto" />
+        <img
+          src="/logo_camboo.png"
+          alt="Logo"
+          className="mx-auto mt-6 w-32 h-auto"
+          onContextMenu={(event) => {
+            event.preventDefault();
+          }} />
 
         <div className="flex justify-center items-center w-full px-4 py-8">
           <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-xl">
@@ -162,6 +173,12 @@ export default function Index() {
                 value={loginData.password}
                 onChange={(e) => handleChange('password', e.target.value)}
                 placeholder="••••••••••••"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleLogin();
+                  }
+                }}
               />
               <button
                 type="button"

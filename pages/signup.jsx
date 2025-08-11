@@ -95,6 +95,9 @@ export default function signup() {
                     src="/loginbg.png"
                     alt="Login Visual"
                     className="w-full h-full object-cover"
+                    onContextMenu={(event) => {
+                        event.preventDefault();
+                    }}
                 />
             </div>
 
@@ -103,6 +106,9 @@ export default function signup() {
                     src="/logo_camboo.png"
                     alt="Logo"
                     className="mx-auto mt-6 w-32 h-auto"
+                    onContextMenu={(event) => {
+                        event.preventDefault();
+                    }}
                 />
                 <div className="flex justify-center items-start md:items-center w-full px-4 sm:px-6 md:px-8 pt-10 pb-6 sm:pt-16 sm:pb-10">
                     <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 md:p-8 w-full max-w-xl">
@@ -126,6 +132,12 @@ export default function signup() {
                                         }
                                     }}
                                     placeholder="John"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            handleSignup();
+                                        }
+                                    }}
                                 />
                                 {errors.first_name && <p className="text-red-500 text-xs">{errors.first_name}</p>}
                             </div>
@@ -142,6 +154,12 @@ export default function signup() {
                                         }
                                     }}
                                     placeholder="Doe"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            handleSignup();
+                                        }
+                                    }}
                                 />
                                 {errors.last_name && <p className="text-red-500 text-xs">{errors.last_name}</p>}
                             </div>
@@ -161,6 +179,12 @@ export default function signup() {
                                         }
                                     }}
                                     placeholder="john.doe@gmail.com"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            handleSignup();
+                                        }
+                                    }}
                                 />
                                 {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
                             </div>
@@ -202,6 +226,12 @@ export default function signup() {
                                     }
                                 }}
                                 placeholder="••••••••"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleSignup();
+                                    }
+                                }}
                             />
                             <button
                                 type="button"
@@ -226,6 +256,12 @@ export default function signup() {
                                     }
                                 }}
                                 placeholder="••••••••"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleSignup();
+                                    }
+                                }}
                             />
                             <button
                                 type="button"

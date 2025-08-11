@@ -19,7 +19,9 @@ import Cookies from 'js-cookie';
 export default function Profile() {
     const token = Cookies.get('token');
     const router = useRouter();
-    const { profile } = useUser();
+    const { profile, clientsProductandService } = useUser();
+
+    // console.log(clientsProductandService)
     const [socialLinks, setSocialLinks] = useState([]);
     const [getProfileData, setgetProfileData] = useState({
         first_name: '',

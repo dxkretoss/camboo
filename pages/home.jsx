@@ -115,7 +115,7 @@ export default function HomePage() {
                 <div className="flex flex-col lg:flex-row p-4 gap-6">
                     <div className="flex-1 space-y-6">
                         {allProductandService?.length > 0 ? (
-                            allProductandService.map((user, idx) => {
+                            allProductandService?.sort((a, b) => b.id - a.id)?.map((user, idx) => {
                                 const startIndex = startIndexes[user.id] || 0;
 
                                 return (

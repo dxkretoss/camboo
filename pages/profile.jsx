@@ -200,7 +200,7 @@ export default function Profile() {
                                 {activeTab === 'My Ads' && (
                                     clientsProductandService?.length > 0 ? (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                            {clientsProductandService.map((item) => (
+                                            {clientsProductandService?.sort((a, b) => b.id - a.id)?.map((item) => (
                                                 <div
                                                     key={item.id}
                                                     className="bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-gray-200 group relative"

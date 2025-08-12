@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import Navbar from '@/components/Navbar/Navbar';
 import SectionCard from '@/components/Cards/SectionCard';
-import { HeartPlus, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical } from 'lucide-react';
+import { Bookmark, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
@@ -217,8 +217,8 @@ export default function HomePage() {
                                                     <p className="text-xs text-gray-500">{user?.created}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-3">
-                                                <HeartPlus
+                                            <div className="flex items-center gap-1">
+                                                <Bookmark
                                                     onClick={() => toggleSave(user.id)}
                                                     className={`cursor-pointer transition-transform duration-200
                                                     ${savedItems[user.id] ? "text-[#000F5C] scale-110 fill-[#000F5C]" : "text-gray-500"}`}

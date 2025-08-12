@@ -253,7 +253,14 @@ export default function HomePage() {
                                         </div>
 
                                         <div className="mt-3">
-                                            <h3 className="text-base font-semibold text-gray-800">{user?.title}</h3>
+                                            <h3 className="text-base font-semibold text-gray-800 flex items-center gap-3">
+                                                {user?.title}
+                                                {user?.price !== undefined && (
+                                                    <span className="text-sm font-medium text-gray-500">
+                                                        ₹{user.price}
+                                                    </span>
+                                                )}
+                                            </h3>
                                             <DescriptionToggle text={user?.description} />
                                         </div>
 

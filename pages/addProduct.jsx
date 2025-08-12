@@ -204,6 +204,7 @@ export default function addProduct() {
                 await getallProdandSer();
                 await getClientsProdandSer();
                 clearState();
+                router.push('/home')
             } else {
                 toast.error("Something went wrong.");
             }
@@ -250,6 +251,7 @@ export default function addProduct() {
                 await getallProdandSer();
                 await getClientsProdandSer();
                 clearState();
+                router.push('/home')
             } else {
                 toast.error("Something went wrong.");
             }
@@ -455,7 +457,7 @@ export default function addProduct() {
                         Back
                     </span>
                 </div>
-                {fetchEditData &&
+                {(adding || fetchEditData) &&
                     <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
                         <div className="flex space-x-2">
                             <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>

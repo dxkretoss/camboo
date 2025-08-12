@@ -275,8 +275,13 @@ export default function Profile() {
                                                     </div>
 
                                                     <div className="p-3">
-                                                        <h3 className="text-sm font-semibold text-gray-800 truncate">
+                                                        <h3 className="text-sm font-semibold text-gray-800 truncate flex items-center gap-3">
                                                             {item.title}
+                                                            {item?.price !== undefined && (
+                                                                <span className="text-sm font-medium text-gray-500">
+                                                                    ₹{item.price}
+                                                                </span>
+                                                            )}
                                                         </h3>
                                                         <p className="text-xs text-gray-500 mt-1">{item.time_display}</p>
                                                     </div>
@@ -331,8 +336,13 @@ export default function Profile() {
                                                     </div>
 
                                                     <div className="p-3">
-                                                        <h3 className="text-sm font-semibold text-gray-800 truncate">
+                                                        <h3 className="text-sm font-semibold text-gray-800 truncate flex items-center gap-3">
                                                             {item.title}
+                                                            {item?.price !== undefined && (
+                                                                <span className="text-sm font-medium text-gray-500">
+                                                                    ₹{item.price}
+                                                                </span>
+                                                            )}
                                                         </h3>
                                                         <p className="text-xs text-gray-500 mt-1">{item.time_display}</p>
                                                     </div>

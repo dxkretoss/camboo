@@ -155,13 +155,11 @@ export default function Index() {
     return 1;
   };
 
-
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       let email;
       let deviceToken;
       setisLogin(true);
-
 
       if (credentialResponse?.credential) {
         const decoded = jwtDecode(credentialResponse.credential);

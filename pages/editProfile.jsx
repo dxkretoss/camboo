@@ -186,6 +186,7 @@ export default function EditProfile() {
             if (updateData?.data?.success) {
                 toast.success("User profile updated successfully.");
                 await getUserProfileData();
+                router.push('/profile')
             } else {
                 toast.error("Something went wrong.");
             }
@@ -209,6 +210,15 @@ export default function EditProfile() {
                         Back
                     </span>
                 </div>
+                {(isEditing) &&
+                    <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
+                        <div className="flex space-x-2">
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.2s]"></div>
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+                        </div>
+                    </div>
+                }
 
                 <div className="flex justify-center px-4 pt-5 min-h-[70vh]">
                     <div className="flex flex-col w-full max-w-xl bg-white rounded-md p-6 space-y-6">

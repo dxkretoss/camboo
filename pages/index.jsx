@@ -12,7 +12,7 @@ import { jwtDecode } from 'jwt-decode';
 
 export default function Index() {
   const router = useRouter();
-  const { getUserProfileData, getallProdandSer } = useUser();
+  const { getUserProfileData, getallProdandSer, getClientsProdandSer } = useUser();
   const [loginData, setloginData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -53,6 +53,7 @@ export default function Index() {
         Cookies.set("token", login?.data?.data?.token, { expires: endOfDay });
         await getallProdandSer();
         await getUserProfileData();
+        await getClientsProdandSer();
         setTimeout(() => router.push('/home'), 2000);
         setloginData({
           email: '', password: ''

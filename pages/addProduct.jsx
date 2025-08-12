@@ -9,7 +9,7 @@ import { useUser } from '@/context/UserContext';
 export default function addProduct() {
     const token = Cookies.get('token')
     const priceRegex = /^\d*\.?\d*$/;
-    const { getallProdandSer } = useUser();
+    const { getallProdandSer, getClientsProdandSer } = useUser();
     const [images, setImages] = useState([null, null, null, null]);
     const [selectedTab, setSelectedTab] = useState('Product');
     const [tradeType, setTradeType] = useState('1');
@@ -183,6 +183,7 @@ export default function addProduct() {
             if (addProd?.data?.success) {
                 toast.success("Product created successfully");
                 await getallProdandSer();
+                await getClientsProdandSer();
                 clearState();
             } else {
                 toast.error("Something went wrong.");

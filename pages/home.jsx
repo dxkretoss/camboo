@@ -142,7 +142,6 @@ export default function HomePage() {
                                         <div className="mt-3">
                                             <h3 className="text-base font-semibold text-gray-800">{user?.title}</h3>
                                             <DescriptionToggle text={user?.description} />
-                                            {/* <p className="text-sm text-gray-600 mt-1">{user?.description}</p> */}
                                         </div>
 
                                         {user?.images?.length > 0 && (

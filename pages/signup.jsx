@@ -68,7 +68,15 @@ export default function signup() {
 
             if (signup?.data?.success) {
                 toast.success("User registered successfully.");
-                setTimeout(() => router.push('/'), 2000);
+                router.push('/');
+                setuserData({
+                    first_name: '',
+                    last_name: '',
+                    email: '',
+                    phone_number: '',
+                    password: '',
+                    confirmPassword: '',
+                })
             } else {
                 toast.error("Registration failed.");
             }
@@ -136,7 +144,7 @@ export default function signup() {
 
             if (res?.data?.success) {
                 toast.success("User registered successfully.");
-                setTimeout(() => router.push('/'), 2000);
+                router.push('/');
             } else {
                 toast.error("Google login failed");
             }

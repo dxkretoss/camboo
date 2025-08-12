@@ -52,7 +52,7 @@ export default function forgotPassword() {
 
             if (forgotPassword?.data?.success) {
                 toast.success("Password Change successfully.");
-                setTimeout(() => router.push('/'), 2000);
+                router.push('/');
             } else {
                 toast.error("Something went wrong.");
             }

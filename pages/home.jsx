@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import Navbar from '@/components/Navbar/Navbar';
 import SectionCard from '@/components/Cards/SectionCard';
-import { PhoneCall, ThumbsDown, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical } from 'lucide-react';
+import { HeartPlus, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
@@ -22,7 +22,14 @@ export default function HomePage() {
     const { loading, allProductandService, profile } = useUser();
 
     const [startIndexes, setStartIndexes] = useState({});
+    const [savedItems, setSavedItems] = useState({});
 
+    const toggleSave = (id) => {
+        setSavedItems((prev) => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
     const imagesPerPage = 2;
 
     const handlePrev = (id, totalImages) => {
@@ -142,7 +149,12 @@ export default function HomePage() {
                                                     <p className="text-xs text-gray-500">{user?.created}</p>
                                                 </div>
                                             </div>
-                                            <div>
+                                            <div className="flex items-center gap-3">
+                                                <HeartPlus
+                                                    onClick={() => toggleSave(user.id)}
+                                                    className={`cursor-pointer transition-transform duration-200
+                                                        ${savedItems[user.id] ? "text-[#000F5C] scale-110 fill-[#000F5C]" : "text-gray-500"}`}
+                                                />
                                                 <EllipsisVertical className='cursor-pointer' />
                                             </div>
                                         </div>
@@ -207,7 +219,6 @@ export default function HomePage() {
                                         <hr className="text-gray-300" />
 
                                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 gap-3">
-                                            {/* Left Button */}
                                             <div className="w-full sm:w-auto">
                                                 <Button className="w-full sm:w-auto text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
                                                     <img src="/share.png" alt="Verified" className="w-4 h-4" />
@@ -215,18 +226,17 @@ export default function HomePage() {
                                                 </Button>
                                             </div>
 
-                                            {/* Right Buttons */}
                                             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto justify-end">
                                                 <button className="flex-1 sm:flex-none border border-[#C7F846] text-[#7FA600] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
-                                                    <PhoneCall size={16} /> Get in Touch
+                                                    <img src="/getintouch.png" alt="Verified" className="w-4 h-4" /> Get in Touch
                                                 </button>
 
                                                 <button className="flex-1 sm:flex-none border border-[#FF5C5C] text-[#FF5C5C] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
-                                                    <ThumbsDown size={16} /> Denounce Ad
+                                                    <img src="/denouce.png" alt="Verified" className="w-4 h-4" /> Denounce Ad
                                                 </button>
 
                                                 <button className="flex-1 sm:flex-none border border-[#003EFF] text-[#003EFF] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
-                                                    <span className="w-3 h-3 rounded-full bg-[#003EFF] block"></span> Dummy
+                                                    <img src="/dummy.png" alt="Verified" className="w-4 h-4" /> Dummy
                                                 </button>
                                             </div>
                                         </div>

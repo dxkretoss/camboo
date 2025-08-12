@@ -78,7 +78,7 @@ export default function Index() {
         await getallProdandSer();
         await getUserProfileData();
         await getClientsProdandSer();
-        setTimeout(() => router.push('/home'), 2000);
+        router.push('/home')
         setloginData({
           email: '', password: ''
         })
@@ -136,9 +136,7 @@ export default function Index() {
 
       if (verifyOtp?.data?.success) {
         toast.success("OTP verified");
-        setTimeout(() => {
-          router.push(`/forgotPassword?email=${forgotEmail}`);
-        }, 2000);
+        router.push(`/forgotPassword?email=${forgotEmail}`);
       } else {
         toast.error(verifyOtp.data.message || "OTP verification failed.");
       }
@@ -162,6 +160,8 @@ export default function Index() {
     try {
       let email;
       let deviceToken;
+      setisLogin(true);
+
 
       if (credentialResponse?.credential) {
         const decoded = jwtDecode(credentialResponse.credential);
@@ -195,7 +195,7 @@ export default function Index() {
         Cookies.set("token", res?.data?.data?.token, { expires: endOfDay });
         await getallProdandSer();
         await getUserProfileData();
-        setTimeout(() => router.push('/home'), 2000);
+        router.push('/home')
         setloginData({ email: '', password: '' });
       } else {
         toast.error("Google login failed");
@@ -204,6 +204,8 @@ export default function Index() {
     } catch (err) {
       console.error(err);
       toast.error("Error with Google login");
+    } finally {
+      setisLogin(false);
     }
   };
 
@@ -222,6 +224,16 @@ export default function Index() {
             event.preventDefault();
           }} />
       </div>
+
+      {isLogin && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
+          <div className="flex space-x-2">
+            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
+            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.2s]"></div>
+            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+          </div>
+        </div>
+      )}
 
       <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
         <img
@@ -357,7 +369,7 @@ export default function Index() {
             {!showOtpField ? (
               <Button
                 onClick={() => { handleForgotSubmit() }}
-                className="w-full mt-4"
+                className="w-full mt-4 disabled:cursor-not-allowed"
                 disabled={isOtpSending}
               >
                 {isOtpSending ? "Sending OTP..." : "Send OTP"}
@@ -368,13 +380,18 @@ export default function Index() {
                   label="OTP"
                   type="text"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) => {
+                    const onlyNums = e.target.value.replace(/\D/g, "");
+                    setOtp(onlyNums);
+                  }}
                   placeholder="Enter OTP"
                   className="mt-4"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                 />
                 <Button
                   onClick={() => { handleVerifyOtp() }}
-                  className="w-full mt-4"
+                  className="w-full mt-4  disabled:cursor-not-allowed"
                   disabled={isOtpVerifying}
                 >
                   {isOtpVerifying ? "Verifying..." : "Verify OTP"}

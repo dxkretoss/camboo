@@ -10,24 +10,26 @@ export const UserProvider = ({ children }) => {
   const [allProductandService, setallProductandService] = useState(null);
   const [clientsProductandService, setclientsProductandService] =
     useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) return;
-
-    getUserProfileData();
-    getallProdandSer();
-    getClientsProdandSer();
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    Promise.all([
+      getUserProfileData(),
+      getallProdandSer(),
+      getClientsProdandSer(),
+    ]).finally(() => setLoading(false));
   }, []);
 
   const getUserProfileData = async () => {
     try {
       const token = Cookies.get("token");
-
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-profile`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) {
         setProfile(res.data.data);
@@ -40,12 +42,9 @@ export const UserProvider = ({ children }) => {
   const getallProdandSer = async () => {
     try {
       const token = Cookies.get("token");
-
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) {
         setallProductandService(res.data.data);
@@ -58,12 +57,9 @@ export const UserProvider = ({ children }) => {
   const getClientsProdandSer = async () => {
     try {
       const token = Cookies.get("token");
-
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-my_product_and_service`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) {
         setclientsProductandService(res.data.data);
@@ -83,6 +79,7 @@ export const UserProvider = ({ children }) => {
         getallProdandSer,
         getUserProfileData,
         getClientsProdandSer,
+        loading,
       }}
     >
       {children}

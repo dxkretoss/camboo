@@ -13,22 +13,30 @@ import { jwtDecode } from 'jwt-decode';
 export default function Index() {
   const router = useRouter();
 
-  useEffect(() => {
-    document.title = "Camboo-Login"
-  }, []);
-
   const { getUserProfileData, getallProdandSer, getClientsProdandSer } = useUser();
   const [loginData, setloginData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setisLogin] = useState(false);
-
+  const [rememberMe, setRememberMe] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [showOtpField, setShowOtpField] = useState(false);
   const [isOtpSending, setIsOtpSending] = useState(false);
   const [isOtpVerifying, setIsOtpVerifying] = useState(false);
+
+  useEffect(() => {
+
+    document.title = "Camboo-Login"
+
+    const savedCredentials = localStorage.getItem("rememberCredentials");
+    if (savedCredentials) {
+      const { email, password } = JSON.parse(atob(savedCredentials)); // decode
+      setloginData({ email, password });
+      setRememberMe(true);
+    }
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -56,6 +64,17 @@ export default function Index() {
       if (login?.data?.success) {
         toast.success('User logged in successfully.');
         Cookies.set("token", login?.data?.data?.token, { expires: endOfDay });
+
+        if (rememberMe) {
+          const encodedData = btoa(JSON.stringify({
+            email: loginData.email,
+            password: loginData.password
+          }));
+          localStorage.setItem("rememberCredentials", encodedData);
+        } else {
+          localStorage.removeItem("rememberCredentials");
+        }
+
         await getallProdandSer();
         await getUserProfileData();
         await getClientsProdandSer();
@@ -262,8 +281,13 @@ export default function Index() {
             </div>
 
             <div className="flex items-center justify-between text-sm text-gray-600 mt-4 mb-6">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
                 Remember me
               </label>
               <button onClick={() => setForgotOpen(true)} className="text-red-600 cursor-pointer hover:underline">

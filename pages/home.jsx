@@ -19,7 +19,7 @@ export default function HomePage() {
         }
     }, [token]);
 
-    const { allProductandService, profile } = useUser();
+    const { loading, allProductandService, profile } = useUser();
 
     const [startIndexes, setStartIndexes] = useState({});
 
@@ -103,7 +103,6 @@ export default function HomePage() {
             </div>
         );
     }
-
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
             <div className="hidden lg:block w-[250px]">
@@ -112,7 +111,15 @@ export default function HomePage() {
 
             <div className="flex-1 flex flex-col">
                 <Navbar />
-
+                {loading && (
+                    <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
+                        <div className="flex space-x-2">
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.2s]"></div>
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+                        </div>
+                    </div>
+                )}
                 <div className="flex flex-col lg:flex-row p-4 gap-6">
                     <div className="flex-1 space-y-6">
                         {allProductandService?.length > 0 ? (
@@ -130,7 +137,7 @@ export default function HomePage() {
                                                 />
                                                 <div>
                                                     <h2 className="text-sm font-semibold text-gray-900">
-                                                        {`${user?.first_name} ${user?.last_name}`}
+                                                        {`${user?.first_name} ${user?.last_name}` || ""}
                                                     </h2>
                                                     <p className="text-xs text-gray-500">{user?.created}</p>
                                                 </div>

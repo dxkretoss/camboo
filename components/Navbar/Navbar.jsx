@@ -71,7 +71,7 @@ export default function Navbar() {
 
                 <div className="md:hidden">
                     <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#000F5C] text-white"
-                        onClick={() => router.push('addProduct')}>
+                        onClick={() => router.push('/addProduct')}>
                         <Plus className="w-5 h-5" />
                     </button>
                 </div>
@@ -79,7 +79,7 @@ export default function Navbar() {
                 <div className="hidden md:block">
                     <Button
                         className="flex items-center gap-2  px-4 py-2"
-                        onClick={() => router.push('addProduct')}
+                        onClick={() => router.push('/addProduct')}
                     >
                         <Plus className="w-4 h-4" />
                         Add Product

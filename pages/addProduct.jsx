@@ -6,15 +6,23 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
+import { useRouter } from 'next/router';
 export default function addProduct() {
     const token = Cookies.get('token');
-
+    const router = useRouter();
     useEffect(() => {
         document.title = "Camboo-AddPoduct"
         if (!token) {
             router.push('/');
         }
     }, [token]);
+
+    useEffect(() => {
+        const editItemId = router?.query?.Editid;
+        if (editItemId) {
+            getEditItemsData(editItemId);
+        }
+    }, [router?.query?.Editid])
 
     const priceRegex = /^\d*\.?\d*$/;
     const { getallProdandSer, getClientsProdandSer } = useUser();
@@ -79,7 +87,7 @@ export default function addProduct() {
             newErrors.price = "Enter a valid price (e.g. 1199 or 115.90)";
         }
 
-        if (images.length !== 4 || images.some(img => !img?.file)) newErrors.images = "All images are required";
+        if (images.length !== 4 || images.some(img => !(img?.file || img?.preview))) newErrors.images = "All images are required";
 
         if (tradeType === '1') {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
@@ -114,7 +122,7 @@ export default function addProduct() {
             }
         }
 
-        if (images.length !== 4 || images.some(img => !img?.file)) newErrors.images = "All images are required";
+        if (images.length !== 4 || images.some(img => !(img?.file || img?.preview))) newErrors.images = "All images are required";
 
         if (tradeType === '1') {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
@@ -237,6 +245,7 @@ export default function addProduct() {
             if (addSer?.data?.success) {
                 toast.success("Service created successfully");
                 await getallProdandSer();
+                await getClientsProdandSer();
                 clearState();
             } else {
                 toast.error("Something went wrong.");
@@ -249,6 +258,184 @@ export default function addProduct() {
         }
     }
 
+    const getEditItemsData = async (itemId) => {
+        try {
+            const getData = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service_detail?item_id=${itemId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (getData?.data?.data) {
+                const ProductData = getData?.data?.data;
+                console.log(getData?.data?.data)
+                if (ProductData?.main_type === 'Product') {
+                    if (ProductData?.images?.length) {
+                        const formattedImages = ProductData.images.map(imgUrl => ({
+                            file: null,
+                            preview: imgUrl
+                        }));
+                        while (formattedImages.length < 4) {
+                            formattedImages.push(null);
+                        }
+
+                        setImages(formattedImages);
+                    }
+                    setSelectedTab('Product')
+                    const tradeForWhat = ProductData?.trade_for_what === 'Product' ? '1' : '2'
+                    setTradeType(tradeForWhat)
+                    setproductData({
+                        title: ProductData?.title || '',
+                        description: ProductData?.description || '',
+                        category: ProductData?.category || '',
+                        brand: ProductData?.brand || '',
+                        model: ProductData?.model || '',
+                        product_type: ProductData?.product_type === 'New product' ? '2' : '1' || '1',
+                        price: ProductData?.price || '',
+                    });
+                    settradeforWhat({
+                        trade_for_what: ProductData?.trade_for_what === 'Product' ? '1' : '2' || '1',
+                        product_category: ProductData?.trade_for_what || '',
+                        product_brand: ProductData?.product_brand || '',
+                        product_model: ProductData?.product_model || '',
+                        service_category: ProductData?.service_category || '',
+                        service_description: ProductData?.service_description || '',
+                    });
+                }
+
+                if (ProductData?.main_type === 'Service') {
+                    if (ProductData?.images?.length) {
+                        const formattedImages = ProductData.images.map(imgUrl => ({
+                            file: null,
+                            preview: imgUrl
+                        }));
+                        while (formattedImages.length < 4) {
+                            formattedImages.push(null);
+                        }
+
+                        setImages(formattedImages);
+                    }
+                    setSelectedTab('Service')
+                    const tradeForWhat = ProductData?.trade_for_what === 'Product' ? '1' : '2'
+                    setTradeType(tradeForWhat)
+                    setserviceData({
+                        title: ProductData?.title || '',
+                        description: ProductData?.description || '',
+                        category: ProductData?.category || '',
+                        cost_of_service: ProductData?.cost_of_service === 'R$/hr' ? '1' : '2' || '1',
+                        hr_price: ProductData?.hr_price || '',
+                        day_price: ProductData?.day_price || '',
+                    })
+                    settradeforWhat({
+                        trade_for_what: ProductData?.trade_for_what === 'Product' ? '1' : '2' || '1',
+                        product_category: ProductData?.trade_for_what || '',
+                        product_brand: ProductData?.product_brand || '',
+                        product_model: ProductData?.product_model || '',
+                        service_category: ProductData?.service_category || '',
+                        service_description: ProductData?.service_description || '',
+                    });
+                }
+
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Edit Product
+
+    const editProducts = async () => {
+        if (!validateProductForm()) return;
+        setadding(true);
+        try {
+            const formData = new FormData();
+
+            Object.keys(productData).forEach((key) => {
+                formData.append(key, productData[key]);
+            });
+
+            Object.keys(tradeforWhat).forEach((key) => {
+                formData.append(key, tradeforWhat[key]);
+            });
+
+            images.forEach((img, index) => {
+                if (img?.file) {
+                    formData.append(`images[${index}]`, img.file);
+                }
+            });
+
+            const addProd = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/edit-product?product_id=${router?.query?.Editid}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+            if (addProd?.data?.success) {
+                toast.success("Product Edit successfully");
+                await getallProdandSer();
+                await getClientsProdandSer();
+                router.push('/profile')
+                clearState();
+            } else {
+                toast.error("Something went wrong.");
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong.");
+        } finally {
+            setadding(false);
+        }
+    };
+
+    // Edit Service
+
+    const editServices = async () => {
+        if (!validateServiceForm()) return;
+        setadding(true);
+        try {
+            const formData = new FormData();
+
+            Object.keys(serviceData).forEach((key) => {
+                formData.append(key, serviceData[key]);
+            });
+
+            Object.keys(tradeforWhat).forEach((key) => {
+                formData.append(key, tradeforWhat[key]);
+            });
+
+            images.forEach((img, index) => {
+                if (img?.file) {
+                    formData.append(`images[${index}]`, img.file);
+                }
+            });
+            const addSer = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/edit-service?service_id=${router?.query?.Editid}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            if (addSer?.data?.success) {
+                toast.success("Service Edit successfully");
+                await getallProdandSer();
+                await getClientsProdandSer();
+                router.push('/profile')
+                clearState();
+            } else {
+                toast.error("Something went wrong.");
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error("Something went wrong.");
+        } finally {
+            setadding(false);
+        }
+    }
 
     return (
         <Layout>
@@ -312,18 +499,20 @@ export default function addProduct() {
 
                         <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6 w-full lg:w-1/2 space-y-4 sm:space-y-6">
                             <h2 className="text-base sm:text-lg font-semibold text-gray-800">
-                                {selectedTab === 'Product' ? "Add Product Details" : "Add Service Details"}
+                                {selectedTab === 'Product' ? router?.query?.Editid ? "Edit Product Details" : "Add Product Details" :
+                                    router?.query?.Editid ? "Edit Service Details" : "Add Service Details"}
                             </h2>
 
                             <div className="flex justify-center items-center border-b border-gray-200">
                                 {['Product', 'Service'].map((tab) => (
                                     <button
                                         key={tab}
+                                        hidden={router?.query?.Editid}
                                         onClick={() => {
                                             setSelectedTab(tab);
                                             clearState();
                                         }}
-                                        className={`flex-1 text-center py-2 sm:py-3 px-4 sm:px-6 -mb-px cursor-pointer border-b-2 transition text-sm sm:text-base ${selectedTab === tab
+                                        className={`flex-1 disabled:cursor-not-allowed text-center py-2 sm:py-3 px-4 sm:px-6 -mb-px cursor-pointer border-b-2 transition text-sm sm:text-base ${selectedTab === tab
                                             ? 'border-blue-600 text-blue-600 font-medium'
                                             : 'border-transparent text-gray-500 hover:text-blue-600'
                                             }`}
@@ -794,17 +983,25 @@ export default function addProduct() {
                                             disabled={adding}
                                             onClick={() => {
                                                 if (selectedTab === 'Product') {
-                                                    addProducts();
+                                                    if (router?.query?.Editid) {
+                                                        editProducts();
+                                                    } else {
+                                                        addProducts();
+                                                    }
                                                 } else {
-                                                    addServices();
+                                                    if (router?.query?.Editid) {
+                                                        editServices();
+                                                    } else {
+                                                        addServices();
+                                                    }
                                                 }
                                             }}
                                         >
                                             {adding
                                                 ? "Saving..."
                                                 : selectedTab === 'Product'
-                                                    ? "Save Product"
-                                                    : "Save Service"}
+                                                    ? router?.query?.Editid ? "Edit Product" : "Save Product"
+                                                    : router?.query?.Editid ? "Edit Service" : "Save Service"}
                                         </Button>
                                     </div>
 

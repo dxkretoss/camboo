@@ -27,6 +27,7 @@ export default function HomePage() {
     const [startIndexes, setStartIndexes] = useState({});
     const [savedItems, setSavedItems] = useState({});
     const [sendComments, setsendComments] = useState({});
+    const [cmtsending, setcmtsending] = useState(false);
     const imagesPerPage = 2;
 
     const handlePrev = (id, totalImages) => {
@@ -125,11 +126,12 @@ export default function HomePage() {
                 { item_id: id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            if (res.data.success) {
-                toast.success("Item save successfully.")
+            if (res?.data?.success) {
+                toast.success(`${res?.data?.message}`)
             }
         } catch (err) {
             console.error(err);
+            toast.error("Something went wrong.");
         }
     };
 
@@ -154,10 +156,10 @@ export default function HomePage() {
     };
 
     const sendClientItemsComments = async (id, text) => {
-        console.log(id, text)
         if (!text.trim()) {
             return;
         }
+        setcmtsending(true);
         try {
             const token = Cookies.get("token");
             const res = await axios.post(
@@ -166,11 +168,14 @@ export default function HomePage() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res.data.success) {
-                toast.success("Comment added successfully.");
+                toast.success(`${res?.data?.message}`);
                 setsendComments((prev) => ({ ...prev, [id]: "" }));
             }
         } catch (err) {
             console.error(err);
+            toast.error("Something went wrong.");
+        } finally {
+            setcmtsending(false);
         }
     };
 
@@ -279,7 +284,7 @@ export default function HomePage() {
                                                 }
                                                 className="flex-grow border-none focus:outline-none text-sm placeholder:text-gray-500"
                                             />
-                                            <button className="text-white cursor-pointer bg-[#000F5C] hover:bg-blue-700 p-2 rounded-full"
+                                            <button disabled={cmtsending} className="text-white cursor-pointer disabled:cursor-not-allowed bg-[#000F5C] hover:bg-blue-700 p-2 rounded-full"
                                                 onClick={() => sendClientItemsComments(user.id, sendComments[user.id] || "")}>
                                                 <SendHorizonal size={18} />
                                             </button>

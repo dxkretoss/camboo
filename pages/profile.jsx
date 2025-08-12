@@ -10,13 +10,14 @@ import {
     Twitter,
     Facebook,
     Instagram, Github, Globe,
-    Package
+    Package, Heart
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/router';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function Profile() {
     const token = Cookies.get('token');
@@ -24,6 +25,7 @@ export default function Profile() {
     const { profile, clientsProductandService } = useUser();
     const [socialLinks, setSocialLinks] = useState([]);
     const [clientSaveItems, setclientSaveItems] = useState(null);
+    const [savedItems, setSavedItems] = useState({});
     const [getProfileData, setgetProfileData] = useState({
         first_name: '',
         last_name: '',
@@ -69,6 +71,34 @@ export default function Profile() {
     const tabs = ['My Ads', 'My History of Trades', 'Saved Items'];
     const [activeTab, setActiveTab] = useState('My Ads');
 
+
+
+    const toggleSave = (id) => {
+        setSavedItems((prev) => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+        sendClientSaveitems(id);
+    };
+
+    const sendClientSaveitems = async (id) => {
+        try {
+            const token = Cookies.get("token");
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/save-and-delete-item`,
+                { item_id: id },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (res?.data?.success) {
+                toast.success(`${res?.data?.message}`)
+                getClientSaveitems();
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Something went wrong.");
+        }
+    };
+
     const getClientSaveitems = async () => {
         try {
             const token = Cookies.get("token");
@@ -77,12 +107,22 @@ export default function Profile() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res?.data?.success) {
-                setclientSaveItems(res.data.data);
+                if (res?.data?.data.length > 0) {
+                    setclientSaveItems(res?.data?.data);
+                    const mapped = {};
+                    res?.data?.data?.forEach(item => {
+                        mapped[item?.item_id] = item?.id;
+                    });
+                    setSavedItems(mapped);
+                }
+            } else {
+                setclientSaveItems(null)
             }
         } catch (err) {
             console.error(err);
         }
     };
+    console.log(clientSaveItems)
     return (
         <Layout>
             <div className="px-4 md:px-10 min-h-screen">
@@ -270,19 +310,24 @@ export default function Profile() {
                                                         <img
                                                             src={item.images[0]}
                                                             alt={item.title}
-                                                            className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                                            className="max-h-full max-w-full object-contain transition-transform duration-300"
                                                         />
                                                         {item.model && (
-                                                            <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
-                                                                {item.model}
-                                                            </span>
-                                                        )}
+                                                            <>
+                                                                <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded shadow-sm">
+                                                                    {item.model}
+                                                                </span>
 
-                                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                            <span className="text-white text-sm font-medium">
-                                                                Show details
-                                                            </span>
-                                                        </div>
+                                                                <Heart
+                                                                    onClick={() => toggleSave(item?.item_id)}
+                                                                    className={`absolute top-2 right-2 bg-blue-100 ${savedItems[item.item_id]
+                                                                        ? "text-[#000F5C] scale-110 fill-[#000F5C]"
+                                                                        : "text-black"
+                                                                        } p-1 rounded-md shadow-sm cursor-pointer hover:bg-blue-200 transition`}
+                                                                    size={30}
+                                                                />
+                                                            </>
+                                                        )}
                                                     </div>
 
                                                     <div className="p-3">

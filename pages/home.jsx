@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import Navbar from '@/components/Navbar/Navbar';
 import SectionCard from '@/components/Cards/SectionCard';
-import { Bookmark, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical } from 'lucide-react';
+import { Heart, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
@@ -226,8 +226,6 @@ export default function HomePage() {
                     <div className="flex-1 space-y-4 sm:space-y-6">
                         {allProductandService?.length > 0 ? (
                             allProductandService?.sort((a, b) => b.id - a.id)?.map((user, idx) => {
-                                const startIndex = startIndexes[user.id] || 0;
-
                                 return (
                                     <div key={idx} className="bg-white rounded-xl shadow p-3 sm:p-4">
                                         <div className="flex items-start justify-between flex-wrap gap-3">
@@ -245,10 +243,10 @@ export default function HomePage() {
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-1">
-                                                <Bookmark
-                                                    onClick={() => toggleSave(user.id)}
+                                                <Heart
+                                                    onClick={() => toggleSave(user?.id)}
                                                     className={`cursor-pointer transition-transform duration-200
-                                                    ${savedItems[user.id] ? "text-[#000F5C] scale-110 fill-[#000F5C]" : "text-gray-500"}`}
+                                                    ${savedItems[user.id] ? "text-[#000F5C] scale-110 fill-[#000F5C]" : "text-black"}`}
                                                 />
                                                 <EllipsisVertical className='cursor-pointer' />
                                             </div>

@@ -35,6 +35,7 @@ export default function addProduct() {
         title: '',
         description: '',
         category: '',
+        unbranded_product: '',
         brand: '',
         model: '',
         product_type: '1',
@@ -140,6 +141,7 @@ export default function addProduct() {
             title: '',
             description: '',
             category: '',
+            unbranded_product: '',
             brand: '',
             model: '',
             product_type: '1',
@@ -265,7 +267,6 @@ export default function addProduct() {
             );
             if (getData?.data?.data) {
                 const ProductData = getData?.data?.data;
-                console.log(getData?.data?.data)
                 if (ProductData?.main_type === 'Product') {
                     if (ProductData?.images?.length) {
                         const formattedImages = ProductData.images.map(imgUrl => ({
@@ -285,6 +286,7 @@ export default function addProduct() {
                         title: ProductData?.title || '',
                         description: ProductData?.description || '',
                         category: ProductData?.category || '',
+                        unbranded_product: ProductData?.unbranded_product || '',
                         brand: ProductData?.brand || '',
                         model: ProductData?.model || '',
                         product_type: ProductData?.product_type === 'New product' ? '2' : '1' || '1',
@@ -292,7 +294,7 @@ export default function addProduct() {
                     });
                     settradeforWhat({
                         trade_for_what: ProductData?.trade_for_what === 'Product' ? '1' : '2' || '1',
-                        product_category: ProductData?.trade_for_what || '',
+                        product_category: ProductData?.product_category || '',
                         product_brand: ProductData?.product_brand || '',
                         product_model: ProductData?.product_model || '',
                         service_category: ProductData?.service_category || '',
@@ -325,7 +327,7 @@ export default function addProduct() {
                     })
                     settradeforWhat({
                         trade_for_what: ProductData?.trade_for_what === 'Product' ? '1' : '2' || '1',
-                        product_category: ProductData?.trade_for_what || '',
+                        product_category: ProductData?.product_category || '',
                         product_brand: ProductData?.product_brand || '',
                         product_model: ProductData?.product_model || '',
                         service_category: ProductData?.service_category || '',
@@ -582,7 +584,14 @@ export default function addProduct() {
 
                                             <div className="flex items-end sm:items-center mt-1 sm:mt-[30px]">
                                                 <label className="flex items-center space-x-2">
-                                                    <input type="checkbox" className="accent-blue-600 w-4 h-4 sm:w-5 sm:h-5" />
+                                                    <input type="checkbox" className="accent-blue-600 w-4 h-4 sm:w-5 sm:h-5"
+                                                        checked={productData?.unbranded_product === 'check'}
+                                                        onChange={(e) =>
+                                                            setproductData({
+                                                                ...productData,
+                                                                unbranded_product: e.target.checked ? "check" : "uncheck"
+                                                            })}
+                                                    />
                                                     <span className="text-xs sm:text-sm text-gray-700 font-medium">Produto Sem Marca</span>
                                                 </label>
                                             </div>

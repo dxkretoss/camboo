@@ -34,6 +34,7 @@ export default function EditProfile() {
 
     useEffect(() => {
         if (!token) router.push('/');
+        document.title = "Camboo-EditProfile"
     }, [token, router]);
 
     useEffect(() => {

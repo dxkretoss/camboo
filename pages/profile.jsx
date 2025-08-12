@@ -37,6 +37,7 @@ export default function Profile() {
 
     useEffect(() => {
         if (!token) router.push('/');
+        document.title = "Camboo-Profile"
     }, [token, router]);
 
     useEffect(() => {

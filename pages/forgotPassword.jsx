@@ -16,13 +16,15 @@ export default function forgotPassword() {
     })
 
     useEffect(() => {
-        if (router.query.email) {
+        document.title = "Camboo-Forgot-Password"
+
+        if (router?.query?.email) {
             setforgotData(prev => ({
                 ...prev,
-                email: router.query.email
+                email: router?.query?.email
             }));
         }
-    }, [router.query.email]);
+    }, [router?.query?.email]);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isForgotting, setisForgotting] = useState(false)

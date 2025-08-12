@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Layout from '@/components/Layout/Layout'
 import { ChevronLeft } from 'lucide-react';
 
 export default function notification() {
     const [selectedTab, setSelectedTab] = useState('Notifications');
-
+    useEffect(() => {
+        document.title = 'Camboo-Notification'
+    }, [])
     return (
         <Layout>
             <div className="px-4 md:px-10 min-h-screen">

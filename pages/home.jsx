@@ -13,6 +13,7 @@ export default function HomePage() {
     const token = Cookies.get('token');
 
     useEffect(() => {
+        document.title = "Camboo-Homepage"
         if (!token) {
             router.push('/');
         }

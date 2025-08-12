@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Layout from '@/components/Layout/Layout'
 import { Plus, ChevronLeft } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -7,7 +7,15 @@ import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
 export default function addProduct() {
-    const token = Cookies.get('token')
+    const token = Cookies.get('token');
+
+    useEffect(() => {
+        document.title = "Camboo-AddPoduct"
+        if (!token) {
+            router.push('/');
+        }
+    }, [token]);
+
     const priceRegex = /^\d*\.?\d*$/;
     const { getallProdandSer, getClientsProdandSer } = useUser();
     const [images, setImages] = useState([null, null, null, null]);

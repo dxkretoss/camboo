@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@/components/ui/TextField';
 import Button from '@/components/ui/Button';
 import { Eye, EyeOff } from 'lucide-react';
@@ -10,9 +10,13 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
-
 export default function signup() {
     const router = useRouter();
+
+    useEffect(() => {
+        document.title = "Camboo-Signup"
+    }, []);
+
     const [userData, setuserData] = useState({
         first_name: '',
         last_name: '',

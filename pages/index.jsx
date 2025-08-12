@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@/components/ui/Button';
 import TextField from '@/components/ui/TextField';
 import { Eye, EyeOff, X } from "lucide-react";
@@ -12,6 +12,11 @@ import { jwtDecode } from 'jwt-decode';
 
 export default function Index() {
   const router = useRouter();
+
+  useEffect(() => {
+    document.title = "Camboo-Login"
+  }, []);
+
   const { getUserProfileData, getallProdandSer, getClientsProdandSer } = useUser();
   const [loginData, setloginData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});

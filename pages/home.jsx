@@ -7,6 +7,8 @@ import Button from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
+import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 
 export default function HomePage() {
     const router = useRouter();
@@ -17,19 +19,13 @@ export default function HomePage() {
         if (!token) {
             router.push('/');
         }
+        getClientSaveitems();
     }, [token]);
 
     const { loading, allProductandService, profile } = useUser();
 
     const [startIndexes, setStartIndexes] = useState({});
     const [savedItems, setSavedItems] = useState({});
-
-    const toggleSave = (id) => {
-        setSavedItems((prev) => ({
-            ...prev,
-            [id]: !prev[id]
-        }));
-    };
     const imagesPerPage = 2;
 
     const handlePrev = (id, totalImages) => {
@@ -110,6 +106,54 @@ export default function HomePage() {
             </div>
         );
     }
+
+    const toggleSave = (id) => {
+        setSavedItems((prev) => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+        sendClientSaveitems(id);
+    };
+
+
+    const sendClientSaveitems = async (id) => {
+        try {
+            const token = Cookies.get("token");
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/save-and-delete-item`,
+                { item_id: id },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (res.data.success) {
+                toast.success("Item save successfully.")
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const getClientSaveitems = async () => {
+        try {
+            const token = Cookies.get("token");
+            const res = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-save-item`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (res.data.success) {
+                const mapped = {};
+                res.data.data.forEach(item => {
+                    mapped[item.item_id] = item.save_status;
+                });
+                setSavedItems(mapped);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
+    console.log(savedItems)
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
             <div className="hidden lg:block w-[250px]">
@@ -153,7 +197,7 @@ export default function HomePage() {
                                                 <HeartPlus
                                                     onClick={() => toggleSave(user.id)}
                                                     className={`cursor-pointer transition-transform duration-200
-                                                        ${savedItems[user.id] ? "text-[#000F5C] scale-110 fill-[#000F5C]" : "text-gray-500"}`}
+                                                    ${savedItems[user.id] ? "text-[#000F5C] scale-110 fill-[#000F5C]" : "text-gray-500"}`}
                                                 />
                                                 <EllipsisVertical className='cursor-pointer' />
                                             </div>
@@ -259,6 +303,7 @@ export default function HomePage() {
                     </div>
                 </div>
             </div>
+            <Toaster />
         </div>
     );
 }

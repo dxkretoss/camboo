@@ -26,6 +26,7 @@ export default function HomePage() {
 
     const [startIndexes, setStartIndexes] = useState({});
     const [savedItems, setSavedItems] = useState({});
+    const [sendComments, setsendComments] = useState({});
     const imagesPerPage = 2;
 
     const handlePrev = (id, totalImages) => {
@@ -152,8 +153,27 @@ export default function HomePage() {
         }
     };
 
+    const sendClientItemsComments = async (id, text) => {
+        console.log(id, text)
+        if (!text.trim()) {
+            return;
+        }
+        try {
+            const token = Cookies.get("token");
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/add-comment`,
+                { item_id: id, comment: text },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (res.data.success) {
+                toast.success("Comment added successfully.");
+                setsendComments((prev) => ({ ...prev, [id]: "" }));
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-    console.log(savedItems)
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
             <div className="hidden lg:block w-[250px]">
@@ -253,9 +273,14 @@ export default function HomePage() {
                                             <input
                                                 type="text"
                                                 placeholder="comment here..."
+                                                value={sendComments[user.id] || ""}
+                                                onChange={(e) =>
+                                                    setsendComments((prev) => ({ ...prev, [user.id]: e.target.value }))
+                                                }
                                                 className="flex-grow border-none focus:outline-none text-sm placeholder:text-gray-500"
                                             />
-                                            <button className="text-white cursor-pointer bg-[#000F5C] hover:bg-blue-700 p-2 rounded-full">
+                                            <button className="text-white cursor-pointer bg-[#000F5C] hover:bg-blue-700 p-2 rounded-full"
+                                                onClick={() => sendClientItemsComments(user.id, sendComments[user.id] || "")}>
                                                 <SendHorizonal size={18} />
                                             </button>
                                         </div>
@@ -304,6 +329,6 @@ export default function HomePage() {
                 </div>
             </div>
             <Toaster />
-        </div>
+        </div >
     );
 }

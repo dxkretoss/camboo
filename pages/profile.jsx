@@ -76,7 +76,7 @@ export default function Profile() {
                 `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-save-item`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            if (res.data.success) {
+            if (res?.data?.success) {
                 setclientSaveItems(res.data.data);
             }
         } catch (err) {

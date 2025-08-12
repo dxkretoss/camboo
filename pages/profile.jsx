@@ -361,6 +361,7 @@ export default function Profile() {
                     </div>
                 </div>
             </div>
+            <Toaster />
         </Layout>
     );
 }

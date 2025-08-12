@@ -117,7 +117,6 @@ export default function HomePage() {
         sendClientSaveitems(id);
     };
 
-
     const sendClientSaveitems = async (id) => {
         try {
             const token = Cookies.get("token");
@@ -146,7 +145,7 @@ export default function HomePage() {
             if (res.data.success) {
                 const mapped = {};
                 res.data.data.forEach(item => {
-                    mapped[item.item_id] = item.save_status;
+                    mapped[item.item_id] = item.id;
                 });
                 setSavedItems(mapped);
             }

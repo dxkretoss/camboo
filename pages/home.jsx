@@ -28,32 +28,59 @@ export default function HomePage() {
     const [savedItems, setSavedItems] = useState({});
     const [sendComments, setsendComments] = useState({});
     const [cmtsending, setcmtsending] = useState(false);
-    const imagesPerPage = 2;
+    const [imagesPerPage, setImagesPerPage] = useState(2);
+    const [loadingImages, setLoadingImages] = useState({});
+
+    useEffect(() => {
+        const updateImagesPerPage = () => {
+            if (window.innerWidth < 640) {
+                setImagesPerPage(1);
+            } else {
+                setImagesPerPage(2);
+            }
+        };
+
+        updateImagesPerPage();
+        window.addEventListener("resize", updateImagesPerPage);
+        return () => window.removeEventListener("resize", updateImagesPerPage);
+    }, []);
 
     const handlePrev = (id, totalImages) => {
-        setStartIndexes(prev => {
-            const currentIndex = prev[id] || 0;
-            return {
-                ...prev,
-                [id]:
-                    currentIndex - imagesPerPage < 0
-                        ? Math.max(totalImages - imagesPerPage, 0)
-                        : currentIndex - imagesPerPage
-            };
-        });
+        setLoadingImages(prev => ({ ...prev, [id]: true }));
+
+        setTimeout(() => {
+            setStartIndexes(prev => {
+                const currentIndex = prev[id] || 0;
+                return {
+                    ...prev,
+                    [id]:
+                        currentIndex - imagesPerPage < 0
+                            ? Math.max(totalImages - imagesPerPage, 0)
+                            : currentIndex - imagesPerPage
+                };
+            });
+
+            setLoadingImages(prev => ({ ...prev, [id]: false }));
+        }, 300);
     };
 
     const handleNext = (id, totalImages) => {
-        setStartIndexes(prev => {
-            const currentIndex = prev[id] || 0;
-            return {
-                ...prev,
-                [id]:
-                    currentIndex + imagesPerPage >= totalImages
-                        ? 0
-                        : currentIndex + imagesPerPage
-            };
-        });
+        setLoadingImages(prev => ({ ...prev, [id]: true }));
+
+        setTimeout(() => {
+            setStartIndexes(prev => {
+                const currentIndex = prev[id] || 0;
+                return {
+                    ...prev,
+                    [id]:
+                        currentIndex + imagesPerPage >= totalImages
+                            ? 0
+                            : currentIndex + imagesPerPage
+                };
+            });
+
+            setLoadingImages(prev => ({ ...prev, [id]: false }));
+        }, 300);
     };
 
     const suggestedTrades = [
@@ -235,18 +262,28 @@ export default function HomePage() {
                                         {user?.images?.length > 0 && (
                                             <div className="mt-3 relative">
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                    {user.images
-                                                        .slice(startIndex, startIndex + imagesPerPage)
-                                                        .map((img, imgIdx) => (
-                                                            <div key={imgIdx} className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden">
-
-                                                                <img
-                                                                    src={img}
-                                                                    alt={`product-${user.id}-${imgIdx}`}
-                                                                    className="w-full h-full object-contain"
-                                                                />
+                                                    {loadingImages[user.id] ? (
+                                                        Array.from({ length: imagesPerPage }).map((_, idx) => (
+                                                            <div
+                                                                key={idx}
+                                                                className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100 animate-pulse"
+                                                            >
+                                                                <span className="text-gray-400">Loading...</span>
                                                             </div>
-                                                        ))}
+                                                        ))
+                                                    ) : (
+                                                        user.images
+                                                            .slice(startIndexes[user.id] || 0, (startIndexes[user.id] || 0) + imagesPerPage)
+                                                            .map((img, imgIdx) => (
+                                                                <div key={imgIdx} className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden">
+                                                                    <img
+                                                                        src={img}
+                                                                        alt={`product-${user.id}-${imgIdx}`}
+                                                                        className="w-full h-full object-contain"
+                                                                    />
+                                                                </div>
+                                                            ))
+                                                    )}
                                                 </div>
 
                                                 {user.images.length > imagesPerPage && (

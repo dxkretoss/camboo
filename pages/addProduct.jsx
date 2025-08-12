@@ -31,6 +31,7 @@ export default function addProduct() {
     const [tradeType, setTradeType] = useState('1');
     const [adding, setadding] = useState(false);
     const [errors, setErrors] = useState({});
+    const [fetchEditData, setfetchEditData] = useState(false);
     const [productData, setproductData] = useState({
         title: '',
         description: '',
@@ -261,6 +262,7 @@ export default function addProduct() {
     }
 
     const getEditItemsData = async (itemId) => {
+        setfetchEditData(true);
         try {
             const getData = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service_detail?item_id=${itemId}`,
                 { headers: { Authorization: `Bearer ${token}` } }
@@ -338,6 +340,8 @@ export default function addProduct() {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            setfetchEditData(false)
         }
     }
 
@@ -451,7 +455,15 @@ export default function addProduct() {
                         Back
                     </span>
                 </div>
-
+                {fetchEditData &&
+                    <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
+                        <div className="flex space-x-2">
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.2s]"></div>
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+                        </div>
+                    </div>
+                }
                 <div className="py-4 sm:py-6 md:py-8 lg:py-10 px-3 sm:px-4 md:px-6 lg:px-10 max-w-7xl mx-auto">
                     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
 

@@ -193,6 +193,7 @@ export default function Index() {
         Cookies.set("token", res?.data?.data?.token, { expires: endOfDay });
         await getallProdandSer();
         await getUserProfileData();
+        await getClientsProdandSer();
         router.push('/home')
         setloginData({ email: '', password: '' });
       } else {

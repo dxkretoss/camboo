@@ -206,11 +206,11 @@ export default function addProduct() {
                 clearState();
                 router.push('/home')
             } else {
-                toast.error("Something went wrong.");
+                toast.error(`${addProd?.data?.message}`);
             }
         } catch (error) {
             console.log(error);
-            toast.error("Something went wrong.");
+            toast.error(`${error?.response?.data?.message}`);
         } finally {
             setadding(false);
         }

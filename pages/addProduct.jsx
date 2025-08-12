@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Layout from '@/components/Layout/Layout'
-import { Plus, ChevronLeft } from 'lucide-react';
+import { Plus, ChevronLeft, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -21,12 +21,15 @@ export default function addProduct() {
         const editItemId = router?.query?.Editid;
         if (editItemId) {
             getEditItemsData(editItemId);
+        } else {
+            clearState();
         }
     }, [router?.query?.Editid])
 
     const priceRegex = /^\d*\.?\d*$/;
     const { getallProdandSer, getClientsProdandSer } = useUser();
     const [images, setImages] = useState([null, null, null, null]);
+    const [removedImages, setRemovedImages] = useState([]);
     const [selectedTab, setSelectedTab] = useState('Product');
     const [tradeType, setTradeType] = useState('1');
     const [adding, setadding] = useState(false);
@@ -74,6 +77,19 @@ export default function addProduct() {
             setImages(updatedImages);
         }
     };
+
+    const handleRemoveImage = (index) => {
+        const updatedImages = [...images];
+
+        if (!updatedImages[index]?.file && updatedImages[index]?.preview) {
+            const filename = updatedImages[index].preview.split('/').pop();
+            setRemovedImages(prev => [...prev, filename]);
+        }
+
+        updatedImages[index] = null;
+        setImages(updatedImages);
+    };
+
 
     const validateProductForm = () => {
         let newErrors = {};
@@ -363,6 +379,10 @@ export default function addProduct() {
                 formData.append(key, tradeforWhat[key]);
             });
 
+            removedImages.forEach(img => {
+                formData.append('remove_images[]', img);
+            });
+
             images.forEach((img, index) => {
                 if (img?.file) {
                     formData.append(`images[${index}]`, img.file);
@@ -474,9 +494,21 @@ export default function addProduct() {
                                 {selectedTab === 'Product' ? "Product Images" : "Service Images"}
                             </h2>
 
-                            <label className="cursor-pointer border border-dashed border-gray-300 rounded-lg sm:rounded-xl w-full aspect-square flex items-center justify-center overflow-hidden hover:border-blue-400 transition-colors">
+                            <label className="relative cursor-pointer border border-dashed border-gray-300 rounded-lg sm:rounded-xl w-full aspect-square flex items-center justify-center overflow-hidden hover:border-blue-400 transition-colors">
                                 {images[0] ? (
-                                    <img src={images[0].preview} alt="Preview" className="object-cover w-full h-full rounded-lg sm:rounded-xl" />
+                                    <>
+                                        <img src={images[0].preview} alt="Preview" className="object-cover w-full h-full rounded-lg sm:rounded-xl" />
+                                        {router?.query?.Editid && (
+                                            <button
+                                                type="button"
+                                                onClick={(e) => { e.stopPropagation(); handleRemoveImage(index); }}
+                                                className="absolute top-2 right-2 bg-black text-white rounded-full p-1 hover:bg-opacity-75"
+                                                aria-label="Remove image"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                    </>
                                 ) : (
                                     <Plus className="text-gray-400 w-8 h-8 sm:w-10 sm:h-10" />
                                 )}
@@ -492,10 +524,22 @@ export default function addProduct() {
                                 {[1, 2, 3].map((index) => (
                                     <label
                                         key={index}
-                                        className="aspect-square border border-dashed border-gray-300 rounded-lg sm:rounded-xl flex items-center justify-center cursor-pointer overflow-hidden hover:border-blue-400 transition-colors"
+                                        className="relative aspect-square border border-dashed border-gray-300 rounded-lg sm:rounded-xl flex items-center justify-center cursor-pointer overflow-hidden hover:border-blue-400 transition-colors"
                                     >
                                         {images[index] ? (
-                                            <img src={images[index].preview} alt="Preview" className="object-cover w-full h-full rounded-lg sm:rounded-xl" />
+                                            <>
+                                                <img src={images[index].preview} alt="Preview" className="object-cover w-full h-full rounded-lg sm:rounded-xl" />
+                                                {router?.query?.Editid && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => { e.stopPropagation(); handleRemoveImage(index); }}
+                                                        className="absolute top-2 right-2 bg-black text-white rounded-full p-1 hover:bg-opacity-75"
+                                                        aria-label="Remove image"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </>
                                         ) : (
                                             <Plus className="text-gray-400 w-4 h-4 sm:w-6 sm:h-6" />
                                         )}

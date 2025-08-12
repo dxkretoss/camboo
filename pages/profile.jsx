@@ -138,7 +138,6 @@ export default function Profile() {
                             <h3 className="text-md font-semibold text-[#13121F] mb-1">About Me</h3>
                             <p className="text-sm text-gray-600">
                                 {getProfileData?.about_me}
-                                {/* Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. */}
                             </p>
                         </div>
                         <hr />
@@ -147,18 +146,6 @@ export default function Profile() {
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Professional Experience</h3>
                             <ul className="space-y-4 text-sm">
                                 {getProfileData?.professional_experience}
-
-                                {/* {professionalExperience.map((exp, index) => (
-                                    <li key={index} className="flex items-start gap-2">
-                                        <div className="bg-blue-100 p-2 rounded-full">
-                                            <BriefcaseBusiness className="w-4 h-4 text-[#000F5C]" />
-                                        </div>
-                                        <div>
-                                            <span className="font-semibold text-[#13121F]">{exp.title}</span><br />
-                                            <span className="text-[#464E5F]">{exp.duration}</span>
-                                        </div>
-                                    </li>
-                                ))} */}
                             </ul>
                         </div>
                         <hr />
@@ -197,7 +184,7 @@ export default function Profile() {
 
                     <div className="w-full lg:w-3/4">
                         <div className="p-4">
-                            <div className="flex flex-wrap gap-4 border-b mb-4">
+                            <div className="flex flex-wrap gap-4 border-b border-gray-300 mb-4">
                                 {tabs.map((tab) => (
                                     <button
                                         key={tab}

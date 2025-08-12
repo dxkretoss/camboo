@@ -253,7 +253,7 @@ export default function addProduct() {
     return (
         <Layout>
             <div className="relative min-h-screen bg-[url('/addproBg.png')] bg-no-repeat sm:bg-contain bg-cover bg-center">
-                <div className="flex items-center gap-1 px-3 sm:px-4 md:px-6 lg:px-10 pt-4 sm:pt-6">
+                <div className="flex items-center gap-1 px-3 sm:px-4 md:px-6 lg:px-10">
                     <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span
                         onClick={() => window.history.back()}

@@ -27,7 +27,7 @@ export default function notification() {
                             Notifications
                         </h2>
 
-                        <div className="flex justify-center items-center border-b border-gray-200">
+                        <div className="flex justify-center items-center border-b border-gray-300">
                             {['Notifications', 'New Potential Trades'].map((tab) => (
                                 <button
                                     key={tab}

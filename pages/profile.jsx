@@ -22,7 +22,7 @@ import toast, { Toaster } from 'react-hot-toast';
 export default function Profile() {
     const token = Cookies.get('token');
     const router = useRouter();
-    const { profile, clientsProductandService } = useUser();
+    const { profile, clientsProductandService, getClientsProdandSer, getallProdandSer } = useUser();
     const [socialLinks, setSocialLinks] = useState([]);
     const [clientSaveItems, setclientSaveItems] = useState(null);
     const [savedItems, setSavedItems] = useState({});
@@ -70,8 +70,6 @@ export default function Profile() {
 
     const tabs = ['My Ads', 'My History of Trades', 'Saved Items'];
     const [activeTab, setActiveTab] = useState('My Ads');
-
-
 
     const toggleSave = (id) => {
         setSavedItems((prev) => ({
@@ -122,7 +120,20 @@ export default function Profile() {
             console.error(err);
         }
     };
-    console.log(clientSaveItems)
+
+    const handleDeleteItem = async (id) => {
+        try {
+            const delItems = await axios.delete(`${process.env.NEXT_PUBLIC_API_CAMBOO}/delete-item?item_id=${id}`,
+                { headers: { Authorization: `Bearer ${token}` } })
+            if (delItems?.data?.success) {
+                toast.success(`${delItems?.data?.message}`)
+                await getClientsProdandSer();
+                await getallProdandSer();
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
     return (
         <Layout>
             <div className="px-4 md:px-10 min-h-screen">
@@ -243,50 +254,59 @@ export default function Profile() {
                                 {activeTab === 'My Ads' && (
                                     clientsProductandService?.length > 0 ? (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                            {clientsProductandService?.sort((a, b) => b.id - a.id)?.map((item) => (
-                                                <div
-                                                    key={item.id}
-                                                    className="bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-gray-200 group relative"
-                                                >
-                                                    <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
-                                                        <img
-                                                            src={item.images[0]}
-                                                            alt={item.title}
-                                                            className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
-                                                        />
-                                                        {item.model && (
-                                                            <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
-                                                                {item.model}
-                                                            </span>
-                                                        )}
-
-                                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                                            onClick={() => {
-                                                                router.push({
-                                                                    pathname: `addProduct`,
-                                                                    query: { Editid: item?.id }
-                                                                });
-                                                            }}
-                                                        >
-                                                            <span className="text-white text-sm font-medium">
-                                                                Show details
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="p-3">
-                                                        <h3 className="text-sm font-semibold text-gray-800 truncate flex items-center gap-3">
-                                                            {item.title}
-                                                            {item?.price !== undefined && (
-                                                                <span className="text-sm font-medium text-gray-500">
-                                                                    ₹{item.price}
+                                            {clientsProductandService
+                                                ?.sort((a, b) => b.id - a.id)
+                                                ?.map((item) => (
+                                                    <div
+                                                        key={item.id}
+                                                        className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 group relative"
+                                                    >
+                                                        <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
+                                                            <img
+                                                                src={item.images[0]}
+                                                                alt={item.title}
+                                                                className="max-h-full max-w-full object-contain transition-transform duration-300"
+                                                            />
+                                                            {item.model && (
+                                                                <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
+                                                                    {item.model}
                                                                 </span>
                                                             )}
-                                                        </h3>
-                                                        <p className="text-xs text-gray-500 mt-1">{item.time_display}</p>
+                                                        </div>
+
+                                                        <div className="p-3">
+                                                            <h3 className="text-sm font-semibold text-gray-800 truncate flex items-center gap-3">
+                                                                {item.title}
+                                                                {item?.price !== undefined && (
+                                                                    <span className="text-sm font-medium text-gray-500">
+                                                                        ₹{item.price}
+                                                                    </span>
+                                                                )}
+                                                            </h3>
+                                                            <p className="text-xs text-gray-500 mt-1">{item.time_display}</p>
+
+                                                            <div className="flex gap-2 mt-4">
+                                                                <button
+                                                                    onClick={() =>
+                                                                        router.push({
+                                                                            pathname: `addProduct`,
+                                                                            query: { Editid: item?.id }
+                                                                        })
+                                                                    }
+                                                                    className="flex-1 cursor-pointer px-3 py-1.5 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg shadow-sm transition"
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleDeleteItem(item.id)}
+                                                                    className="flex-1 cursor-pointer px-3 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg shadow-sm transition"
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                ))}
                                         </div>
                                     ) : (
                                         <div className="flex flex-col items-center justify-center py-12 text-gray-500">
@@ -295,6 +315,7 @@ export default function Profile() {
                                         </div>
                                     )
                                 )}
+
 
                                 {activeTab === 'My History of Trades' &&
                                     <div className="flex flex-col items-center justify-center py-12 text-gray-500">

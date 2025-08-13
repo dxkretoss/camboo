@@ -265,13 +265,33 @@ export default function Profile() {
                                                             <img
                                                                 src={item.images[0]}
                                                                 alt={item.title}
-                                                                className="max-h-full max-w-full object-contain transition-transform duration-300"
+                                                                className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                                             />
                                                             {item.model && (
                                                                 <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
                                                                     {item.model}
                                                                 </span>
                                                             )}
+
+                                                            <div className="absolute inset-0 flex justify-center items-center gap-2 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                                <button
+                                                                    onClick={() =>
+                                                                        router.push({
+                                                                            pathname: `addProduct`,
+                                                                            query: { Editid: item?.id }
+                                                                        })
+                                                                    }
+                                                                    className="px-4 py-1.5 cursor-pointer text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg shadow-sm transition"
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleDeleteItem(item.id)}
+                                                                    className="px-4 py-1.5 cursor-pointer text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg shadow-sm transition"
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
                                                         </div>
 
                                                         <div className="p-3">
@@ -284,26 +304,6 @@ export default function Profile() {
                                                                 )}
                                                             </h3>
                                                             <p className="text-xs text-gray-500 mt-1">{item.time_display}</p>
-
-                                                            <div className="flex gap-2 mt-4">
-                                                                <button
-                                                                    onClick={() =>
-                                                                        router.push({
-                                                                            pathname: `addProduct`,
-                                                                            query: { Editid: item?.id }
-                                                                        })
-                                                                    }
-                                                                    className="flex-1 cursor-pointer px-3 py-1.5 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg shadow-sm transition"
-                                                                >
-                                                                    Edit
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleDeleteItem(item.id)}
-                                                                    className="flex-1 cursor-pointer px-3 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg shadow-sm transition"
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 ))}

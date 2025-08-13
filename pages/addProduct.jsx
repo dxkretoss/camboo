@@ -501,7 +501,7 @@ export default function addProduct() {
                                         {router?.query?.Editid && (
                                             <button
                                                 type="button"
-                                                onClick={(e) => { e.stopPropagation(); handleRemoveImage(index); }}
+                                                onClick={(e) => { e.stopPropagation(); handleRemoveImage(0); }}
                                                 className="absolute top-2 right-2 bg-black text-white rounded-full p-1 hover:bg-opacity-75"
                                                 aria-label="Remove image"
                                             >

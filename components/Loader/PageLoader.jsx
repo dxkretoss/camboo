@@ -24,10 +24,10 @@ export default function PageLoader() {
 
     return (
         <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
-            <div className="flex space-x-2">
-                <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.2s]"></div>
-                <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+            <div className="flex space-x-2 sm:space-x-3 md:space-x-4">
+                <div className="rounded-full animate-bounce bg-[#000F5C] w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4"></div>
+                <div className="rounded-full animate-bounce bg-[#000F5C] w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 [animation-delay:-0.2s]"></div>
+                <div className="rounded-full animate-bounce bg-[#000F5C] w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 [animation-delay:-0.4s]"></div>
             </div>
         </div>
     );

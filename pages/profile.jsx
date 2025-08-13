@@ -68,7 +68,7 @@ export default function Profile() {
         github: { name: "GitHub", icon: Github },
     };
 
-    const tabs = ['My Ads', 'My History of Trades', 'Saved Items'];
+    const tabs = ['My Ads', 'My History of Trades', 'My Saved Items'];
     const [activeTab, setActiveTab] = useState('My Ads');
 
     const toggleSave = (id) => {
@@ -105,11 +105,11 @@ export default function Profile() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res?.data?.success) {
-                if (res?.data?.data.length > 0) {
+                if (res?.data?.data?.length > 0) {
                     setclientSaveItems(res?.data?.data);
                     const mapped = {};
                     res?.data?.data?.forEach(item => {
-                        mapped[item?.item_id] = item?.id;
+                        mapped[item?.item_id] = item?.item_id;
                     });
                     setSavedItems(mapped);
                 }
@@ -235,12 +235,12 @@ export default function Profile() {
 
                     <div className="w-full lg:w-3/4">
                         <div className="p-4">
-                            <div className="flex flex-wrap gap-4 border-b border-gray-300 mb-4">
+                            <div className="flex flex-nowrap gap-4 border-b border-gray-300 mb-4">
                                 {tabs.map((tab) => (
                                     <button
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
-                                        className={`py-2 px-4 -mb-px border-b-2 cursor-pointer transition font-medium ${activeTab === tab
+                                        className={`flex text-xs sm:text-sm md:text-base py-2 px-2 -mb-px border-b-2 cursor-pointer transition font-medium text-center ${activeTab === tab
                                             ? 'border-blue-600 text-blue-600'
                                             : 'border-transparent text-gray-500 hover:text-blue-600'
                                             }`}
@@ -249,6 +249,7 @@ export default function Profile() {
                                     </button>
                                 ))}
                             </div>
+
 
                             <div className="text-sm text-gray-600">
                                 {activeTab === 'My Ads' && (
@@ -295,16 +296,19 @@ export default function Profile() {
                                                         </div>
 
                                                         <div className="p-3">
-                                                            <h3 className="text-sm font-semibold text-gray-800 truncate flex items-center gap-3">
-                                                                {item.title}
+                                                            <h3 className="flex items-center gap-2 truncate font-semibold text-gray-800 text-sm sm:text-base md:text-lg">
+                                                                <span className="truncate">{item.title}</span>
                                                                 {item?.price !== undefined && (
-                                                                    <span className="text-sm font-medium text-gray-500">
+                                                                    <span className="font-medium text-gray-500 text-xs sm:text-sm md:text-base">
                                                                         ₹{item.price}
                                                                     </span>
                                                                 )}
                                                             </h3>
-                                                            <p className="text-xs text-gray-500 mt-1">{item.time_display}</p>
+                                                            <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1">
+                                                                {item.time_display}
+                                                            </p>
                                                         </div>
+
                                                     </div>
                                                 ))}
                                         </div>
@@ -316,7 +320,6 @@ export default function Profile() {
                                     )
                                 )}
 
-
                                 {activeTab === 'My History of Trades' &&
                                     <div className="flex flex-col items-center justify-center py-12 text-gray-500">
                                         <Package size={48} className="mb-3 text-gray-400" />
@@ -324,8 +327,8 @@ export default function Profile() {
                                     </div>
                                 }
 
-                                {activeTab === 'Saved Items' && (
-                                    clientSaveItems?.length > 0 ? (
+                                {activeTab === 'My Saved Items' && (
+                                    (clientSaveItems?.length > 0) ? (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                             {clientSaveItems?.sort((a, b) => b.id - a.id)?.map((item) => (
                                                 <div
@@ -338,34 +341,35 @@ export default function Profile() {
                                                             alt={item.title}
                                                             className="max-h-full max-w-full object-contain transition-transform duration-300"
                                                         />
-                                                        {item.model && (
-                                                            <>
+                                                        <>
+                                                            {item.model &&
                                                                 <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded shadow-sm">
-                                                                    {item.model}
+                                                                    {item?.model}
                                                                 </span>
-
-                                                                <Heart
-                                                                    onClick={() => toggleSave(item?.item_id)}
-                                                                    className={`absolute top-2 right-2 bg-blue-100 ${savedItems[item.item_id]
-                                                                        ? "text-[#000F5C] scale-110 fill-[#000F5C]"
-                                                                        : "text-black"
-                                                                        } p-1 rounded-md shadow-sm cursor-pointer hover:bg-blue-200 transition`}
-                                                                    size={30}
-                                                                />
-                                                            </>
-                                                        )}
+                                                            }
+                                                            <Heart
+                                                                onClick={() => toggleSave(item?.item_id)}
+                                                                className={`absolute top-2 right-2 bg-blue-100 ${savedItems[item?.item_id]
+                                                                    ? "text-[#000F5C] scale-110 fill-[#000F5C]"
+                                                                    : "text-black"
+                                                                    } p-1 rounded-md shadow-sm cursor-pointer hover:bg-blue-200 transition`}
+                                                                size={30}
+                                                            />
+                                                        </>
                                                     </div>
 
                                                     <div className="p-3">
-                                                        <h3 className="text-sm font-semibold text-gray-800 truncate flex items-center gap-3">
-                                                            {item.title}
+                                                        <h3 className="flex items-center gap-2 truncate font-semibold text-gray-800 text-sm sm:text-base md:text-lg">
+                                                            <span className="truncate">{item.title}</span>
                                                             {item?.price !== undefined && (
-                                                                <span className="text-sm font-medium text-gray-500">
+                                                                <span className="font-medium text-gray-500 text-xs sm:text-sm md:text-base">
                                                                     ₹{item.price}
                                                                 </span>
                                                             )}
                                                         </h3>
-                                                        <p className="text-xs text-gray-500 mt-1">{item.time_display}</p>
+                                                        <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1">
+                                                            {item.time_display}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             ))}
@@ -373,7 +377,7 @@ export default function Profile() {
                                     ) : (
                                         <div className="flex flex-col items-center justify-center py-12 text-gray-500">
                                             <Package size={48} className="mb-3 text-gray-400" />
-                                            <p className="text-sm font-medium">No product or service added yet</p>
+                                            <p className="text-sm font-medium">No product or service saved yet</p>
                                         </div>
                                     )
                                 )}

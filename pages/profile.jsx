@@ -8,7 +8,7 @@ import {
     BriefcaseBusiness,
     Linkedin,
     Twitter,
-    Facebook,
+    Facebook, Trash2,
     Instagram, Github, Globe,
     Package, Heart, EllipsisVertical
 } from 'lucide-react';
@@ -321,7 +321,7 @@ export default function Profile() {
                                                             {openMenuId === item?.id && (
                                                                 <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg z-10">
                                                                     <button
-                                                                        className="w-full px-4 py-2 text-left text-sm cursor-pointer rounded hover:bg-blue-200"
+                                                                        className="w-full px-4 py-2 text-left text-sm cursor-pointer rounded-lg flex items-center gap-2 hover:bg-blue-200"
                                                                         onClick={() =>
                                                                             router.push({
                                                                                 pathname: "./addProduct",
@@ -329,12 +329,14 @@ export default function Profile() {
                                                                             })
                                                                         }
                                                                     >
+                                                                        <Pencil className="w-4 h-4 text-blue-600" />
                                                                         Edit
                                                                     </button>
                                                                     <button
-                                                                        className="w-full px-4 py-2 text-left text-sm cursor-pointer rounded hover:bg-red-200"
+                                                                        className="w-full px-4 py-2 text-left text-sm cursor-pointer rounded-lg flex items-center gap-2 hover:bg-red-200"
                                                                         onClick={() => handleDeleteItem(item.id)}
                                                                     >
+                                                                        <Trash2 className="w-4 h-4 text-red-600" />
                                                                         Delete
                                                                     </button>
                                                                 </div>

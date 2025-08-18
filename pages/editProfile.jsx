@@ -26,6 +26,9 @@ export default function EditProfile() {
         last_name: '',
         email: '',
         phone_number: '',
+        street: '',
+        city: '',
+        post_code: '',
         about_me: '',
         what_are_you_interested_in: '',
         professional_experience: '',
@@ -44,6 +47,9 @@ export default function EditProfile() {
                 last_name: profile?.last_name || '',
                 email: profile?.email || '',
                 phone_number: profile?.phone_number || '',
+                street: profile?.street || '',
+                city: profile?.city || '',
+                post_code: profile?.post_code || '',
                 about_me: profile?.about_me || '',
                 what_are_you_interested_in: profile?.what_are_you_interested_in || '',
                 professional_experience: profile?.professional_experience || '',
@@ -74,6 +80,15 @@ export default function EditProfile() {
                     error = 'Enter valid phone number';
                 }
                 break;
+            case 'street':
+                if (!value.trim()) error = 'Street is required';
+                break;
+            case 'city':
+                if (!value.trim()) error = 'City is required';
+                break;
+            case 'post_code':
+                if (!value.trim()) error = 'Post-Code is required';
+                break;
             case 'about_me':
                 if (!value.trim()) error = 'About Me is required';
                 break;
@@ -96,6 +111,9 @@ export default function EditProfile() {
             'last_name',
             'email',
             'phone_number',
+            'street',
+            'city',
+            'post_code',
             'about_me',
             'what_are_you_interested_in',
             'professional_experience',
@@ -297,6 +315,45 @@ export default function EditProfile() {
                                         inputStyle={{ width: '100%', height: '40px' }}
                                     />
                                     {errors.phone_number && <p className="text-red-500 text-xs">{errors.phone_number}</p>}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium">Street</label>
+                                    <input
+                                        type="text"
+                                        value={getProfileData.street}
+                                        onChange={(e) => setgetProfileData({ ...getProfileData, street: e.target.value })}
+                                        onBlur={(e) => validateField('street', e.target.value)}
+                                        className="w-full border rounded-lg px-4 py-2"
+                                    />
+                                    {errors.street && <p className="text-red-500 text-xs">{errors.street}</p>}
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium">City</label>
+                                    <input
+                                        type="text"
+                                        value={getProfileData.city}
+                                        onChange={(e) => setgetProfileData({ ...getProfileData, city: e.target.value })}
+                                        onBlur={(e) => validateField('city', e.target.value)}
+                                        className="w-full border rounded-lg px-4 py-2"
+                                    />
+                                    {errors.city && <p className="text-red-500 text-xs">{errors.city}</p>}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium">Post-Code</label>
+                                    <input
+                                        type="text"
+                                        value={getProfileData.post_code}
+                                        onChange={(e) => setgetProfileData({ ...getProfileData, post_code: e.target.value })}
+                                        onBlur={(e) => validateField('post_code', e.target.value)}
+                                        className="w-full border rounded-lg px-4 py-2"
+                                    />
+                                    {errors.post_code && <p className="text-red-500 text-xs">{errors.post_code}</p>}
                                 </div>
                             </div>
 

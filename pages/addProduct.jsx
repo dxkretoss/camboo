@@ -1136,7 +1136,7 @@ export default function addProduct() {
                                                     </label>
                                                 </div>
 
-                                                <div>
+                                                <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                                         Range of Service Delivery
                                                     </label>

@@ -26,6 +26,8 @@ export default function Profile() {
     const [socialLinks, setSocialLinks] = useState([]);
     const [clientSaveItems, setclientSaveItems] = useState(null);
     const [savedItems, setSavedItems] = useState({});
+    const [isFav, setisFav] = useState(false);
+    const [isDelete, setisDelete] = useState(false);
     const [getProfileData, setgetProfileData] = useState({
         first_name: '',
         last_name: '',
@@ -80,6 +82,7 @@ export default function Profile() {
     };
 
     const sendClientSaveitems = async (id) => {
+        setisFav(true);
         try {
             const token = Cookies.get("token");
             const res = await axios.post(
@@ -94,6 +97,8 @@ export default function Profile() {
         } catch (err) {
             console.error(err);
             toast.error("Something went wrong.");
+        } finally {
+            setisFav(false);
         }
     };
 
@@ -122,6 +127,7 @@ export default function Profile() {
     };
 
     const handleDeleteItem = async (id) => {
+        setisDelete(true);
         try {
             const delItems = await axios.delete(`${process.env.NEXT_PUBLIC_API_CAMBOO}/delete-item?item_id=${id}`,
                 { headers: { Authorization: `Bearer ${token}` } })
@@ -132,6 +138,8 @@ export default function Profile() {
             }
         } catch (err) {
             console.error(err);
+        } finally {
+            setisDelete(false);
         }
     }
     return (
@@ -146,6 +154,16 @@ export default function Profile() {
                         Back
                     </span>
                 </div>
+
+                {(isFav || isDelete) && (
+                    <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
+                        <div className="flex space-x-2">
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.2s]"></div>
+                            <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+                        </div>
+                    </div>
+                )}
 
                 <div className="p-4 md:p-6 w-full mx-aut">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">

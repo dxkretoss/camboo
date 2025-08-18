@@ -30,6 +30,7 @@ export default function HomePage() {
     const [cmtsending, setcmtsending] = useState(false);
     const [imagesPerPage, setImagesPerPage] = useState(2);
     const [loadingImages, setLoadingImages] = useState({});
+    const [isFav, setisFav] = useState(false);
 
     useEffect(() => {
         const updateImagesPerPage = () => {
@@ -145,6 +146,7 @@ export default function HomePage() {
     };
 
     const sendClientSaveitems = async (id) => {
+        setisFav(true);
         try {
             const token = Cookies.get("token");
             const res = await axios.post(
@@ -157,7 +159,8 @@ export default function HomePage() {
             }
         } catch (err) {
             console.error(err);
-            toast.error("Something went wrong.");
+        } finally {
+            setisFav(false);
         }
     };
 
@@ -213,7 +216,7 @@ export default function HomePage() {
 
             <div className="flex-1 flex flex-col">
                 <Navbar />
-                {loading && (
+                {(loading || isFav) && (
                     <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
                         <div className="flex space-x-2">
                             <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>

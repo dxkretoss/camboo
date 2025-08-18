@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Layout from '@/components/Layout/Layout';
 import {
     ChevronLeft,
@@ -10,7 +10,7 @@ import {
     Twitter,
     Facebook,
     Instagram, Github, Globe,
-    Package, Heart
+    Package, Heart, EllipsisVertical
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/router';
@@ -38,6 +38,24 @@ export default function Profile() {
         professional_experience: '',
         profile_image: '',
     });
+    const [openMenuId, setOpenMenuId] = useState(null);
+    const menuRefs = useRef({});
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                openMenuId &&
+                menuRefs.current[openMenuId] &&
+                !menuRefs.current[openMenuId].contains(event.target)
+            ) {
+                setOpenMenuId(null);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [openMenuId]);
 
     useEffect(() => {
         if (!token) router.push('/');
@@ -144,7 +162,7 @@ export default function Profile() {
     }
     return (
         <Layout>
-            <div className="px-4 md:px-10 min-h-screen">
+            <div className="md:px-10 min-h-screen">
                 <div className="flex items-center gap-1 text-gray-700 mb-4">
                     <ChevronLeft className="w-5 h-5" />
                     <span
@@ -252,154 +270,165 @@ export default function Profile() {
                     </div>
 
                     <div className="w-full lg:w-3/4">
-                        <div className="p-4">
-                            <div className="flex flex-nowrap gap-4 border-b border-gray-300 mb-4">
-                                {tabs.map((tab) => (
-                                    <button
-                                        key={tab}
-                                        onClick={() => setActiveTab(tab)}
-                                        className={`flex text-xs sm:text-sm md:text-base py-2 px-2 -mb-px border-b-2 cursor-pointer transition font-medium text-center ${activeTab === tab
-                                            ? 'border-blue-600 text-blue-600'
-                                            : 'border-transparent text-gray-500 hover:text-blue-600'
-                                            }`}
-                                    >
-                                        {tab}
-                                    </button>
-                                ))}
-                            </div>
+                        <div className="flex flex-nowrap gap-4 border-b border-gray-300 mb-4">
+                            {tabs.map((tab) => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`flex text-xs sm:text-sm md:text-base py-2 px-2 -mb-px border-b-2 cursor-pointer transition font-medium text-center ${activeTab === tab
+                                        ? 'border-blue-600 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-blue-600'
+                                        }`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
 
 
-                            <div className="text-sm text-gray-600">
-                                {activeTab === 'My Ads' && (
-                                    clientsProductandService?.length > 0 ? (
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                            {clientsProductandService
-                                                ?.sort((a, b) => b.id - a.id)
-                                                ?.map((item) => (
-                                                    <div
-                                                        key={item.id}
-                                                        className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 group relative"
-                                                    >
-                                                        <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
-                                                            <img
-                                                                src={item.images[0]}
-                                                                alt={item.title}
-                                                                className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
-                                                            />
-                                                            {item?.model && (
-                                                                <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
-                                                                    {item?.model}
-                                                                </span>
-                                                            )}
-
-                                                            <div className="absolute inset-0 flex justify-center items-center gap-2 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                                <button
-                                                                    onClick={() =>
-                                                                        router.push({
-                                                                            pathname: `addProduct`,
-                                                                            query: { Editid: item?.id }
-                                                                        })
-                                                                    }
-                                                                    className="px-4 py-1.5 cursor-pointer text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg shadow-sm transition"
-                                                                >
-                                                                    Edit
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleDeleteItem(item.id)}
-                                                                    className="px-4 py-1.5 cursor-pointer text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg shadow-sm transition"
-                                                                >
-                                                                    Delete
-                                                                </button>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="p-3">
-                                                            <h3 className="flex items-center gap-2 truncate font-semibold text-gray-800 text-sm sm:text-base md:text-lg">
-                                                                <span className="truncate">{item.title}</span>
-                                                                {item?.price !== undefined && (
-                                                                    <span className="font-medium text-gray-500 text-xs sm:text-sm md:text-base">
-                                                                        ₹{item.price}
-                                                                    </span>
-                                                                )}
-                                                            </h3>
-                                                            <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1">
-                                                                {item.time_display}
-                                                            </p>
-                                                        </div>
-
-                                                    </div>
-                                                ))}
-                                        </div>
-                                    ) : (
-                                        <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-                                            <Package size={48} className="mb-3 text-gray-400" />
-                                            <p className="text-sm font-medium">No product or service added yet</p>
-                                        </div>
-                                    )
-                                )}
-
-                                {activeTab === 'My History of Trades' &&
-                                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-                                        <Package size={48} className="mb-3 text-gray-400" />
-                                        <p className="text-sm font-medium">No trades yet</p>
-                                    </div>
-                                }
-
-                                {activeTab === 'My Saved Items' && (
-                                    (clientSaveItems?.length > 0) ? (
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                            {clientSaveItems?.sort((a, b) => b.id - a.id)?.map((item) => (
+                        <div className="text-sm text-gray-600">
+                            {activeTab === 'My Ads' && (
+                                clientsProductandService?.length > 0 ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        {clientsProductandService
+                                            ?.sort((a, b) => b.id - a.id)
+                                            ?.map((item) => (
                                                 <div
                                                     key={item.id}
-                                                    className="bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-gray-200 group relative"
+                                                    className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 group relative"
                                                 >
                                                     <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
                                                         <img
                                                             src={item.images[0]}
                                                             alt={item.title}
-                                                            className="max-h-full max-w-full object-contain transition-transform duration-300"
+                                                            className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                                         />
-                                                        <>
-                                                            {item.model &&
-                                                                <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded shadow-sm">
-                                                                    {item?.model}
-                                                                </span>
-                                                            }
-                                                            <Heart
-                                                                onClick={() => toggleSave(item?.item_id)}
-                                                                className={`absolute top-2 right-2 bg-blue-100 ${savedItems[item?.item_id]
-                                                                    ? "text-[#000F5C] scale-110 fill-[#000F5C]"
-                                                                    : "text-black"
-                                                                    } p-1 rounded-md shadow-sm cursor-pointer hover:bg-blue-200 transition`}
-                                                                size={30}
+                                                        {item?.model && (
+                                                            <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
+                                                                {item?.model}
+                                                            </span>
+                                                        )}
+
+                                                        <div
+                                                            className="absolute top-2 right-2"
+                                                            ref={(el) => (menuRefs.current[item.id] = el)}
+                                                        >
+                                                            <EllipsisVertical
+                                                                className="cursor-pointer"
+                                                                onClick={() =>
+                                                                    setOpenMenuId(openMenuId === item.id ? null : item.id)
+                                                                }
                                                             />
-                                                        </>
+                                                            {openMenuId === item?.id && (
+                                                                <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg z-10">
+                                                                    <button
+                                                                        className="w-full px-4 py-2 text-left text-sm cursor-pointer rounded hover:bg-blue-200"
+                                                                        onClick={() =>
+                                                                            router.push({
+                                                                                pathname: "./addProduct",
+                                                                                query: { Editid: item?.id },
+                                                                            })
+                                                                        }
+                                                                    >
+                                                                        Edit
+                                                                    </button>
+                                                                    <button
+                                                                        className="w-full px-4 py-2 text-left text-sm cursor-pointer rounded hover:bg-red-200"
+                                                                        onClick={() => handleDeleteItem(item.id)}
+                                                                    >
+                                                                        Delete
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </div>
 
                                                     <div className="p-3">
                                                         <h3 className="flex items-center gap-2 truncate font-semibold text-gray-800 text-sm sm:text-base md:text-lg">
                                                             <span className="truncate">{item.title}</span>
                                                             {item?.price !== undefined && (
-                                                                <span className="font-medium text-gray-500 text-xs sm:text-sm md:text-base">
-                                                                    ₹{item.price}
+                                                                <span className="font-medium text-gray-500 text-sm sm:text-sm md:text-sm">
+                                                                    ₹{item?.price}
                                                                 </span>
                                                             )}
                                                         </h3>
                                                         <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1">
-                                                            {item.time_display}
+                                                            {item?.time_display}
                                                         </p>
                                                     </div>
+
                                                 </div>
                                             ))}
-                                        </div>
-                                    ) : (
-                                        <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-                                            <Package size={48} className="mb-3 text-gray-400" />
-                                            <p className="text-sm font-medium">No product or service saved yet</p>
-                                        </div>
-                                    )
-                                )}
-                            </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                                        <Package size={48} className="mb-3 text-gray-400" />
+                                        <p className="text-sm font-medium">No product or service added yet</p>
+                                    </div>
+                                )
+                            )}
+
+                            {activeTab === 'My History of Trades' &&
+                                <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                                    <Package size={48} className="mb-3 text-gray-400" />
+                                    <p className="text-sm font-medium">No trades yet</p>
+                                </div>
+                            }
+
+                            {activeTab === 'My Saved Items' && (
+                                (clientSaveItems?.length > 0) ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        {clientSaveItems?.sort((a, b) => b.id - a.id)?.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                className="bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-gray-200 group relative"
+                                            >
+                                                <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
+                                                    <img
+                                                        src={item.images[0]}
+                                                        alt={item.title}
+                                                        className="max-h-full max-w-full object-contain transition-transform duration-300"
+                                                    />
+                                                    <>
+                                                        {item.model &&
+                                                            <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded shadow-sm">
+                                                                {item?.model}
+                                                            </span>
+                                                        }
+                                                        <Heart
+                                                            onClick={() => toggleSave(item?.item_id)}
+                                                            className={`absolute top-2 right-2 bg-blue-100 ${savedItems[item?.item_id]
+                                                                ? "text-[#000F5C] scale-110 fill-[#000F5C]"
+                                                                : "text-black"
+                                                                } p-1 rounded-md shadow-sm cursor-pointer hover:bg-blue-200 transition`}
+                                                            size={30}
+                                                        />
+                                                    </>
+                                                </div>
+
+                                                <div className="p-3">
+                                                    <h3 className="flex items-center gap-2 truncate font-semibold text-gray-800 text-sm sm:text-base md:text-lg">
+                                                        <span className="truncate">{item.title}</span>
+                                                        {item?.price !== undefined && (
+                                                            <span className="font-medium text-gray-500 text-xs sm:text-sm md:text-base">
+                                                                ₹{item.price}
+                                                            </span>
+                                                        )}
+                                                    </h3>
+                                                    <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1">
+                                                        {item.time_display}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                                        <Package size={48} className="mb-3 text-gray-400" />
+                                        <p className="text-sm font-medium">No product or service saved yet</p>
+                                    </div>
+                                )
+                            )}
                         </div>
                     </div>
                 </div>

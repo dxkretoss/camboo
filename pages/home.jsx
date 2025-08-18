@@ -202,7 +202,6 @@ export default function HomePage() {
             }
         } catch (err) {
             console.error(err);
-            toast.error("Something went wrong.");
         } finally {
             setcmtsending(false);
         }
@@ -340,7 +339,7 @@ export default function HomePage() {
                                             <div className="hidden xl:block w-full xl:w-auto">
                                                 <Button className="w-full xl:w-auto text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
                                                     <img src="/share.png" alt="Verified" className="w-4 h-4" />
-                                                    <span className="hidden xl:inline">Let's camboo!!</span>
+                                                    <span className="hidden xl:inline">Let's Camboo!!</span>
                                                 </Button>
                                             </div>
 

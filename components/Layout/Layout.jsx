@@ -8,7 +8,6 @@ export default function Layout({ children }) {
             <main className="pt-12 p-4">
                 {children}
             </main>
-
         </div>
     );
 }

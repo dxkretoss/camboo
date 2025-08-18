@@ -156,14 +156,19 @@ export default function Index() {
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
+    setisLogin(true);
+
     try {
       let email;
+      let first_name;
+      let last_name;
       let deviceToken;
-      setisLogin(true);
 
       if (credentialResponse?.credential) {
         const decoded = jwtDecode(credentialResponse.credential);
         email = decoded.email;
+        first_name = decoded.given_name;
+        last_name = decoded.family_name;
         deviceToken = credentialResponse.credential;
       } else if (credentialResponse.access_token) {
         const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -173,6 +178,8 @@ export default function Index() {
         });
         const profile = await res.json();
         email = profile.email;
+        first_name = profile.given_name;
+        last_name = profile.family_name;
         deviceToken = credentialResponse.access_token;
       } else {
         toast.error("No Google credential or token returned!");
@@ -183,6 +190,8 @@ export default function Index() {
         device_token: deviceToken,
         device_type: getDeviceType(),
         email: email,
+        first_name: first_name,
+        last_name: last_name,
         provider_type: 2
       };
 
@@ -202,7 +211,6 @@ export default function Index() {
 
     } catch (err) {
       console.error(err);
-      toast.error("Error with Google login");
     } finally {
       setisLogin(false);
     }

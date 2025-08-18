@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, MapPin, ChevronDown, Plus, User, LogOut } from 'lucide-react';
+import { Search, Bell, MapPin, ChevronDown, Plus, User, LogOut, Edit3, X } from 'lucide-react';
 import Button from '../ui/Button';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
@@ -12,6 +12,28 @@ export default function Navbar() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
     const { profile } = useUser();
+    const [searchItems, setsearchItems] = useState(null);
+    const requiredFields = [
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "about_me",
+        "what_are_you_interested_in",
+        "professional_experience",
+        "street",
+        "city",
+        "post_code",
+    ];
+
+    const isComplete = requiredFields.every((field) => {
+        const value = profile?.[field];
+        if (Array.isArray(value)) {
+            return value.length > 0;
+        }
+        return value !== null && value !== undefined && value !== "";
+    });
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -52,39 +74,71 @@ export default function Navbar() {
 
 
             <div className="flex-1 mx-4 max-w-md hidden sm:block">
-                <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2">
+                <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2 relative">
                     <Search className="w-5 h-5 text-[#000F5C]" />
                     <input
                         type="text"
                         placeholder="Search here..."
                         className="bg-transparent outline-none px-3 w-full text-sm"
+                        value={searchItems}
+                        onChange={(e) => setsearchItems(e.target.value)}
                     />
+
+                    {searchItems && (
+                        <X
+                            className="w-4 h-4 text-gray-500 absolute right-3 cursor-pointer hover:text-gray-700"
+                            onClick={() => setsearchItems("")}
+                        />
+                    )}
                 </div>
             </div>
 
-            <div className="flex items-center gap-4 md:gap-6">
-                <div className="hidden lg:flex items-center text-gray-700 gap-1">
-                    <MapPin className="w-5 h-5" />
-                    <span className="text-sm">Recife, PE</span>
-                    <ChevronDown className="w-4 h-4" />
-                </div>
+            <div className="flex items-center gap-4">
+                {isComplete ?
+                    <>
+                        <div className="hidden lg:flex items-center text-gray-700 gap-1">
+                            <MapPin className="w-5 h-5" />
+                            <span className="text-sm">Recife, PE</span>
+                            <ChevronDown className="w-4 h-4" />
+                        </div>
 
-                <div className="md:hidden">
-                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#000F5C] text-white"
-                        onClick={() => router.push('/addProduct')}>
-                        <Plus className="w-5 h-5" />
-                    </button>
-                </div>
+                        <div className="md:hidden">
+                            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#000F5C] text-white"
+                                onClick={() => router.push('/addProduct')}>
+                                <Plus className="w-5 h-5" />
+                            </button>
+                        </div>
 
-                <div className="hidden md:block">
-                    <Button
-                        className="flex items-center gap-2  px-4 py-2"
-                        onClick={() => router.push('/addProduct')}
-                    >
-                        <Plus className="w-4 h-4" />
-                        New Ad
-                    </Button>
-                </div>
+                        <div className="hidden md:block">
+                            <Button
+                                className="flex items-center gap-2  px-4 py-2"
+                                onClick={() => router.push('/addProduct')}
+                            >
+                                <Plus className="w-4 h-4" />
+                                New Ad
+                            </Button>
+                        </div>
+                    </>
+                    :
+                    <>
+                        <div className="md:hidden">
+                            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#000F5C] text-white"
+                                onClick={() => router.push('/editProfile')}>
+                                <Edit3 className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="hidden md:block">
+                            <Button
+                                className="flex items-center gap-2  px-4 py-2"
+                                onClick={() => router.push('/editProfile')}
+                            >
+                                <Edit3 className="w-4 h-4" />
+                                Complete Your Profile
+                            </Button>
+                        </div>
+                    </>
+                }
 
                 <div className="relative w-10 h-10 flex items-center justify-center bg-[#000F5C] rounded-full cursor-pointer"
                     onClick={() => router.push('notification')}>

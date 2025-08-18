@@ -4,9 +4,10 @@ import {
     Star
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
-
+import { useRouter } from 'next/router';
 export default function Sidebar() {
     const { profile } = useUser();
+    const router = useRouter();
     const interests = [
         "iPhone 15", "Audi A500", "Vivo All", "Yamaha 1800", "Mercedes Benz",
         "iPhone 15 Pro", "Samsung A14", "AC", "Huawei AC", "OPPO M1",
@@ -31,7 +32,8 @@ export default function Sidebar() {
                 <img
                     src={profile?.profile_image}
                     alt="User"
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
+                    className="w-16 h-16 md:w-20 md:h-20 rounded-full cursor-pointer object-cover"
+                    onClick={() => router.push('./profile')}
                 />
 
                 <div>

@@ -25,7 +25,6 @@ export default function signup() {
         password: '',
         confirmPassword: '',
     });
-
     const [agreeTerms, setAgreeTerms] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -94,8 +93,6 @@ export default function signup() {
                 }
 
                 messages.forEach(msg => toast.error(msg));
-            } else {
-                toast.error("Something went wrong.");
             }
 
         } finally {
@@ -111,13 +108,18 @@ export default function signup() {
     };
 
     const handleGoogleSuccess = async (credentialResponse) => {
+        setisSignup(true);
         try {
             let email;
+            let first_name;
+            let last_name;
             let deviceToken;
 
             if (credentialResponse.credential) {
                 const decoded = jwtDecode(credentialResponse.credential);
                 email = decoded.email;
+                first_name = decoded.given_name;
+                last_name = decoded.family_name;
                 deviceToken = credentialResponse.credential;
             } else if (credentialResponse.access_token) {
                 const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -127,6 +129,8 @@ export default function signup() {
                 });
                 const profile = await res.json();
                 email = profile.email;
+                first_name = profile.given_name;
+                last_name = profile.family_name;
                 deviceToken = credentialResponse.access_token;
             } else {
                 toast.error("No Google credential or token returned!");
@@ -137,6 +141,8 @@ export default function signup() {
                 device_token: deviceToken,
                 device_type: getDeviceType(),
                 email: email,
+                first_name: first_name,
+                last_name: last_name,
                 provider_type: 2
             };
 
@@ -151,9 +157,11 @@ export default function signup() {
 
         } catch (err) {
             console.error(err);
-            toast.error("Error with Google login");
+        } finally {
+            setisSignup(false);
         }
     };
+
     const loginGoogle = useGoogleLogin({
         onSuccess: handleGoogleSuccess,
         onError: () => toast.error("Google login failed!")
@@ -171,7 +179,15 @@ export default function signup() {
                     }}
                 />
             </div>
-
+            {isSignup && (
+                <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
+                    <div className="flex space-x-2">
+                        <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
+                        <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.2s]"></div>
+                        <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+                    </div>
+                </div>
+            )}
             <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
                 <img
                     src="/logo_camboo.jpeg"
@@ -384,6 +400,7 @@ export default function signup() {
                             </button>
                             <button className="border border-gray-300 cursor-pointer rounded-md h-12 flex items-center justify-center hover:shadow-sm transition"
                                 onClick={() => {
+                                    setErrors({})
                                     loginGoogle()
                                 }}>
                                 <img src={`/google.png`} alt={"google"} className="w-5 h-5" />

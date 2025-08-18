@@ -12,7 +12,7 @@ export default function Navbar() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
     const { profile } = useUser();
-    const [searchItems, setsearchItems] = useState(null);
+    const [searchItems, setsearchItems] = useState('');
     const requiredFields = [
         "first_name",
         "last_name",

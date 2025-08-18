@@ -285,7 +285,6 @@ export default function Profile() {
                             ))}
                         </div>
 
-
                         <div className="text-sm text-gray-600">
                             {activeTab === 'My Ads' && (
                                 clientsProductandService?.length > 0 ? (

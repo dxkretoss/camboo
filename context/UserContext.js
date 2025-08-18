@@ -33,6 +33,8 @@ export const UserProvider = ({ children }) => {
       );
       if (res?.data?.success) {
         setProfile(res?.data?.data);
+      } else {
+        setProfile(null);
       }
     } catch (err) {
       console.error(err);
@@ -48,6 +50,8 @@ export const UserProvider = ({ children }) => {
       );
       if (res?.data?.success) {
         setallProductandService(res?.data?.data);
+      } else {
+        setallProductandService(null);
       }
     } catch (err) {
       console.error(err);
@@ -63,6 +67,8 @@ export const UserProvider = ({ children }) => {
       );
       if (res?.data?.success) {
         setclientsProductandService(res?.data?.data);
+      } else {
+        setclientsProductandService(null);
       }
     } catch (err) {
       console.error(err);

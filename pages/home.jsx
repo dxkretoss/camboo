@@ -333,25 +333,32 @@ export default function HomePage() {
 
                                         <hr className="text-gray-300" />
 
-                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 gap-3">
-                                            <div className="w-full sm:w-auto">
-                                                <Button className="w-full sm:w-auto text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                        <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center mt-4 gap-3">
+                                            <div className="hidden xl:block w-full xl:w-auto">
+                                                <Button className="w-full xl:w-auto text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
                                                     <img src="/share.png" alt="Verified" className="w-4 h-4" />
-                                                    Let’s Trade
+                                                    <span className="hidden xl:inline">Let's camboo!!</span>
                                                 </Button>
                                             </div>
 
-                                            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto justify-end">
-                                                <button className="flex-1 sm:flex-none border border-[#C7F846] text-[#7FA600] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
-                                                    <img src="/getintouch.png" alt="Verified" className="w-4 h-4" /> Get in Touch
+                                            <div className="flex flex-row gap-2 w-full xl:w-auto justify-end">
+                                                <Button className="flex-1 xl:hidden text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                    <img src="/share.png" alt="Verified" className="w-4 h-4" />
+                                                </Button>
+
+                                                <button className="flex-1 xl:flex-none border border-[#C7F846] text-[#7FA600] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                    <img src="/getintouch.png" alt="Verified" className="w-4 h-4" />
+                                                    <span className="hidden xl:inline">Get in Touch</span>
                                                 </button>
 
-                                                <button className="flex-1 sm:flex-none border border-[#FF5C5C] text-[#FF5C5C] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
-                                                    <img src="/denouce.png" alt="Verified" className="w-4 h-4" /> Denounce Ad
+                                                <button className="flex-1 xl:flex-none border border-[#FF5C5C] text-[#FF5C5C] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                    <img src="/denouce.png" alt="Verified" className="w-4 h-4" />
+                                                    <span className="hidden xl:inline">Denounce Ad</span>
                                                 </button>
 
-                                                <button className="flex-1 sm:flex-none border border-[#003EFF] text-[#003EFF] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
-                                                    <img src="/dummy.png" alt="Verified" className="w-4 h-4" /> Dummy
+                                                <button className="flex-1 xl:flex-none border border-[#003EFF] text-[#003EFF] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                    <img src="/dummy.png" alt="Verified" className="w-4 h-4" />
+                                                    <span className="hidden xl:inline">Copy ad</span>
                                                 </button>
                                             </div>
                                         </div>

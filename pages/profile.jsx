@@ -214,7 +214,7 @@ export default function Profile() {
                                             href={link}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-blue-200 transition"
+                                            className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-[#00136e] transition"
                                             aria-label={data.name}
                                         >
                                             <Icon className="w-4 h-4" />
@@ -268,9 +268,9 @@ export default function Profile() {
                                                                 alt={item.title}
                                                                 className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
                                                             />
-                                                            {item.model && (
+                                                            {item?.model && (
                                                                 <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
-                                                                    {item.model}
+                                                                    {item?.model}
                                                                 </span>
                                                             )}
 

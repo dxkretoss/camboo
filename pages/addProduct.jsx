@@ -46,7 +46,6 @@ export default function addProduct() {
         price: '',
         images: []
     });
-
     const [serviceData, setserviceData] = useState({
         title: '',
         description: '',
@@ -56,7 +55,6 @@ export default function addProduct() {
         day_price: '',
         service_images: []
     });
-
     const [tradeforWhat, settradeforWhat] = useState({
         trade_for_what: '1',
         product_category: '',
@@ -89,7 +87,6 @@ export default function addProduct() {
         updatedImages[index] = null;
         setImages(updatedImages);
     };
-
 
     const validateProductForm = () => {
         let newErrors = {};
@@ -153,6 +150,7 @@ export default function addProduct() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
+
     const clearState = () => {
         setproductData({
             title: '',
@@ -185,6 +183,7 @@ export default function addProduct() {
         setImages([null, null, null, null]);
         setErrors({});
     }
+
     const addProducts = async () => {
         if (!validateProductForm()) return;
         setadding(true);
@@ -364,7 +363,6 @@ export default function addProduct() {
     }
 
     // Edit Product
-
     const editProducts = async () => {
         if (!validateProductForm()) return;
         setadding(true);
@@ -417,7 +415,6 @@ export default function addProduct() {
     };
 
     // Edit Service
-
     const editServices = async () => {
         if (!validateServiceForm()) return;
         setadding(true);
@@ -510,7 +507,7 @@ export default function addProduct() {
                                         )}
                                     </>
                                 ) : (
-                                    <Plus className="text-gray-400 w-8 h-8 sm:w-10 sm:h-10" />
+                                    <img src='./addimage.png' alt="add-Image" className="text-gray-400 w-8 h-8 sm:w-10 sm:h-10" />
                                 )}
                                 <input
                                     type="file"
@@ -541,7 +538,7 @@ export default function addProduct() {
                                                 )}
                                             </>
                                         ) : (
-                                            <Plus className="text-gray-400 w-4 h-4 sm:w-6 sm:h-6" />
+                                            <img src='./addimage.png' className="text-gray-400 w-4 h-4 sm:w-6 sm:h-6" />
                                         )}
                                         <input
                                             type="file"

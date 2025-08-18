@@ -31,8 +31,8 @@ export const UserProvider = ({ children }) => {
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-profile`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (res.data.success) {
-        setProfile(res.data.data);
+      if (res?.data?.success) {
+        setProfile(res?.data?.data);
       }
     } catch (err) {
       console.error(err);
@@ -46,8 +46,8 @@ export const UserProvider = ({ children }) => {
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (res.data.success) {
-        setallProductandService(res.data.data);
+      if (res?.data?.success) {
+        setallProductandService(res?.data?.data);
       }
     } catch (err) {
       console.error(err);
@@ -61,8 +61,8 @@ export const UserProvider = ({ children }) => {
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-my_product_and_service`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (res.data.success) {
-        setclientsProductandService(res.data.data);
+      if (res?.data?.success) {
+        setclientsProductandService(res?.data?.data);
       }
     } catch (err) {
       console.error(err);

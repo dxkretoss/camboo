@@ -1,12 +1,206 @@
 import React, { useEffect, useState } from 'react'
 import Layout from '@/components/Layout/Layout'
-import { Plus, ChevronLeft, X } from 'lucide-react';
+import { ChevronLeft, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/router';
+const productcategoriesData = {
+    "Motors": [
+        "Cars & Trucks",
+        "Classics",
+        "Motorcycles",
+        "Automotive Tools & Supplies",
+        "Trailers & Other Vehicles",
+        "Boats",
+        "Car & Truck Parts",
+        "Wheels, Tires & Parts",
+        "All Parts & Accessories",
+        "Other"
+    ],
+    "Electronics": [
+        "Computers, Tablets & Network Hardware",
+        "Cameras & Photo",
+        "Cell Phones & Smartphones",
+        "Cell Phone Cases, Covers & Skins",
+        "TV, Video & Home Audio Electronics",
+        "Vehicle Electronics & GPS",
+        "Headphones",
+        "Surveillance & Smart Home Electronics",
+        "Video Games & Consoles",
+        "PC Desktops & All-In-One Computers",
+        "Computer Graphics Cards",
+        "Tablets & eReaders",
+        "Laptops & Netbooks",
+        "Other"
+    ],
+    "Clothing, Shoes & Accesssories": [
+        "Women's Clothing",
+        "Women's Shoes",
+        "Women’s Accessories",
+        "Men's Clothing",
+        "Men's Shoes",
+        "Men's Accessories",
+        "Girls' Clothing",
+        "Boys' Clothing",
+        "Designer Handbags",
+        "Collectible Sneakers",
+        "Streetwear",
+        "Women's Dresses",
+        "Women's Coats, Jackets & Vests",
+        "Men's Shirts",
+        "Men's Coats & Jackets",
+        "Other"
+    ],
+    "Collectibles": [
+        "Sports Trading Cards",
+        "Collectible Card Games",
+        "Coins & Paper Money",
+        "Sports Memorabilia, Fan Shop & Sports Cards",
+        "Toys & Comic Books",
+        "Art",
+        "Antiques",
+        "Stamps",
+        "Other"
+    ],
+    "Home&Garden": [
+        "Home Improvement",
+        "Yard, Garden & Outdoor Living Items",
+        "Kitchen Dining Bar",
+        "Lamps, Lighting & Ceiling Fans",
+        "Home Décor",
+        "Power Tools",
+        "Furniture",
+        "Rugs & Carpets",
+        "Surveillance & Smart Home",
+        "Vacuum Cleaners",
+        "Small Kitchen Appliances",
+        "Large Kitchen Appliances",
+        "Outdoor Entertaining",
+        "Bedding",
+        "Mattresses",
+        "HVAC & Refrigeration",
+        "Other"
+    ],
+    "Toys": [
+        "Toy Vehicles",
+        "Model Railroads & Trains",
+        "Action Figures",
+        "Collectible Card Games",
+        "Models & Kits",
+        "Radio Control Toys",
+        "Board Games",
+        "Stuffed Animals",
+        "Other"
+    ],
+    "Sporting Goods": [
+        "Popular Sports",
+        "Cycling Equipment",
+        "Fishing Equipment & Supplies",
+        "Team Sports",
+        "Fitness, Running & Yoga Equipment",
+        "Camping & Hiking Equipment",
+        "Water Sports",
+        "Electric Bikes",
+        "GPS & Running Watches",
+        "Other"
+    ],
+    "Office & Business": [
+        "Heavy Equipment",
+        "Heavy Equipment Parts & Accessories",
+        "Healthcare",
+        "Restaurant & Food Service",
+        "Test, Measurement & Inspection Equipment",
+        "CNC, Metalworking & Manufacturing",
+        "Office",
+        "Industrial Automation & Motion Control",
+        "Shipping & Packaging",
+        "Electrical Equipment & Supplies",
+        "Personal Protective Equipment",
+        "Light Industrial Equipment & Tools",
+        "Other"
+    ],
+    "Jewelry & Watches": [
+        "Luxury Watches",
+        "All Watches, Parts, Accessories",
+        "Fine Jewelry",
+        "Fashion Jewelry",
+        "Loose Diamonds & Gemstones",
+        "All Jewelry"
+    ]
+};
+
+const servicecategoriesData = {
+    "Technical Assistance": [
+        "Electronics",
+        "Home Appliances",
+        "PC, Laptop & Cell Phones",
+        "Other Tech Assistance"
+    ],
+    "Training & Development": [
+        "Academic",
+        "Arts",
+        "Sports",
+        "Technology",
+        "Other Training"
+    ],
+    "Cars & Motor Cycles": [
+        "Electric",
+        "Paint",
+        "Glass",
+        "Mechanics",
+        "Other Services"
+    ],
+    "Consulting": [
+        "Social Media",
+        "Business",
+        "Legal",
+        "Pesonal",
+        "Other Consulting Services"
+    ],
+    "Design & Tech": [
+        "App Development",
+        "Graphic Design",
+        "Audio & Visuals",
+        "Other Services"
+    ],
+    "Events": [
+        "Support Teams",
+        "Catering",
+        "Music & Entertainment",
+        "Other Services"
+    ],
+    "Beauty & Style": [
+        "Beauty Treatments",
+        "Hair Stylist",
+        "Tailor/Designer",
+        "Other Services"
+    ],
+    "Home Improvement": [
+        "Rental Equipment",
+        "Civil Construction",
+        "Installation",
+        "Repair",
+        "Other Services"
+    ],
+    "Health": [
+        "Therapy",
+        "Nutrition",
+        "Coaching",
+        "Nurse",
+        "Other Health Services"
+    ],
+    "Domestic Services": [
+        "Cleaning",
+        "Cooking & Shopping",
+        "Driving & Delivery",
+        "Dog Walking",
+        "Other Domestic Services"
+    ]
+}
+
 export default function addProduct() {
     const token = Cookies.get('token');
     const router = useRouter();
@@ -39,6 +233,7 @@ export default function addProduct() {
         title: '',
         description: '',
         category: '',
+        sub_category: '',
         unbranded_product: '',
         brand: '',
         model: '',
@@ -50,7 +245,9 @@ export default function addProduct() {
         title: '',
         description: '',
         category: '',
+        sub_category: '',
         cost_of_service: '1',
+        range_of_service_delivery: '',
         hr_price: '',
         day_price: '',
         service_images: []
@@ -58,10 +255,12 @@ export default function addProduct() {
     const [tradeforWhat, settradeforWhat] = useState({
         trade_for_what: '1',
         product_category: '',
+        product_sub_category: '',
         product_brand: '',
         product_model: '',
         service_category: '',
         service_description: '',
+        service_sub_category: ''
     });
 
     const handleImageChange = (event, index) => {
@@ -94,6 +293,7 @@ export default function addProduct() {
         if (!productData.title.trim()) newErrors.title = "Title is required";
         if (!productData.description.trim()) newErrors.description = "Description is required";
         if (!productData.category.trim()) newErrors.category = "Category is required";
+        if (!productData.sub_category.trim()) newErrors.sub_category = "Sub-Category is required";
         if (!productData.brand.trim()) newErrors.brand = "Brand is required";
         if (!productData.model.trim()) newErrors.model = "Model is required";
         if (!productData.price.trim()) {
@@ -106,10 +306,12 @@ export default function addProduct() {
 
         if (tradeType === '1') {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
+            if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = "Trade product sub-category is required";
             if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
             if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
         } else {
             if (!tradeforWhat.service_category.trim()) newErrors.service_category = "Trade service category is required";
+            if (!tradeforWhat.service_sub_category.trim()) newErrors.service_sub_category = "Trade service sub-category is required";
         }
 
         setErrors(newErrors);
@@ -122,6 +324,8 @@ export default function addProduct() {
         if (!serviceData.title.trim()) newErrors.title = "Title is required";
         if (!serviceData.description.trim()) newErrors.description = "Description is required";
         if (!serviceData.category.trim()) newErrors.category = "Category is required";
+        if (!serviceData.sub_category.trim()) newErrors.sub_category = "Sub-Category is required";
+        if (!serviceData.range_of_service_delivery.trim()) newErrors.range_of_service_delivery = "Range of service Delivery is required";
 
         if (serviceData.cost_of_service === '1') {
             if (!serviceData.hr_price.trim()) {
@@ -141,10 +345,12 @@ export default function addProduct() {
 
         if (tradeType === '1') {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
+            if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = "Trade product sub-category is required";
             if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
             if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
         } else {
             if (!tradeforWhat.service_category.trim()) newErrors.service_category = "Trade service category is required";
+            if (!tradeforWhat.service_sub_category.trim()) newErrors.service_sub_category = "Trade service sub-category is required";
         }
 
         setErrors(newErrors);
@@ -156,6 +362,7 @@ export default function addProduct() {
             title: '',
             description: '',
             category: '',
+            sub_category: '',
             unbranded_product: '',
             brand: '',
             model: '',
@@ -166,16 +373,20 @@ export default function addProduct() {
         settradeforWhat({
             trade_for_what: '1',
             product_category: '',
+            product_sub_category: '',
             product_brand: '',
             product_model: '',
             service_category: '',
+            service_sub_category: '',
             service_description: '',
         });
         setserviceData({
             title: '',
             description: '',
             category: '',
+            sub_category: '',
             cost_of_service: '1',
+            range_of_service_delivery: '',
             hr_price: '',
             day_price: '',
             service_images: []
@@ -305,6 +516,7 @@ export default function addProduct() {
                         title: ProductData?.title || '',
                         description: ProductData?.description || '',
                         category: ProductData?.category || '',
+                        sub_category: ProductData?.sub_category || '',
                         unbranded_product: ProductData?.unbranded_product || '',
                         brand: ProductData?.brand || '',
                         model: ProductData?.model || '',
@@ -314,9 +526,11 @@ export default function addProduct() {
                     settradeforWhat({
                         trade_for_what: ProductData?.trade_for_what === 'Product' ? '1' : '2' || '1',
                         product_category: ProductData?.product_category || '',
+                        product_sub_category: ProductData?.product_sub_category || '',
                         product_brand: ProductData?.product_brand || '',
                         product_model: ProductData?.product_model || '',
                         service_category: ProductData?.service_category || '',
+                        service_sub_category: ProductData?.service_sub_category || '',
                         service_description: ProductData?.service_description || '',
                     });
                 }
@@ -340,6 +554,8 @@ export default function addProduct() {
                         title: ProductData?.title || '',
                         description: ProductData?.description || '',
                         category: ProductData?.category || '',
+                        sub_category: ProductData?.sub_category || '',
+                        range_of_service_delivery: ProductData?.range_of_service_delivery || '',
                         cost_of_service: ProductData?.cost_of_service === 'R$/hr' ? '1' : '2' || '1',
                         hr_price: ProductData?.hr_price || '',
                         day_price: ProductData?.day_price || '',
@@ -347,9 +563,11 @@ export default function addProduct() {
                     settradeforWhat({
                         trade_for_what: ProductData?.trade_for_what === 'Product' ? '1' : '2' || '1',
                         product_category: ProductData?.product_category || '',
+                        product_sub_category: ProductData?.product_sub_category || '',
                         product_brand: ProductData?.product_brand || '',
                         product_model: ProductData?.product_model || '',
                         service_category: ProductData?.service_category || '',
+                        service_sub_category: ProductData?.service_sub_category || '',
                         service_description: ProductData?.service_description || '',
                     });
                 }
@@ -615,29 +833,60 @@ export default function addProduct() {
                                                 className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base resize-none"
                                             />
                                             {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
-
                                         </div>
 
                                         <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Category</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="ex: Bike"
-                                                    value={productData?.category}
-                                                    onChange={(e) => {
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                    Category
+                                                </label>
+                                                <select
+                                                    value={productData.category}
+                                                    onChange={(e) =>
                                                         setproductData({
                                                             ...productData,
-                                                            category: e.target.value
+                                                            category: e.target.value,
+                                                            sub_category: "",
                                                         })
-                                                    }}
+                                                    }
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                />
+                                                >
+                                                    <option value="">-- Select Category --</option>
+                                                    {Object.keys(productcategoriesData).map((cat) => (
+                                                        <option key={cat} value={cat}>
+                                                            {cat}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                                 {errors.category && <p className="text-red-500 text-xs">{errors.category}</p>}
-
                                             </div>
 
-                                            <div className="flex items-end sm:items-center mt-1 sm:mt-[30px]">
+                                            <div className="space-y-1 sm:space-y-2">
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                    Sub-Category
+                                                </label>
+                                                <select
+                                                    value={productData.sub_category}
+                                                    onChange={(e) =>
+                                                        setproductData({ ...productData, sub_category: e.target.value })
+                                                    }
+                                                    disabled={!productData.category}
+                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                >
+                                                    <option value="">-- Select Sub-Category --</option>
+                                                    {productData.category &&
+                                                        productcategoriesData[productData.category].map((sub) => (
+                                                            <option key={sub} value={sub}>
+                                                                {sub}
+                                                            </option>
+                                                        ))}
+                                                </select>
+                                                {errors.sub_category && <p className="text-red-500 text-xs">{errors.sub_category}</p>}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
+                                            <div className="flex items-center sm:items-center">
                                                 <label className="flex items-center space-x-2">
                                                     <input type="checkbox" className="accent-blue-600 w-4 h-4 sm:w-5 sm:h-5"
                                                         checked={productData?.unbranded_product === 'check'}
@@ -793,22 +1042,54 @@ export default function addProduct() {
 
                                         </div>
 
-                                        <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Category</label>
-                                            <input
-                                                type="text"
-                                                placeholder="ex: Civil Construction"
-                                                value={serviceData?.category}
-                                                onChange={(e) => {
-                                                    setserviceData({
-                                                        ...serviceData,
-                                                        category: e.target.value
-                                                    })
-                                                }}
-                                                className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            />
-                                            {errors.category && <p className="text-red-500 text-xs">{errors.category}</p>}
+                                        <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
+                                            <div className="space-y-1 sm:space-y-2">
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                    Category
+                                                </label>
+                                                <select
+                                                    value={serviceData.category}
+                                                    onChange={(e) =>
+                                                        setserviceData({
+                                                            ...serviceData,
+                                                            category: e.target.value,
+                                                            sub_category: "",
+                                                        })
+                                                    }
+                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                >
+                                                    <option value="">-- Select Category --</option>
+                                                    {Object.keys(servicecategoriesData).map((cat) => (
+                                                        <option key={cat} value={cat}>
+                                                            {cat}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                {errors.category && <p className="text-red-500 text-xs">{errors.category}</p>}
+                                            </div>
 
+                                            <div className="space-y-1 sm:space-y-2">
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                    Sub-Category
+                                                </label>
+                                                <select
+                                                    value={serviceData.sub_category}
+                                                    onChange={(e) =>
+                                                        setserviceData({ ...serviceData, sub_category: e.target.value })
+                                                    }
+                                                    disabled={!serviceData.category}
+                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                >
+                                                    <option value="">-- Select Sub-Category --</option>
+                                                    {serviceData.category &&
+                                                        servicecategoriesData[serviceData.category].map((sub) => (
+                                                            <option key={sub} value={sub}>
+                                                                {sub}
+                                                            </option>
+                                                        ))}
+                                                </select>
+                                                {errors.sub_category && <p className="text-red-500 text-xs">{errors.sub_category}</p>}
+                                            </div>
                                         </div>
 
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
@@ -816,7 +1097,7 @@ export default function addProduct() {
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
                                                     Cost of service
                                                 </label>
-                                                <div className="flex items-center h-[42px] gap-4">
+                                                <div className="flex items-start h-[42px] gap-4">
                                                     <label className="flex items-center space-x-2">
                                                         <input
                                                             type="radio"
@@ -853,6 +1134,29 @@ export default function addProduct() {
                                                         />
                                                         <span className="text-xs sm:text-sm text-gray-700">R$/Day</span>
                                                     </label>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                                                        Range of Service Delivery
+                                                    </label>
+                                                    <select
+                                                        value={serviceData?.range_of_service_delivery || ""}
+                                                        onChange={(e) =>
+                                                            setserviceData({
+                                                                ...serviceData,
+                                                                range_of_service_delivery: e.target.value,
+                                                            })
+                                                        }
+                                                        className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    >
+                                                        <option value="">-- Select Range --</option>
+                                                        <option value="<25km">&lt;25km</option>
+                                                        <option value="<50km">&lt;50km</option>
+                                                        <option value="100km">100km</option>
+                                                        <option value="remote">Remote</option>
+                                                    </select>
+                                                    {errors.range_of_service_delivery && <p className="text-red-500 text-xs">{errors.range_of_service_delivery}</p>}
                                                 </div>
                                             </div>
 
@@ -914,9 +1218,11 @@ export default function addProduct() {
                                                             ...tradeforWhat,
                                                             trade_for_what: e.target.value,
                                                             product_category: '',
+                                                            product_sub_category: '',
                                                             product_brand: '',
                                                             product_model: '',
                                                             service_category: '',
+                                                            service_sub_category: '',
                                                             service_description: '',
                                                         })
                                                     }}
@@ -936,9 +1242,11 @@ export default function addProduct() {
                                                             ...tradeforWhat,
                                                             trade_for_what: e.target.value,
                                                             product_category: '',
+                                                            product_sub_category: '',
                                                             product_brand: '',
                                                             product_model: '',
                                                             service_category: '',
+                                                            service_sub_category: '',
                                                             service_description: '',
                                                         })
                                                     }}
@@ -951,22 +1259,56 @@ export default function addProduct() {
 
                                     {tradeType === '1' ? (
                                         <>
-                                            <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Category</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="ex: Bike"
-                                                    value={tradeforWhat?.product_category}
-                                                    onChange={(e) => {
-                                                        settradeforWhat({
-                                                            ...tradeforWhat,
-                                                            product_category: e.target.value
-                                                        })
-                                                    }}
-                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                />
-                                                {errors.product_category && <p className="text-red-500 text-xs">{errors.product_category}</p>}
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                                <div className="space-y-1 sm:space-y-2">
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                        Category
+                                                    </label>
+                                                    <select
+                                                        value={tradeforWhat.product_category}
+                                                        onChange={(e) =>
+                                                            settradeforWhat({
+                                                                ...tradeforWhat,
+                                                                product_category: e.target.value,
+                                                                product_sub_category: "",
+                                                            })
+                                                        }
+                                                        className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    >
+                                                        <option value="">-- Select Category --</option>
+                                                        {Object.keys(productcategoriesData).map((cat) => (
+                                                            <option key={cat} value={cat}>
+                                                                {cat}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    {errors.product_category && <p className="text-red-500 text-xs">{errors.product_category}</p>}
+                                                </div>
+
+                                                <div className="space-y-1 sm:space-y-2">
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                        Sub-Category
+                                                    </label>
+                                                    <select
+                                                        value={tradeforWhat.product_sub_category}
+                                                        onChange={(e) =>
+                                                            settradeforWhat({ ...tradeforWhat, product_sub_category: e.target.value })
+                                                        }
+                                                        disabled={!tradeforWhat.product_category}
+                                                        className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    >
+                                                        <option value="">-- Select Sub-Category --</option>
+                                                        {tradeforWhat.product_category &&
+                                                            productcategoriesData[tradeforWhat.product_category].map((sub) => (
+                                                                <option key={sub} value={sub}>
+                                                                    {sub}
+                                                                </option>
+                                                            ))}
+                                                    </select>
+                                                    {errors.product_sub_category && <p className="text-red-500 text-xs">{errors.product_sub_category}</p>}
+                                                </div>
                                             </div>
+
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand</label>
@@ -1006,22 +1348,72 @@ export default function addProduct() {
                                         </>
                                     ) : (
                                         <>
-                                            <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Category</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="ex: Civil Construction"
-                                                    value={tradeforWhat?.service_category}
-                                                    onChange={(e) => {
-                                                        settradeforWhat({
-                                                            ...tradeforWhat,
-                                                            service_category: e.target.value
-                                                        })
-                                                    }}
-                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                />
-                                                {errors.service_category && <p className="text-red-500 text-xs">{errors.service_category}</p>}
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
 
+                                                {/* <div className="space-y-1 sm:space-y-2">
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Category</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="ex: Civil Construction"
+                                                        value={tradeforWhat?.service_category}
+                                                        onChange={(e) => {
+                                                            settradeforWhat({
+                                                                ...tradeforWhat,
+                                                                service_category: e.target.value
+                                                            })
+                                                        }}
+                                                        className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    />
+                                                    {errors.service_category && <p className="text-red-500 text-xs">{errors.service_category}</p>}
+                                                </div> */}
+
+                                                <div className="space-y-1 sm:space-y-2">
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                        Category
+                                                    </label>
+                                                    <select
+                                                        value={tradeforWhat.service_category}
+                                                        onChange={(e) =>
+                                                            settradeforWhat({
+                                                                ...tradeforWhat,
+                                                                service_category: e.target.value,
+                                                                service_sub_category: "",
+                                                            })
+                                                        }
+                                                        className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    >
+                                                        <option value="">-- Select Category --</option>
+                                                        {Object.keys(servicecategoriesData).map((cat) => (
+                                                            <option key={cat} value={cat}>
+                                                                {cat}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    {errors.service_category && <p className="text-red-500 text-xs">{errors.service_category}</p>}
+                                                </div>
+
+                                                <div className="space-y-1 sm:space-y-2">
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                                                        Sub-Category
+                                                    </label>
+                                                    <select
+                                                        value={tradeforWhat.service_sub_category}
+                                                        onChange={(e) =>
+                                                            settradeforWhat({ ...tradeforWhat, service_sub_category: e.target.value })
+                                                        }
+                                                        disabled={!tradeforWhat.service_category}
+                                                        className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    >
+                                                        <option value="">-- Select Sub-Category --</option>
+                                                        {tradeforWhat.service_category &&
+                                                            servicecategoriesData[tradeforWhat.service_category].map((sub) => (
+                                                                <option key={sub} value={sub}>
+                                                                    {sub}
+                                                                </option>
+                                                            ))}
+                                                    </select>
+                                                    {errors.service_sub_category && <p className="text-red-500 text-xs">{errors.service_sub_category}</p>}
+                                                </div>
                                             </div>
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">Description (Optional)</label>

@@ -32,8 +32,8 @@ export default function notification() {
                                 <button
                                     key={tab}
                                     onClick={() => setSelectedTab(tab)}
-                                    className={`py-2 px-4 -mb-px cursor-pointer border-b-2 transition ${selectedTab === tab
-                                        ? 'border-blue-600 text-blue-600 font-medium'
+                                    className={`flex-1 text-xs sm:text-sm md:text-base py-2 px-2 -mb-px border-b-2 cursor-pointer transition font-medium text-center ${selectedTab === tab
+                                        ? 'border-blue-600 text-blue-600'
                                         : 'border-transparent text-gray-500 hover:text-blue-600'
                                         }`}
                                 >

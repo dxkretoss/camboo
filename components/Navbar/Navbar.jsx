@@ -44,9 +44,9 @@ export default function Navbar() {
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
             <div className="flex items-center gap-4" onClick={() => router.push('/home')}>
                 <img
-                    src="/logo_camboo.png"
+                    src="/logo_camboo.jpeg"
                     alt="Logo"
-                    className="h-8 w-auto cursor-pointer"
+                    className="h-14 w-auto cursor-pointer"
                 />
             </div>
 
@@ -100,7 +100,7 @@ export default function Navbar() {
                         <img
                             src={profile?.profile_image}
                             alt="User"
-                            className="w-8 h-8 rounded-full object-cover"
+                            className="w-10 h-10 rounded-full object-cover"
                         />
                         <span className="text-gray-700 text-sm hidden sm:inline">{profile?.first_name}</span>
                         <ChevronDown className="w-4 h-4 text-gray-600" />

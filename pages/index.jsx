@@ -236,7 +236,7 @@ export default function Index() {
 
       <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
         <img
-          src="/logo_camboo.png"
+          src="/logo_camboo.jpeg"
           alt="Logo"
           className="mx-auto mt-6 w-32 h-auto"
           onContextMenu={(event) => {

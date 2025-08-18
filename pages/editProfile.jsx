@@ -353,7 +353,8 @@ export default function EditProfile() {
                                                     onClick={() => removeSocialLink(index)}
                                                     className="text-red-600 cursor-pointer text-sm"
                                                 >
-                                                    Remove
+                                                    <span className="hidden sm:inline">Remove</span>
+                                                    <span className="sm:hidden">✕</span>
                                                 </button>
                                             </div>
 

@@ -9,6 +9,7 @@ export default function Trade() {
     const router = useRouter();
     const token = Cookies.get("token");
     const getTradeid = router?.query?.Trade;
+    const getTradeType = router?.query?.Type;
     const [fetching, setFetching] = useState(false);
     const [youritemsData, setYouritemsData] = useState(null);
     const [imageIndexes, setImageIndexes] = useState({});
@@ -95,25 +96,32 @@ export default function Trade() {
                                 Match Item {index + 1}
                             </h3>
                             <div className="flex items-center justify-between w-full mb-6">
-                                {[1, 2, 3, 4].map((step, idx) => (
+                                {(getTradeType === "Product" ? [1, 2, 3, 4] : [1, 2]).map((step, idx, arr) => (
                                     <React.Fragment key={step}>
                                         <div className="relative flex flex-col items-center">
                                             <div
                                                 className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-extrabold
-                                                     ${step <= level.levelNum ? "bg-[#000F5C] text-white" : "bg-gray-200 text-gray-500"}`}
+                                                            ${(getTradeType === "Product" ? step <= level.levelNum : step <= level.levelNum)
+                                                        ? "bg-[#000F5C] text-white"
+                                                        : "bg-gray-200 text-gray-500"
+                                                    }`}
                                             >
-                                                {step * 25}%
+                                                {getTradeType === "Product" ? step * 25 + "%" : step === 1 ? "50%" : "100%"}
                                             </div>
                                         </div>
 
-                                        {idx !== 3 && (
+                                        {idx !== arr.length - 1 && (
                                             <div
-                                                className={`flex-1 h-1 mx-2 rounded ${step < level.levelNum ? "bg-[#000F5C]" : "bg-gray-300"}`}
+                                                className={`flex-1 h-1 mx-2 rounded ${(getTradeType === "Product" ? step < level.levelNum : step < level.levelNum)
+                                                    ? "bg-[#000F5C]"
+                                                    : "bg-gray-300"
+                                                    }`}
                                             ></div>
                                         )}
                                     </React.Fragment>
                                 ))}
                             </div>
+
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
                                 <div>
                                     <span className="text-sm font-extrabold text-gray-600">

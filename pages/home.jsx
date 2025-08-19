@@ -191,7 +191,7 @@ export default function HomePage() {
         }
     };
 
-    const doingTrade = async (id) => {
+    const doingTrade = async (id, type) => {
         setfetching(true);
         try {
             const token = Cookies.get("token");
@@ -201,7 +201,10 @@ export default function HomePage() {
             if (letsCamboo?.data?.success) {
                 router.push({
                     pathname: "./trade",
-                    query: { Trade: letsCamboo?.data?.other_item?.id },
+                    query: {
+                        Type: type,
+                        Trade: letsCamboo?.data?.other_item?.id
+                    },
                 })
             }
         } catch (err) {
@@ -349,7 +352,7 @@ export default function HomePage() {
                                             <div className="hidden xl:block w-full xl:w-auto">
                                                 <Button className="w-full xl:w-auto text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
                                                     onClick={() => {
-                                                        doingTrade(user?.id)
+                                                        doingTrade(user?.id, user?.main_type)
                                                     }}>
                                                     <img src="/share.png" alt="Verified" className="w-4 h-4" />
                                                     <span className="hidden xl:inline">Let's Camboo!!</span>

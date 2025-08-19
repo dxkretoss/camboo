@@ -89,23 +89,21 @@ export default function Trade() {
                 </div>
 
                 {availableLevels?.length > 0 ? (
-                    availableLevels?.map((level) => (
+                    availableLevels?.map((level, index) => (
                         <div key={level.levelKey} className="mb-10">
+                            <h3 className="text-[#000F5C] font-semibold text-base mb-3">
+                                Match {index + 1}
+                            </h3>
                             <div className="flex items-center justify-between w-full mb-6">
                                 {[1, 2, 3, 4].map((step, idx) => (
                                     <React.Fragment key={step}>
                                         <div className="relative flex flex-col items-center">
-
                                             <div
-                                                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold
                                                      ${step <= level.levelNum ? "bg-[#000F5C] text-white" : "bg-gray-200 text-gray-500"}`}
                                             >
-                                                {step}
-                                            </div>
-
-                                            <span className="absolute top-10 text-xs text-[#000F5C] font-extrabold">
                                                 {step * 25}%
-                                            </span>
+                                            </div>
                                         </div>
 
                                         {idx !== 3 && (
@@ -290,6 +288,9 @@ export default function Trade() {
                                     })}
                                 </div>
                             </div>
+                            {index !== availableLevels.length - 1 && (
+                                <hr className="mt-6 border-gray-300" />
+                            )}
                         </div>
                     ))
                 ) : (

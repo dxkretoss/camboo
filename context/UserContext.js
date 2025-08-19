@@ -11,6 +11,7 @@ export const UserProvider = ({ children }) => {
   const [clientsProductandService, setclientsProductandService] =
     useState(null);
   const [loading, setLoading] = useState(true);
+  const [clientSaveItems, setclientSaveItems] = useState(null);
 
   useEffect(() => {
     if (!token) {
@@ -21,6 +22,7 @@ export const UserProvider = ({ children }) => {
       getUserProfileData(),
       getallProdandSer(),
       getClientsProdandSer(),
+      getClientSaveitems(),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -75,6 +77,25 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getClientSaveitems = async () => {
+    try {
+      const token = Cookies.get("token");
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-save-item`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res?.data?.success) {
+        if (res?.data?.data?.length > 0) {
+          setclientSaveItems(res?.data?.data);
+        }
+      } else {
+        setclientSaveItems(null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <UserContext.Provider
       value={{
@@ -86,6 +107,8 @@ export const UserProvider = ({ children }) => {
         getUserProfileData,
         getClientsProdandSer,
         loading,
+        getClientSaveitems,
+        clientSaveItems,
       }}
     >
       {children}

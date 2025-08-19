@@ -22,11 +22,9 @@ import toast, { Toaster } from 'react-hot-toast';
 export default function Profile() {
     const token = Cookies.get('token');
     const router = useRouter();
-    const { profile, clientsProductandService, getClientsProdandSer, getallProdandSer } = useUser();
+    const { profile, clientsProductandService, getClientsProdandSer, getallProdandSer, getClientSaveitems, clientSaveItems } = useUser();
     const [socialLinks, setSocialLinks] = useState([]);
-    const [clientSaveItems, setclientSaveItems] = useState(null);
     const [savedItems, setSavedItems] = useState({});
-    const [isFav, setisFav] = useState(false);
     const [isDelete, setisDelete] = useState(false);
     const [getProfileData, setgetProfileData] = useState({
         first_name: '',
@@ -60,7 +58,6 @@ export default function Profile() {
     useEffect(() => {
         if (!token) router.push('/');
         document.title = "Camboo-Profile";
-        getClientSaveitems();
     }, [token, router]);
 
     useEffect(() => {
@@ -100,7 +97,6 @@ export default function Profile() {
     };
 
     const sendClientSaveitems = async (id) => {
-        setisFav(true);
         try {
             const token = Cookies.get("token");
             const res = await axios.post(
@@ -109,40 +105,21 @@ export default function Profile() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res?.data?.success) {
-                toast.success(`${res?.data?.message}`)
-                getClientSaveitems();
+                await getClientSaveitems();
             }
         } catch (err) {
             console.error(err);
             toast.error("Something went wrong.");
-        } finally {
-            setisFav(false);
         }
     };
 
-    const getClientSaveitems = async () => {
-        try {
-            const token = Cookies.get("token");
-            const res = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-save-item`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            if (res?.data?.success) {
-                if (res?.data?.data?.length > 0) {
-                    setclientSaveItems(res?.data?.data);
-                    const mapped = {};
-                    res?.data?.data?.forEach(item => {
-                        mapped[item?.item_id] = item?.item_id;
-                    });
-                    setSavedItems(mapped);
-                }
-            } else {
-                setclientSaveItems(null)
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    useEffect(() => {
+        const mapped = {};
+        clientSaveItems?.forEach(item => {
+            mapped[item.item_id] = item.id;
+        });
+        setSavedItems(mapped);
+    }, [clientSaveItems])
 
     const handleDeleteItem = async (id) => {
         setisDelete(true);
@@ -173,7 +150,7 @@ export default function Profile() {
                     </span>
                 </div>
 
-                {(isFav || isDelete) && (
+                {(isDelete) && (
                     <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
                         <div className="flex space-x-2">
                             <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>

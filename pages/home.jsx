@@ -19,10 +19,9 @@ export default function HomePage() {
         if (!token) {
             router.push('/');
         }
-        getClientSaveitems();
     }, [token]);
 
-    const { loading, allProductandService, profile } = useUser();
+    const { loading, allProductandService, profile, clientSaveItems, getClientSaveitems } = useUser();
 
     const [startIndexes, setStartIndexes] = useState({});
     const [savedItems, setSavedItems] = useState({});
@@ -31,7 +30,6 @@ export default function HomePage() {
     const [imagesPerPage, setImagesPerPage] = useState(2);
     const [loadingImages, setLoadingImages] = useState({});
     const [fetching, setfetching] = useState(false);
-    const [isFav, setisFav] = useState(false);
 
     useEffect(() => {
         const updateImagesPerPage = () => {
@@ -147,7 +145,6 @@ export default function HomePage() {
     };
 
     const sendClientSaveitems = async (id) => {
-        setisFav(true);
         try {
             const token = Cookies.get("token");
             const res = await axios.post(
@@ -156,34 +153,20 @@ export default function HomePage() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res?.data?.success) {
-                toast.success(`${res?.data?.message}`)
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setisFav(false);
-        }
-    };
-
-    const getClientSaveitems = async () => {
-        try {
-            const token = Cookies.get("token");
-            const res = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-save-item`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            if (res.data.success) {
-                const mapped = {};
-                res.data.data.forEach(item => {
-                    mapped[item.item_id] = item.id;
-                });
-                setSavedItems(mapped);
+                await getClientSaveitems();
             }
         } catch (err) {
             console.error(err);
         }
     };
+
+    useEffect(() => {
+        const mapped = {};
+        clientSaveItems?.forEach(item => {
+            mapped[item.item_id] = item.id;
+        });
+        setSavedItems(mapped);
+    }, [clientSaveItems])
 
     const sendClientItemsComments = async (id, text) => {
         if (!text.trim()) {
@@ -235,7 +218,7 @@ export default function HomePage() {
 
             <div className="flex-1 flex flex-col">
                 <Navbar />
-                {(loading || isFav || fetching) && (
+                {(loading || fetching) && (
                     <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
                         <div className="flex space-x-2">
                             <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>

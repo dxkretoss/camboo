@@ -91,24 +91,31 @@ export default function Trade() {
                 {availableLevels?.length > 0 ? (
                     availableLevels?.map((level) => (
                         <div key={level.levelKey} className="mb-10">
-                            <div className="flex justify-between mb-2">
-                                <span className="text-sm font-extrabold text-gray-600">
-                                    Match Level:{" "}
-                                    <span className="font-semibold">
-                                        {level.levelNum} / 4
-                                    </span>
-                                </span>
-                                <span className="text-sm font-extrabold text-gray-600">
-                                    {level.progress}%
-                                </span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden mb-6">
-                                <div
-                                    className="bg-gradient-to-r from-blue-500 to-blue-700 h-4 rounded-full transition-all duration-500 ease-out"
-                                    style={{ width: `${level.progress}%` }}
-                                ></div>
-                            </div>
+                            <div className="flex items-center justify-between w-full mb-6">
+                                {[1, 2, 3, 4].map((step, idx) => (
+                                    <React.Fragment key={step}>
+                                        <div className="relative flex flex-col items-center">
 
+                                            <div
+                                                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold
+                                                     ${step <= level.levelNum ? "bg-[#000F5C] text-white" : "bg-gray-200 text-gray-500"}`}
+                                            >
+                                                {step}
+                                            </div>
+
+                                            <span className="absolute top-10 text-xs text-[#000F5C] font-extrabold">
+                                                {step * 25}%
+                                            </span>
+                                        </div>
+
+                                        {idx !== 3 && (
+                                            <div
+                                                className={`flex-1 h-1 mx-2 rounded ${step < level.levelNum ? "bg-[#000F5C]" : "bg-gray-300"}`}
+                                            ></div>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </div>
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
                                 <div>
                                     <span className="text-sm font-extrabold text-gray-600">
@@ -177,14 +184,14 @@ export default function Trade() {
                                         <h3 className="text-gray-800 font-semibold text-base text-center mt-3">
                                             {matchedData?.title}
                                         </h3>
-                                        <span className="text-gray-500 text-sm text-center line-clamp-2 mt-1">
-                                            <DescriptionToggle text={matchedData?.description} />
-                                        </span>
-                                        <span className="mt-3 text-blue-600 font-bold text-lg">
+                                        <span className="text-sm font-medium text-gray-500">
                                             ₹
                                             {(matchedData?.price ||
                                                 matchedData?.day_price ||
                                                 matchedData?.hr_price) || "0.00"}
+                                        </span>
+                                        <span className="text-gray-500 text-sm text-left line-clamp-2">
+                                            <DescriptionToggle text={matchedData?.description} />
                                         </span>
                                     </div>
                                 </div>
@@ -268,12 +275,16 @@ export default function Trade() {
                                                 <h3 className="text-gray-800 font-semibold text-base text-center mt-3">
                                                     {item?.title}
                                                 </h3>
-                                                <p className="text-gray-500 text-sm text-center line-clamp-2 mt-1">
+
+                                                <span className="text-sm font-medium text-gray-500">
+                                                    ₹
+                                                    {(item?.price ||
+                                                        item?.day_price ||
+                                                        item?.hr_price) || "0.00"}
+                                                </span>
+                                                <p className="text-gray-500 text-sm text-left line-clamp-2">
                                                     <DescriptionToggle text={item?.description} />
                                                 </p>
-                                                <span className="mt-3 text-blue-600 font-bold text-lg">
-                                                    ₹{item?.price || "0.00"}
-                                                </span>
                                             </div>
                                         );
                                     })}

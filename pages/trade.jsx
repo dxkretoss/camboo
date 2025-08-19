@@ -92,7 +92,7 @@ export default function Trade() {
                     availableLevels?.map((level, index) => (
                         <div key={level.levelKey} className="mb-10">
                             <h3 className="text-[#000F5C] font-semibold text-base mb-3">
-                                Match {index + 1}
+                                Match Item {index + 1}
                             </h3>
                             <div className="flex items-center justify-between w-full mb-6">
                                 {[1, 2, 3, 4].map((step, idx) => (

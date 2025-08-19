@@ -11,6 +11,11 @@ body::-webkit-scrollbar {
   height: 5px;
 }
 
+button,
+a {
+  cursor: pointer;
+}
+
 body::-webkit-scrollbar-thumb {
   background-color: #000F5C;
   border-radius: 10 px;

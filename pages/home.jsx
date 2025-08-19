@@ -227,7 +227,7 @@ export default function HomePage() {
                         </div>
                     </div>
                 )}
-                <div className="flex flex-col lg:flex-row p-2 sm:p-3 md:p-4 gap-4 lg:gap-6">
+                <div className="flex flex-col lg:flex-row p-2 sm:p-3 md:p-4 gap-4">
                     <div className="flex-1 space-y-4 sm:space-y-6">
                         {allProductandService?.length > 0 ? (
                             allProductandService?.sort((a, b) => b.id - a.id)?.map((user, idx) => {

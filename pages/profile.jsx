@@ -339,7 +339,7 @@ export default function Profile() {
                                                             className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
                                                         />
                                                         {item?.model && (
-                                                            <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
+                                                            <span className="absolute top-2 left-2 bg-white text-[#06145D] text-xs font-semibold px-2 py-1 rounded">
                                                                 {item?.model}
                                                             </span>
                                                         )}
@@ -430,16 +430,16 @@ export default function Profile() {
                                                     />
                                                     <>
                                                         {item.model &&
-                                                            <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded shadow-sm">
+                                                            <span className="absolute top-2 left-2 bg-white text-[#06145D] text-xs font-semibold px-2 py-1 rounded shadow-sm">
                                                                 {item?.model}
                                                             </span>
                                                         }
                                                         <Heart
                                                             onClick={() => toggleSave(item?.item_id)}
-                                                            className={`absolute top-2 right-2 bg-blue-100 ${savedItems[item?.item_id]
-                                                                ? "text-[#000F5C] scale-110 fill-[#000F5C]"
+                                                            className={`absolute top-2 right-2 bg-white ${savedItems[item?.item_id]
+                                                                ? "text-[#4370C2] scale-110 fill-[#4370C2]"
                                                                 : "text-black"
-                                                                } p-1 rounded-md shadow-sm cursor-pointer hover:bg-blue-200 transition`}
+                                                                } p-1.5 rounded-full shadow-sm cursor-pointer hover:bg-blue-200 transition`}
                                                             size={30}
                                                         />
                                                     </>
@@ -455,7 +455,7 @@ export default function Profile() {
                                                         )} */}
                                                     </h3>
                                                     <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1">
-                                                        {item.time_display}
+                                                        {item?.time_display}
                                                     </p>
                                                 </div>
                                             </div>

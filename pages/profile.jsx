@@ -30,6 +30,8 @@ export default function Profile() {
         first_name: '',
         last_name: '',
         email: '',
+        street: '',
+        city: '',
         phone_number: '',
         about_me: '',
         what_are_you_interested_in: '',
@@ -67,6 +69,8 @@ export default function Profile() {
                 last_name: profile?.last_name || '',
                 email: profile?.email || '',
                 phone_number: profile?.phone_number || '',
+                street: profile?.street || '',
+                city: profile?.city || '',
                 about_me: profile?.about_me || '',
                 what_are_you_interested_in: profile?.what_are_you_interested_in || '',
                 professional_experience: profile?.professional_experience || '',
@@ -165,7 +169,7 @@ export default function Profile() {
                         <div className="flex items-center gap-4">
                             {getProfileData?.profile_image ? (
                                 <img
-                                    src={getProfileData.profile_image}
+                                    src={getProfileData?.profile_image}
                                     alt="User"
                                     className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
                                     loading="lazy"
@@ -191,7 +195,8 @@ export default function Profile() {
                                         </div>
                                         <div className="flex gap-1 text-sm text-gray-500 mt-1 items-center">
                                             <MapPin className="w-4 h-4" />
-                                            <span>Recife, PE</span>
+                                            {/* <span>Recife, PE</span> */}
+                                            <span>{getProfileData?.street}, {getProfileData?.city}</span>
                                         </div>
                                     </>
                                 ) : (
@@ -278,7 +283,16 @@ export default function Profile() {
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
                             {getProfileData?.what_are_you_interested_in ? (
-                                <div className="flex flex-wrap gap-2">{getProfileData.what_are_you_interested_in}</div>
+                                <div className="flex flex-wrap gap-2">
+                                    {getProfileData?.what_are_you_interested_in?.split(',').map((item, idx) => (
+                                        <span
+                                            key={idx}
+                                            className="px-3 py-1 rounded-md text-[#06145D] bg-[#06145D1A] text-sm font-semibold"
+                                        >
+                                            {item.trim()}
+                                        </span>
+                                    ))}
+                                </div>
                             ) : (
                                 <div className="flex flex-wrap gap-2">
                                     <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>

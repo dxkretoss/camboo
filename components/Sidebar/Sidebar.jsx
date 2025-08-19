@@ -72,7 +72,16 @@ export default function Sidebar() {
                 <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
                 <div className="flex flex-wrap gap-2">
                     {profile?.what_are_you_interested_in ? (
-                        <div className="flex flex-wrap gap-2">{profile?.what_are_you_interested_in}</div>
+                        <div className="flex flex-wrap gap-2">
+                            {profile?.what_are_you_interested_in?.split(',').map((item, idx) => (
+                                <span
+                                    key={idx}
+                                    className="px-3 py-1 rounded-md text-[#06145D] bg-[#06145D1A] text-sm font-semibold"
+                                >
+                                    {item.trim()}
+                                </span>
+                            ))}
+                        </div>
                     ) : (
                         <div className="flex flex-wrap gap-2">
                             <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>

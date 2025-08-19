@@ -99,7 +99,7 @@ export default function Trade() {
                                     <React.Fragment key={step}>
                                         <div className="relative flex flex-col items-center">
                                             <div
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-extrabold
                                                      ${step <= level.levelNum ? "bg-[#000F5C] text-white" : "bg-gray-200 text-gray-500"}`}
                                             >
                                                 {step * 25}%

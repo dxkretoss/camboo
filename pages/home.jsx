@@ -207,6 +207,17 @@ export default function HomePage() {
         }
     };
 
+    const doingTrade = async (id) => {
+        try {
+            const token = Cookies.get("token");
+            const letsCamboo = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/lets-trade?item_id=${id}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            console.log(letsCamboo)
+        } catch (err) {
+            console.log(err)
+        }
+    }
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
             <div className="hidden lg:block w-[250px]">
@@ -337,14 +348,20 @@ export default function HomePage() {
 
                                         <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center mt-4 gap-3">
                                             <div className="hidden xl:block w-full xl:w-auto">
-                                                <Button className="w-full xl:w-auto text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                <Button className="w-full xl:w-auto text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
+                                                    onClick={() => {
+                                                        doingTrade(user?.id)
+                                                    }}>
                                                     <img src="/share.png" alt="Verified" className="w-4 h-4" />
                                                     <span className="hidden xl:inline">Let's Camboo!!</span>
                                                 </Button>
                                             </div>
 
                                             <div className="flex flex-row gap-2 w-full xl:w-auto justify-end">
-                                                <Button className="flex-1 xl:hidden text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                <Button className="flex-1 xl:hidden text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
+                                                    onClick={() => {
+                                                        doingTrade(user?.id)
+                                                    }}>
                                                     <img src="/share.png" alt="Verified" className="w-4 h-4" />
                                                 </Button>
 

@@ -7,15 +7,15 @@ body {
 }
 
 body::-webkit-scrollbar {
-  width: 5px;
+  width: 10px;
   height: 5px;
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: grey;
-  border-radius: 10px;
+  background-color: #000F5C;
+  border-radius: 10 px;
 }
 
 body::-webkit-scrollbar-track {
-  background-color: black;
+  background-color: white;
 }

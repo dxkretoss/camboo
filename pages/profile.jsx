@@ -300,7 +300,7 @@ export default function Profile() {
                                                         <img
                                                             src={item.images[0]}
                                                             alt={item.title}
-                                                            className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                                            className="max-h-full max-w-full object-contain transition-transform duration-300"
                                                         />
                                                         {item?.model && (
                                                             <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
@@ -309,11 +309,11 @@ export default function Profile() {
                                                         )}
 
                                                         <div
-                                                            className="absolute top-2 right-2"
+                                                            className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1 rounded-full shadow"
                                                             ref={(el) => (menuRefs.current[item.id] = el)}
                                                         >
                                                             <EllipsisVertical
-                                                                className="cursor-pointer"
+                                                                className="cursor-pointer text-[#000F5C]"
                                                                 onClick={() =>
                                                                     setOpenMenuId(openMenuId === item.id ? null : item.id)
                                                                 }

@@ -852,7 +852,7 @@ export default function addProduct() {
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 >
                                                     <option value="">-- Select Category --</option>
-                                                    {Object.keys(productcategoriesData).map((cat) => (
+                                                    {Object.keys(productcategoriesData)?.map((cat) => (
                                                         <option key={cat} value={cat}>
                                                             {cat}
                                                         </option>
@@ -874,8 +874,8 @@ export default function addProduct() {
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 >
                                                     <option value="">-- Select Sub-Category --</option>
-                                                    {productData.category &&
-                                                        productcategoriesData[productData.category].map((sub) => (
+                                                    {productData?.category &&
+                                                        productcategoriesData[productData?.category]?.map((sub) => (
                                                             <option key={sub} value={sub}>
                                                                 {sub}
                                                             </option>
@@ -1059,7 +1059,7 @@ export default function addProduct() {
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 >
                                                     <option value="">-- Select Category --</option>
-                                                    {Object.keys(servicecategoriesData).map((cat) => (
+                                                    {Object.keys(servicecategoriesData)?.map((cat) => (
                                                         <option key={cat} value={cat}>
                                                             {cat}
                                                         </option>
@@ -1081,8 +1081,8 @@ export default function addProduct() {
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 >
                                                     <option value="">-- Select Sub-Category --</option>
-                                                    {serviceData.category &&
-                                                        servicecategoriesData[serviceData.category].map((sub) => (
+                                                    {serviceData?.category &&
+                                                        servicecategoriesData[serviceData?.category]?.map((sub) => (
                                                             <option key={sub} value={sub}>
                                                                 {sub}
                                                             </option>
@@ -1276,7 +1276,7 @@ export default function addProduct() {
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
                                                         <option value="">-- Select Category --</option>
-                                                        {Object.keys(productcategoriesData).map((cat) => (
+                                                        {Object.keys(productcategoriesData)?.map((cat) => (
                                                             <option key={cat} value={cat}>
                                                                 {cat}
                                                             </option>
@@ -1298,8 +1298,8 @@ export default function addProduct() {
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
                                                         <option value="">-- Select Sub-Category --</option>
-                                                        {tradeforWhat.product_category &&
-                                                            productcategoriesData[tradeforWhat.product_category].map((sub) => (
+                                                        {tradeforWhat?.product_category &&
+                                                            productcategoriesData[tradeforWhat?.product_category]?.map((sub) => (
                                                                 <option key={sub} value={sub}>
                                                                     {sub}
                                                                 </option>
@@ -1383,7 +1383,7 @@ export default function addProduct() {
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
                                                         <option value="">-- Select Category --</option>
-                                                        {Object.keys(servicecategoriesData).map((cat) => (
+                                                        {Object.keys(servicecategoriesData)?.map((cat) => (
                                                             <option key={cat} value={cat}>
                                                                 {cat}
                                                             </option>
@@ -1405,8 +1405,8 @@ export default function addProduct() {
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
                                                         <option value="">-- Select Sub-Category --</option>
-                                                        {tradeforWhat.service_category &&
-                                                            servicecategoriesData[tradeforWhat.service_category].map((sub) => (
+                                                        {tradeforWhat?.service_category &&
+                                                            servicecategoriesData[tradeforWhat?.service_category]?.map((sub) => (
                                                                 <option key={sub} value={sub}>
                                                                     {sub}
                                                                 </option>

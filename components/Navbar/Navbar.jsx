@@ -151,14 +151,29 @@ export default function Navbar() {
                         onClick={() => setDropdownOpen(!dropdownOpen)}
                         className="flex items-center gap-2 cursor-pointer"
                     >
-                        <img
-                            src={profile?.profile_image}
-                            alt="User"
-                            className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <span className="text-gray-700 text-sm hidden sm:inline">{profile?.first_name}</span>
+                        <div className="relative w-10 h-10">
+                            {!profile?.profile_image && (
+                                <div className="absolute inset-0 rounded-full bg-gray-200 animate-pulse"></div>
+                            )}
+
+                            <img
+                                src={profile?.profile_image}
+                                alt="User"
+                                loading="lazy"
+                                onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                className="w-10 h-10 rounded-full object-cover opacity-0 transition-opacity duration-500"
+                            />
+                        </div>
+
+                        <span className="text-gray-700 text-sm hidden sm:inline">
+                            {!profile?.first_name && (
+                                <div className="h-4 w-8 bg-gray-200 rounded animate-pulse"></div>
+                            )}
+                            {profile?.first_name}
+                        </span>
                         <ChevronDown className="w-4 h-4 text-gray-600" />
                     </div>
+
 
                     {dropdownOpen && (
                         <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">

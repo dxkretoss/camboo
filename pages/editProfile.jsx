@@ -20,7 +20,6 @@ export default function EditProfile() {
     const [errors, setErrors] = useState({});
     const allPlatforms = ['facebook', 'twitter', 'linkedin', 'github', 'instagram', 'website'];
     const [socialLinks, setSocialLinks] = useState([]);
-
     const [getProfileData, setgetProfileData] = useState({
         first_name: '',
         last_name: '',

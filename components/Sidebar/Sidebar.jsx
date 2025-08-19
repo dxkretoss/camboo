@@ -29,27 +29,41 @@ export default function Sidebar() {
 
 
             <div className="flex items-center gap-4">
-                <img
-                    src={profile?.profile_image}
-                    alt="User"
-                    className="w-16 h-16 md:w-20 md:h-20 rounded-full cursor-pointer object-cover"
-                    onClick={() => router.push('./profile')}
-                />
+                {profile?.profile_image ? (
+                    <img
+                        src={profile?.profile_image}
+                        alt="User"
+                        className="w-16 h-16 md:w-20 md:h-20 rounded-full cursor-pointer object-cover"
+                        onClick={() => router.push('./profile')}
+                    />
+                ) : (
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-200 animate-pulse" />
+                )}
 
                 <div>
-                    <h2 className="text-md md:text-md font-semibold text-gray-800">{profile?.first_name}</h2>
-                    <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
-                        <div className="flex text-yellow-500">
-                            {[...Array(5)].map((_, index) => (
-                                <Star key={index} className="h-4 w-4 fill-yellow-500 stroke-yellow-500" />
-                            ))}
+                    {profile?.first_name ? (
+                        <>
+                            <h2 className="text-md md:text-md font-semibold text-gray-800">{profile?.first_name}</h2>
+                            <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
+                                <div className="flex text-yellow-500">
+                                    {[...Array(5)].map((_, index) => (
+                                        <Star key={index} className="h-4 w-4 fill-yellow-500 stroke-yellow-500" />
+                                    ))}
+                                </div>
+                                <span className="ml-2 text-gray-700 font-medium">5.0</span>
+                            </div>
+                            <p className="text-green-600 text-xs flex items-center gap-1">
+                                <img src="/verified.png" alt="Verified" className="w-4 h-4" />
+                                <span className='text-[#464E5F] font-poppins'> Verified Profile </span>
+                            </p>
+                        </>
+                    ) : (
+                        <div className="space-y-2">
+                            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-3 w-24 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-3 w-20 bg-gray-200 rounded animate-pulse"></div>
                         </div>
-                        <span className="ml-2 text-gray-700 font-medium">5.0</span>
-                    </div>
-                    <p className="text-green-600 text-xs flex items-center gap-1">
-                        <img src="/verified.png" alt="Verified" className="w-4 h-4" />
-                        <span className='text-[#464E5F] font-poppins'> Verified Profile </span>
-                    </p>
+                    )}
                 </div>
             </div>
             <hr />
@@ -57,11 +71,20 @@ export default function Sidebar() {
             <div>
                 <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
                 <div className="flex flex-wrap gap-2">
-                    {interests.map((interest, index) => (
+                    {profile?.what_are_you_interested_in ? (
+                        <div className="flex flex-wrap gap-2">{profile?.what_are_you_interested_in}</div>
+                    ) : (
+                        <div className="flex flex-wrap gap-2">
+                            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+                        </div>
+                    )}
+                    {/* {interests.map((interest, index) => (
                         <span key={index} className="px-3 py-1 text-xs font-semibold bg-[#06145D1A] text-[#000F5C] rounded-md">
                             {interest}
                         </span>
-                    ))}
+                    ))} */}
                 </div>
             </div>
             <hr />

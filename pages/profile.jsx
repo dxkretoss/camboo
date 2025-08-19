@@ -186,87 +186,129 @@ export default function Profile() {
                 <div className="p-4 md:p-6 w-full mx-aut">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
                         <div className="flex items-center gap-4">
-                            <img
-                                src={getProfileData?.profile_image}
-                                alt="User"
-                                className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
-                                loading="lazy"
-                            />
+                            {getProfileData?.profile_image ? (
+                                <img
+                                    src={getProfileData.profile_image}
+                                    alt="User"
+                                    className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
+                                    loading="lazy"
+                                />
+                            ) : (
+                                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-200 animate-pulse" />
+                            )}
+
                             <div>
-                                <h2 className="text-lg md:text-xl font-semibold text-gray-800">{`${getProfileData?.first_name} ${getProfileData?.last_name}`}</h2>
-                                <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
-                                    <div className="flex text-yellow-500">
-                                        {[...Array(5)].map((_, index) => (
-                                            <Star key={index} className="h-4 w-4 fill-yellow-500 stroke-yellow-500" />
-                                        ))}
+                                {getProfileData?.first_name ? (
+                                    <>
+                                        <h2 className="text-lg md:text-xl font-semibold text-gray-800">
+                                            {`${getProfileData.first_name} ${getProfileData.last_name}`}
+                                        </h2>
+                                        <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
+                                            <div className="flex text-yellow-500">
+                                                {[...Array(5)].map((_, index) => (
+                                                    <Star key={index} className="h-4 w-4 fill-yellow-500 stroke-yellow-500" />
+                                                ))}
+                                            </div>
+                                            <span className="ml-2 text-gray-700 font-medium">5.0</span>
+                                            <span className="ml-1 text-gray-500">(248 Reviews)</span>
+                                        </div>
+                                        <div className="flex gap-1 text-sm text-gray-500 mt-1 items-center">
+                                            <MapPin className="w-4 h-4" />
+                                            <span>Recife, PE</span>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="space-y-2">
+                                        <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                                        <div className="h-3 w-24 bg-gray-200 rounded animate-pulse"></div>
+                                        <div className="h-3 w-20 bg-gray-200 rounded animate-pulse"></div>
                                     </div>
-                                    <span className="ml-2 text-gray-700 font-medium">5.0</span>
-                                    <span className="ml-1 text-gray-500">(248 Reviews)</span>
-                                </div>
-                                <div className="flex gap-1 text-sm text-gray-500 mt-1 items-center">
-                                    <MapPin className="w-4 h-4" />
-                                    <span>Recife, PE</span>
-                                </div>
+                                )}
                             </div>
                         </div>
 
-                        <Button
-                            className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2"
-                            onClick={() => router.push('/editProfile')}
-                        >
-                            <Pencil className="w-4 h-4" />
-                            Edit Profile
-                        </Button>
+                        {getProfileData ? (
+                            <Button
+                                className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2"
+                                onClick={() => router.push('/editProfile')}
+                            >
+                                <Pencil className="w-4 h-4" />
+                                Edit Profile
+                            </Button>
+                        ) : (
+                            <div className="w-28 h-9 bg-gray-200 rounded-md animate-pulse" />
+                        )}
                     </div>
                 </div>
+
 
                 <div className="flex flex-col lg:flex-row gap-4 mt-6">
                     <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-sm p-6 space-y-6">
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-1">About Me</h3>
-                            <p className="text-sm text-gray-600">
-                                {getProfileData?.about_me}
-                            </p>
+                            {getProfileData?.about_me ? (
+                                <p className="text-sm text-gray-600">{getProfileData.about_me}</p>
+                            ) : (
+                                <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+                            )}
                         </div>
                         <hr />
 
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Professional Experience</h3>
-                            <ul className="space-y-4 text-sm">
-                                {getProfileData?.professional_experience}
-                            </ul>
+                            {getProfileData?.professional_experience ? (
+                                <ul className="space-y-4 text-sm">{getProfileData.professional_experience}</ul>
+                            ) : (
+                                <div className="space-y-2">
+                                    <div className="h-3 w-2/3 bg-gray-200 rounded animate-pulse"></div>
+                                    <div className="h-3 w-1/2 bg-gray-200 rounded animate-pulse"></div>
+                                    <div className="h-3 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+                                </div>
+                            )}
                         </div>
                         <hr />
 
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Social Links</h3>
-                            <div className="flex gap-3">
-                                {socialLinks?.map(({ platform, link }, index) => {
-                                    const data = platformMap[platform?.toLowerCase()] || { name: platform, icon: Globe };
-                                    const Icon = data?.icon;
-
-                                    return (
-                                        <a
-                                            key={index}
-                                            href={link}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-[#00136e] transition"
-                                            aria-label={data.name}
-                                        >
-                                            <Icon className="w-4 h-4" />
-                                        </a>
-                                    );
-                                })}
-                            </div>
+                            {socialLinks?.length > 0 ? (
+                                <div className="flex gap-3">
+                                    {socialLinks.map(({ platform, link }, index) => {
+                                        const data = platformMap[platform?.toLowerCase()] || { name: platform, icon: Globe };
+                                        const Icon = data?.icon;
+                                        return (
+                                            <a
+                                                key={index}
+                                                href={link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-[#00136e] transition"
+                                                aria-label={data.name}
+                                            >
+                                                <Icon className="w-4 h-4" />
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="flex gap-3">
+                                    <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                    <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                </div>
+                            )}
                         </div>
                         <hr />
 
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {getProfileData?.what_are_you_interested_in}
-                            </div>
+                            {getProfileData?.what_are_you_interested_in ? (
+                                <div className="flex flex-wrap gap-2">{getProfileData.what_are_you_interested_in}</div>
+                            ) : (
+                                <div className="flex flex-wrap gap-2">
+                                    <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                                    <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+                                    <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+                                </div>
+                            )}
                         </div>
                     </div>
 

@@ -246,6 +246,7 @@ export default function EditProfile() {
                                 src={getProfileData?.profile_image}
                                 alt="User"
                                 className="w-24 h-24 rounded-full object-cover"
+                                loading="lazy"
                             />
                             <div
                                 className="absolute bottom-0 right-0 bg-[#000F5C] text-white p-2 rounded-full cursor-pointer"

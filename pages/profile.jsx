@@ -190,6 +190,7 @@ export default function Profile() {
                                 src={getProfileData?.profile_image}
                                 alt="User"
                                 className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
+                                loading="lazy"
                             />
                             <div>
                                 <h2 className="text-lg md:text-xl font-semibold text-gray-800">{`${getProfileData?.first_name} ${getProfileData?.last_name}`}</h2>
@@ -300,7 +301,9 @@ export default function Profile() {
                                                         <img
                                                             src={item.images[0]}
                                                             alt={item.title}
-                                                            className="max-h-full max-w-full object-contain transition-transform duration-300"
+                                                            loading="lazy"
+                                                            onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                                            className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
                                                         />
                                                         {item?.model && (
                                                             <span className="absolute top-2 left-2 bg-blue-100 text-blue-600 text-xs font-semibold px-2 py-1 rounded">
@@ -388,7 +391,9 @@ export default function Profile() {
                                                     <img
                                                         src={item.images[0]}
                                                         alt={item.title}
-                                                        className="max-h-full max-w-full object-contain transition-transform duration-300"
+                                                        loading="lazy"
+                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                                        className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
                                                     />
                                                     <>
                                                         {item.model &&

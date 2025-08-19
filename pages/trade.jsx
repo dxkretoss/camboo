@@ -74,6 +74,38 @@ export default function Trade() {
         }));
     };
 
+    function DescriptionToggle({ text }) {
+        const [expanded, setExpanded] = useState(false);
+
+        if (!text) return null;
+
+        return (
+            <div>
+                <p
+                    className="text-sm text-gray-600 mt-1"
+                    style={{
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                        WebkitLineClamp: expanded ? 'none' : 2,
+                        overflow: 'hidden',
+                    }}
+                >
+                    {text}
+                </p>
+                {text.length > 100 && (
+                    <button
+                        onClick={() => setExpanded(!expanded)}
+                        className="text-blue-600 cursor-pointer hover:underline mt-1 text-xs font-medium"
+                        type="button"
+                    >
+                        {expanded ? 'See less' : 'See more'}
+                    </button>
+                )}
+            </div>
+        );
+    }
+
+
     return (
         <Layout>
             <div className="md:px-10">
@@ -108,86 +140,16 @@ export default function Trade() {
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
                             <div>
                                 <span className="text-sm font-extrabold text-gray-600">
-                                    Match Product:
-                                </span>
-                                {highestLevelItems?.map((item, idx) => {
-                                    const currentIndex = imageIndexes[item.id] || 0;
-                                    return (
-                                        <div
-                                            key={idx}
-                                            className="relative rounded-2xl shadow-md p-4 flex flex-col items-center bg-white hover:shadow-lg transition mt-4"
-                                        >
-                                            <div className="relative h-40 sm:h-48 md:h-56 w-full rounded-md overflow-hidden">
-                                                <img
-                                                    src={
-                                                        item?.images?.[currentIndex] || "/placeholder.png"
-                                                    }
-                                                    alt={item?.title || "Matched item"}
-                                                    className="w-full h-full object-contain"
-                                                    loading="lazy"
-                                                />
-
-                                                {item.images?.length > 1 && (
-                                                    <>
-                                                        <button
-                                                            onClick={() =>
-                                                                handlePrev(item.id, item.images.length)
-                                                            }
-                                                            className="absolute  cursor-pointer left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
-                                                        >
-                                                            <ChevronLeft size={20} />
-                                                        </button>
-                                                        <button
-                                                            onClick={() =>
-                                                                handleNext(item.id, item.images.length)
-                                                            }
-                                                            className="absolute  cursor-pointer right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
-                                                        >
-                                                            <ChevronRight size={20} />
-                                                        </button>
-                                                    </>
-                                                )}
-                                            </div>
-
-                                            {item.images?.length > 1 && (
-                                                <div className="flex gap-1 mt-2">
-                                                    {item.images.map((_, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className={`w-2 h-2 rounded-full ${i === currentIndex
-                                                                ? "bg-blue-600"
-                                                                : "bg-gray-300"
-                                                                }`}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            )}
-
-                                            <h3 className="text-gray-800 font-semibold text-base text-center mt-3">
-                                                {item?.title || "Unnamed Item"}
-                                            </h3>
-                                            <p className="text-gray-500 text-sm text-center line-clamp-2 mt-1">
-                                                {item?.description || "No description available."}
-                                            </p>
-                                            <span className="mt-3 text-blue-600 font-bold text-lg">
-                                                ₹{item?.price || "0.00"}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-
-                            <div>
-                                <span className="text-sm font-extrabold text-gray-600">
-                                    Your Product:
+                                    Match {yourItemsData?.main_type}:
                                 </span>
                                 <div className="rounded-2xl shadow-md p-4 flex flex-col items-center bg-white hover:shadow-lg transition mt-4">
                                     <div className="relative h-40 sm:h-48 md:h-56 rounded-md overflow-hidden w-full">
                                         <img
                                             src={yourItemsData?.images?.[imageIndexes["yourProduct"] || 0]}
                                             alt={yourItemsData?.title}
-                                            className="w-full h-full object-contain"
                                             loading="lazy"
+                                            onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                            className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
                                         />
 
                                         {yourItemsData?.images?.length > 1 && (
@@ -227,15 +189,87 @@ export default function Trade() {
                                     )}
 
                                     <h3 className="text-gray-800 font-semibold text-base text-center mt-3">
-                                        {yourItemsData?.title || "Unnamed Item"}
+                                        {yourItemsData?.title}
                                     </h3>
                                     <p className="text-gray-500 text-sm text-center line-clamp-2 mt-1">
-                                        {yourItemsData?.description || "No description available."}
+                                        <DescriptionToggle text={yourItemsData?.description} />
                                     </p>
                                     <span className="mt-3 text-blue-600 font-bold text-lg">
                                         ₹{yourItemsData?.price || "0.00"}
                                     </span>
                                 </div>
+                            </div>
+
+                            <div>
+                                <span className="text-sm font-extrabold text-gray-600">
+                                    Your {highestLevelItems?.map((item) => item?.main_type)}:
+                                </span>
+                                {highestLevelItems?.map((item, idx) => {
+                                    const currentIndex = imageIndexes[item.id] || 0;
+                                    return (
+                                        <div
+                                            key={idx}
+                                            className="relative rounded-2xl shadow-md p-4 flex flex-col items-center bg-white hover:shadow-lg transition mt-4"
+                                        >
+                                            <div className="relative h-40 sm:h-48 md:h-56 w-full rounded-md overflow-hidden">
+                                                <img
+                                                    src={
+                                                        item?.images?.[currentIndex] || "/placeholder.png"
+                                                    }
+                                                    alt={item?.title || "Matched item"}
+                                                    loading="lazy"
+                                                    onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                                    className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
+                                                />
+
+                                                {item.images?.length > 1 && (
+                                                    <>
+                                                        <button
+                                                            onClick={() =>
+                                                                handlePrev(item.id, item.images.length)
+                                                            }
+                                                            className="absolute  cursor-pointer left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
+                                                        >
+                                                            <ChevronLeft size={20} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() =>
+                                                                handleNext(item.id, item.images.length)
+                                                            }
+                                                            className="absolute  cursor-pointer right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
+                                                        >
+                                                            <ChevronRight size={20} />
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+
+                                            {item.images?.length > 1 && (
+                                                <div className="flex gap-1 mt-2">
+                                                    {item.images.map((_, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className={`w-2 h-2 rounded-full ${i === currentIndex
+                                                                ? "bg-blue-600"
+                                                                : "bg-gray-300"
+                                                                }`}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <h3 className="text-gray-800 font-semibold text-base text-center mt-3">
+                                                {item?.title}
+                                            </h3>
+                                            <p className="text-gray-500 text-sm text-center line-clamp-2 mt-1">
+                                                <DescriptionToggle text={item?.description} />
+                                            </p>
+                                            <span className="mt-3 text-blue-600 font-bold text-lg">
+                                                ₹{item?.price || "0.00"}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
                             </div>
 
                         </div>

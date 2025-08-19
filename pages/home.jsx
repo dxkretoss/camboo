@@ -256,6 +256,7 @@ export default function HomePage() {
                                                     src={user?.profile_image}
                                                     alt="User"
                                                     className="w-10 h-10 rounded-full object-cover border-2 border-white"
+                                                    loading="lazy"
                                                 />
                                                 <div>
                                                     <h2 className="text-sm font-semibold text-gray-900">
@@ -295,18 +296,23 @@ export default function HomePage() {
                                                                 key={idx}
                                                                 className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100 animate-pulse"
                                                             >
-                                                                <div className="w-full h-full animate-pulse bg-gray-300" />                                                            </div>
+                                                                <div className="w-full h-full animate-pulse bg-gray-300" />
+                                                            </div>
                                                         ))
                                                     ) : (
                                                         user.images
                                                             .slice(startIndexes[user.id] || 0, (startIndexes[user.id] || 0) + imagesPerPage)
                                                             .map((img, imgIdx) => (
-                                                                <div key={imgIdx} className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden">
+                                                                <div
+                                                                    key={imgIdx}
+                                                                    className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center"
+                                                                >
                                                                     <img
                                                                         src={img}
                                                                         alt={`product-${user.id}-${imgIdx}`}
-                                                                        className="w-full h-full object-contain"
                                                                         loading="lazy"
+                                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                                                        className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
                                                                     />
                                                                 </div>
                                                             ))
@@ -330,6 +336,7 @@ export default function HomePage() {
                                                     </>
                                                 )}
                                             </div>
+
                                         )}
 
                                         <div className="flex items-center gap-2 mt-3 rounded-full py-2">

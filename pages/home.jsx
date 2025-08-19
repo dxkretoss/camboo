@@ -30,6 +30,7 @@ export default function HomePage() {
     const [cmtsending, setcmtsending] = useState(false);
     const [imagesPerPage, setImagesPerPage] = useState(2);
     const [loadingImages, setLoadingImages] = useState({});
+    const [fetching, setfetching] = useState(false);
     const [isFav, setisFav] = useState(false);
 
     useEffect(() => {
@@ -208,14 +209,22 @@ export default function HomePage() {
     };
 
     const doingTrade = async (id) => {
+        setfetching(true);
         try {
             const token = Cookies.get("token");
             const letsCamboo = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/lets-trade?item_id=${id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             )
-            console.log(letsCamboo)
+            if (letsCamboo?.data?.success) {
+                router.push({
+                    pathname: "./trade",
+                    query: { Trade: letsCamboo?.data?.other_item?.id },
+                })
+            }
         } catch (err) {
             console.log(err)
+        } finally {
+            setfetching(false)
         }
     }
     return (
@@ -226,7 +235,7 @@ export default function HomePage() {
 
             <div className="flex-1 flex flex-col">
                 <Navbar />
-                {(loading || isFav) && (
+                {(loading || isFav || fetching) && (
                     <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
                         <div className="flex space-x-2">
                             <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
@@ -286,8 +295,7 @@ export default function HomePage() {
                                                                 key={idx}
                                                                 className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100 animate-pulse"
                                                             >
-                                                                <span className="text-gray-400">Loading...</span>
-                                                            </div>
+                                                                <div className="w-full h-full animate-pulse bg-gray-300" />                                                            </div>
                                                         ))
                                                     ) : (
                                                         user.images
@@ -298,6 +306,7 @@ export default function HomePage() {
                                                                         src={img}
                                                                         alt={`product-${user.id}-${imgIdx}`}
                                                                         className="w-full h-full object-contain"
+                                                                        loading="lazy"
                                                                     />
                                                                 </div>
                                                             ))

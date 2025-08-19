@@ -294,7 +294,7 @@ export default function addProduct() {
         if (!productData.description.trim()) newErrors.description = "Description is required";
         if (!productData.category.trim()) newErrors.category = "Category is required";
         if (!productData.sub_category.trim()) newErrors.sub_category = "Sub-Category is required";
-        if (!productData.brand.trim()) newErrors.brand = "Brand is required";
+        if (!productData.brand.trim() && productData?.unbranded_product !== 'check') newErrors.brand = "Brand is required";
         if (!productData.model.trim()) newErrors.model = "Model is required";
         if (!productData.price.trim()) {
             newErrors.price = "Price is required";
@@ -888,15 +888,16 @@ export default function addProduct() {
                                         <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="flex items-center sm:items-center">
                                                 <label className="flex items-center space-x-2">
-                                                    <input type="checkbox" className="accent-blue-600 w-4 h-4 sm:w-5 sm:h-5"
+                                                    <input type="checkbox" className="accent-blue-600 w-4 h-4"
                                                         checked={productData?.unbranded_product === 'check'}
                                                         onChange={(e) =>
                                                             setproductData({
                                                                 ...productData,
-                                                                unbranded_product: e.target.checked ? "check" : "uncheck"
+                                                                unbranded_product: e.target.checked ? "check" : "uncheck",
+                                                                brand: ''
                                                             })}
                                                     />
-                                                    <span className="text-xs sm:text-sm text-gray-700 font-medium">Produto Sem Marca</span>
+                                                    <span className="text-xs sm:text-sm text-gray-700 font-medium">Unbranded Product</span>
                                                 </label>
                                             </div>
                                         </div>
@@ -908,14 +909,16 @@ export default function addProduct() {
                                                     type="text"
                                                     placeholder="ex: YAMAHA"
                                                     value={productData?.brand}
+                                                    disabled={productData?.unbranded_product === 'check'}
                                                     onChange={(e) => {
                                                         setproductData({
                                                             ...productData,
                                                             brand: e.target.value
                                                         })
                                                     }}
-                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                />
+                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base 
+             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+             disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"                                                />
                                                 {errors.brand && <p className="text-red-500 text-xs">{errors.brand}</p>}
 
                                             </div>

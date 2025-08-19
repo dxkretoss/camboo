@@ -278,9 +278,9 @@ export default function HomePage() {
                                         <div className="mt-3">
                                             <h3 className="text-base font-semibold text-gray-800 flex items-center gap-3">
                                                 {user?.title}
-                                                {user?.price !== undefined && (
+                                                {(user?.price || user?.day_price || user?.hr_price) !== undefined && (
                                                     <span className="text-sm font-medium text-gray-500">
-                                                        ₹{user.price}
+                                                        ₹{user.price || user?.day_price || user?.hr_price}
                                                     </span>
                                                 )}
                                             </h3>

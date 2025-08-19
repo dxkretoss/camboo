@@ -392,9 +392,9 @@ export default function Profile() {
                                                     <div className="p-3">
                                                         <h3 className="flex items-center gap-2 truncate font-semibold text-gray-800 text-sm sm:text-base md:text-lg">
                                                             <span className="truncate">{item.title}</span>
-                                                            {item?.price !== undefined && (
+                                                            {(item?.price || item?.day_price || item?.hr_price) !== undefined && (
                                                                 <span className="font-medium text-gray-500 text-sm sm:text-sm md:text-sm">
-                                                                    ₹{item?.price}
+                                                                    ₹{item?.price || item?.day_price || item?.hr_price}
                                                                 </span>
                                                             )}
                                                         </h3>
@@ -457,11 +457,11 @@ export default function Profile() {
                                                 <div className="p-3">
                                                     <h3 className="flex items-center gap-2 truncate font-semibold text-gray-800 text-sm sm:text-base md:text-lg">
                                                         <span className="truncate">{item.title}</span>
-                                                        {item?.price !== undefined && (
-                                                            <span className="font-medium text-gray-500 text-xs sm:text-sm md:text-base">
-                                                                ₹{item.price}
+                                                        {/* {(item?.price || item?.day_price || item?.hr_price) !== undefined && (
+                                                            <span className="font-medium text-gray-500 text-sm sm:text-sm md:text-sm">
+                                                                ₹{item?.price || item?.day_price || item?.hr_price}
                                                             </span>
-                                                        )}
+                                                        )} */}
                                                     </h3>
                                                     <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1">
                                                         {item.time_display}

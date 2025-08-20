@@ -377,7 +377,13 @@ export default function HomePage() {
                                                     <span className="hidden xl:inline">Denounce Ad</span>
                                                 </button>
 
-                                                <button className="flex-1 xl:flex-none border border-[#003EFF] text-[#003EFF] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                <button className="flex-1 xl:flex-none border border-[#003EFF] text-[#003EFF] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
+                                                    onClick={() => {
+                                                        router.push({
+                                                            pathname: './addProduct',
+                                                            query: { Copyad: user?.id }
+                                                        })
+                                                    }}>
                                                     <img src="/dummy.png" alt="Verified" className="w-4 h-4" />
                                                     <span className="hidden xl:inline">Copy ad</span>
                                                 </button>

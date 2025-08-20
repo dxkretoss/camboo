@@ -213,12 +213,16 @@ export default function addProduct() {
 
     useEffect(() => {
         const editItemId = router?.query?.Editid;
+        const copyItemId = router?.query?.Copyad;
         if (editItemId) {
             getEditItemsData(editItemId);
-        } else {
+        } else if (copyItemId) {
+            getCopyItemsData(copyItemId);
+        }
+        else {
             clearState();
         }
-    }, [router?.query?.Editid])
+    }, [router?.query?.Editid, router?.query?.Copyad])
 
     const priceRegex = /^\d*\.?\d*$/;
     const { getallProdandSer, getClientsProdandSer } = useUser();
@@ -579,6 +583,77 @@ export default function addProduct() {
             setfetchEditData(false)
         }
     }
+
+    const getCopyItemsData = async (itemId) => {
+        console.log(itemId)
+        setfetchEditData(true);
+        try {
+            const getData = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service_detail?item_id=${itemId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (getData?.data?.data) {
+                const ProductData = getData?.data?.data;
+                if (ProductData?.main_type === 'Product') {
+                    setSelectedTab('Product')
+                    const tradeForWhat = ProductData?.trade_for_what === 'Product' ? '1' : '2'
+                    setTradeType(tradeForWhat)
+                    setproductData({
+                        title: ProductData?.title || '',
+                        description: ProductData?.description || '',
+                        category: ProductData?.category || '',
+                        sub_category: ProductData?.sub_category || '',
+                        unbranded_product: ProductData?.unbranded_product || '',
+                        brand: ProductData?.brand || '',
+                        model: ProductData?.model || '',
+                        product_type: ProductData?.product_type === 'New product' ? '2' : '1' || '1',
+                        price: ProductData?.price || '',
+                    });
+                    settradeforWhat({
+                        trade_for_what: ProductData?.trade_for_what === 'Product' ? '1' : '2' || '1',
+                        product_category: ProductData?.product_category || '',
+                        product_sub_category: ProductData?.product_sub_category || '',
+                        product_brand: ProductData?.product_brand || '',
+                        product_model: ProductData?.product_model || '',
+                        service_category: ProductData?.service_category || '',
+                        service_sub_category: ProductData?.service_sub_category || '',
+                        service_description: ProductData?.service_description || '',
+                    });
+                }
+
+                if (ProductData?.main_type === 'Service') {
+                    setSelectedTab('Service')
+                    const tradeForWhat = ProductData?.trade_for_what === 'Product' ? '1' : '2'
+                    setTradeType(tradeForWhat)
+                    setserviceData({
+                        title: ProductData?.title || '',
+                        description: ProductData?.description || '',
+                        category: ProductData?.category || '',
+                        sub_category: ProductData?.sub_category || '',
+                        range_of_service_delivery: ProductData?.range_of_service_delivery || '',
+                        cost_of_service: ProductData?.cost_of_service === 'R$/hr' ? '1' : '2' || '1',
+                        hr_price: ProductData?.hr_price || '',
+                        day_price: ProductData?.day_price || '',
+                    })
+                    settradeforWhat({
+                        trade_for_what: ProductData?.trade_for_what === 'Product' ? '1' : '2' || '1',
+                        product_category: ProductData?.product_category || '',
+                        product_sub_category: ProductData?.product_sub_category || '',
+                        product_brand: ProductData?.product_brand || '',
+                        product_model: ProductData?.product_model || '',
+                        service_category: ProductData?.service_category || '',
+                        service_sub_category: ProductData?.service_sub_category || '',
+                        service_description: ProductData?.service_description || '',
+                    });
+                }
+
+            }
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setfetchEditData(false)
+        }
+    }
+
 
     // Edit Product
     const editProducts = async () => {
@@ -1444,12 +1519,16 @@ export default function addProduct() {
                                                 if (selectedTab === 'Product') {
                                                     if (router?.query?.Editid) {
                                                         editProducts();
+                                                    } else if (router?.query?.Copyad) {
+                                                        addProducts();
                                                     } else {
                                                         addProducts();
                                                     }
                                                 } else {
                                                     if (router?.query?.Editid) {
                                                         editServices();
+                                                    } else if (router?.query?.Copyad) {
+                                                        addServices();
                                                     } else {
                                                         addServices();
                                                     }

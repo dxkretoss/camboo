@@ -258,8 +258,8 @@ export default function HomePage() {
                         </div>
                     </div>
                 )}
-                <div className="flex flex-col lg:flex-row p-2 sm:p-3 md:p-4 gap-4">
-                    <div className="flex-1 space-y-4 sm:space-y-6">
+                <div className="flex flex-col lg:flex-row p-2 gap-2">
+                    <div className="flex-1 space-y-2">
                         {allProductandService?.length > 0 ? (
                             allProductandService?.sort((a, b) => b.id - a.id)?.map((user, idx) => {
                                 return (
@@ -489,7 +489,7 @@ export default function HomePage() {
                         )}
                     </div>
 
-                    <div className="w-full lg:w-[300px] xl:w-[340px] space-y-4">
+                    <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
                         <SectionCard title="Suggested Trades" items={suggestedTrades} />
                         <SectionCard title="History of Trades" items={historyOfTrades} />
                         <SectionCard title="Marketings" items={marketings} />

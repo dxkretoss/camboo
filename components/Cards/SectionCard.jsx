@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function SectionCard({ title, items = [] }) {
     return (
-        <div className="bg-white shadow rounded-lg p-4 mb-4">
+        <div className="bg-white shadow rounded-lg p-2 mb-2">
             <div className="flex justify-between items-center mb-3">
                 <h3 className="font-semibold text-sm">{title}</h3>
                 <button className="text-xs cursor-pointer text-blue-600 hover:underline">View All</button>

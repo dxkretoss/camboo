@@ -79,7 +79,6 @@ export default function forgotPassword() {
         }
     };
 
-
     return (
         <div className="flex md:flex-row h-screen bg-gray-100">
             <div className="hidden md:block md:w-1/2">

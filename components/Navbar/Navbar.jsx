@@ -44,6 +44,7 @@ export default function Navbar() {
     const { profile } = useUser();
     const [searchItems, setsearchItems] = useState('');
     const [showArea, setshowArea] = useState(false);
+    const [logOut, setlogOut] = useState(false);
     const [selectedArea, setSelectedArea] = useState({ name: "Recife", code: "PE" });
 
     const requiredFields = [
@@ -78,6 +79,7 @@ export default function Navbar() {
     }, []);
 
     const logOutUser = async () => {
+        setlogOut(true);
         try {
             const res = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_CAMBOO}/logout`,
@@ -86,12 +88,14 @@ export default function Navbar() {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            if (res.data.success) {
+            if (res?.data?.success) {
                 Cookies.remove('token');
                 router.push('/')
             }
         } catch (err) {
             console.error(err);
+        } finally {
+            setlogOut(false);
         }
     };
 
@@ -270,6 +274,16 @@ export default function Navbar() {
                                     </button>
                                 </li>
                             </ul>
+                        </div>
+                    )}
+
+                    {logOut && (
+                        <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
+                            <div className="flex space-x-2">
+                                <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce"></div>
+                                <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.2s]"></div>
+                                <div className="w-3 h-3 bg-[#000F5C] rounded-full animate-bounce [animation-delay:-0.4s]"></div>
+                            </div>
                         </div>
                     )}
 

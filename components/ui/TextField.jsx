@@ -2,7 +2,7 @@ import React from 'react';
 
 const TextField = ({ label, type = 'text', value, onChange, name, placeholder, ...rest }) => {
     return (
-        <div className="relative w-full mb-4">
+        <div className="relative w-full mb-2">
             <label
                 htmlFor={name}
                 className="absolute -top-2 left-3 bg-white px-1 text-[12px] text-black z-10"

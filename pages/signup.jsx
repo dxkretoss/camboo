@@ -252,7 +252,7 @@ export default function signup() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                             <div>
                                 <TextField
                                     label="Email"
@@ -300,7 +300,7 @@ export default function signup() {
                             </div>
                         </div>
 
-                        <div className="relative mt-3">
+                        <div className="relative mt-4 md:mt-2">
                             <TextField
                                 label="Password"
                                 type={showPassword ? 'text' : 'password'}
@@ -330,7 +330,7 @@ export default function signup() {
                             {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                         </div>
 
-                        <div className="relative mt-3">
+                        <div className="relative mt-4">
                             <TextField
                                 label="Confirm Password"
                                 type={showConfirmPassword ? 'text' : 'password'}

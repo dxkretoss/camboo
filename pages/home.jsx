@@ -270,8 +270,9 @@ export default function HomePage() {
                                                     src={user?.profile_image}
                                                     alt="User"
                                                     loading="lazy"
-                                                    onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
-                                                    className="w-10 h-10 rounded-full object-contain  border-2 border-white opacity-0 blur-md transition-all duration-500"
+                                                    decoding="async"
+                                                    onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                                    className="w-10 h-10 rounded-full object-contain  border-2 border-white opacity-0 transition-opacity duration-500"
                                                 />
                                                 <div>
                                                     <h2 className="text-sm font-semibold text-gray-900">
@@ -337,8 +338,9 @@ export default function HomePage() {
                                                                         src={img}
                                                                         alt={`product-${user.id}-${imgIdx}`}
                                                                         loading="lazy"
-                                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
-                                                                        className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
+                                                                        decoding="async"
+                                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                                                        className="w-full h-full object-contain opacity-0 transition-opacity duration-300"
                                                                     />
                                                                 </div>
                                                             ))

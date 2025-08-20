@@ -146,10 +146,11 @@ export default function Trade() {
                                                 src={matchedData?.images?.[imageIndexes["yourProduct"] || 0]}
                                                 alt={matchedData?.title}
                                                 loading="lazy"
+                                                decoding="async"
                                                 onLoad={(e) =>
-                                                    e.currentTarget.classList.remove("opacity-0", "blur-md")
+                                                    e.currentTarget.classList.remove("opacity-0")
                                                 }
-                                                className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
+                                                className="w-full h-full object-contain opacity-0 transition-opacity duration-500"
                                             />
 
                                             {matchedData?.images?.length > 1 && (
@@ -176,7 +177,7 @@ export default function Trade() {
 
                                         {matchedData?.images?.length > 1 && (
                                             <div className="flex gap-1 mt-2">
-                                                {matchedData.images.map((_, i) => (
+                                                {matchedData?.images.map((_, i) => (
                                                     <div
                                                         key={i}
                                                         className={`w-2 h-2 rounded-full ${i === (imageIndexes["yourProduct"] || 0)
@@ -221,6 +222,8 @@ export default function Trade() {
                                                         alt="User"
                                                         className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
                                                         loading="lazy"
+                                                        decoding="async"
+                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
                                                     />
                                                     <h2 className="text-sm font-semibold text-gray-900">
                                                         {`${profile?.first_name} ${profile?.last_name}` || ""}
@@ -234,13 +237,9 @@ export default function Trade() {
                                                         }
                                                         alt={item?.title || "Matched item"}
                                                         loading="lazy"
-                                                        onLoad={(e) =>
-                                                            e.currentTarget.classList.remove(
-                                                                "opacity-0",
-                                                                "blur-md"
-                                                            )
-                                                        }
-                                                        className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
+                                                        decoding="async"
+                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                                        className="w-full h-full object-contain opacity-0 transition-opacity duration-500"
                                                     />
 
                                                     {item.images?.length > 1 && (

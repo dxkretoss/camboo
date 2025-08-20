@@ -467,11 +467,12 @@ export default function Profile() {
                                             >
                                                 <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
                                                     <img
-                                                        src={item.images[0]}
-                                                        alt={item.title}
+                                                        src={item?.images[0]}
+                                                        alt={item?.title}
                                                         loading="lazy"
-                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
-                                                        className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
+                                                        decoding="async"
+                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                                        className="w-full h-full object-contain opacity-0 transition-opacity duration-500"
                                                     />
                                                     <>
                                                         {item.model &&

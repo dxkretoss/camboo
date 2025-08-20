@@ -278,8 +278,9 @@ export default function EditProfile() {
                                 src={getProfileData?.profile_image}
                                 alt="User"
                                 loading="lazy"
-                                onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
-                                className="w-24 h-24 rounded-full object-contain opacity-0 blur-md transition-all duration-500"
+                                decoding="async"
+                                onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                className="w-24 h-24 rounded-full object-contain opacity-0 transition-opacity duration-500"
                             />
                             <div
                                 className="absolute bottom-0 right-0 bg-[#000F5C] text-white p-2 rounded-full cursor-pointer"

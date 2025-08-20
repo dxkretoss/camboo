@@ -791,7 +791,14 @@ export default function addProduct() {
                             <label className="relative cursor-pointer border border-dashed border-gray-300 rounded-lg sm:rounded-xl w-full aspect-square flex items-center justify-center overflow-hidden hover:border-blue-400 transition-colors">
                                 {images[0] ? (
                                     <>
-                                        <img src={images[0].preview} alt="Preview" className="object-cover w-full h-full rounded-lg sm:rounded-xl" />
+                                        <img
+                                            src={images[0]?.preview}
+                                            alt="Preview"
+                                            className="object-contain w-full h-full  opacity-0 transition-opacity duration-500 rounded-lg sm:rounded-xl"
+                                            loading="lazy"
+                                            decoding="async"
+                                            onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                        />
                                         {router?.query?.Editid && (
                                             <button
                                                 type="button"
@@ -822,7 +829,14 @@ export default function addProduct() {
                                     >
                                         {images[index] ? (
                                             <>
-                                                <img src={images[index].preview} alt="Preview" className="object-cover w-full h-full rounded-lg sm:rounded-xl" />
+                                                <img
+                                                    src={images[index]?.preview}
+                                                    alt="Preview"
+                                                    className="object-contain w-full h-full  opacity-0 transition-opacity duration-500 rounded-lg sm:rounded-xl"
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                                />
                                                 {router?.query?.Editid && (
                                                     <button
                                                         type="button"

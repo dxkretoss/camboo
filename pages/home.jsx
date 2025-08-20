@@ -282,14 +282,19 @@ export default function HomePage() {
                                             </div>
                                             <div className="flex items-center gap-1">
                                                 <Heart
-                                                    onClick={() => sendClientSaveitems(user?.id)}
-                                                    className={`cursor-pointer transition-transform duration-200 
-                                                            ${loadingIds.includes(user?.id)
-                                                            ? "animate-pulse text-gray-400"
+                                                    onClick={() => {
+                                                        if (!loadingIds.includes(user?.id)) {
+                                                            sendClientSaveitems(user?.id);
+                                                        }
+                                                    }}
+                                                    className={`transition-transform duration-200 
+                                                                ${loadingIds.includes(user?.id)
+                                                            ? "animate-pulse text-gray-400 cursor-not-allowed"
                                                             : clientSaveItems?.some(item => item.item_id === user?.id)
-                                                                ? "text-[#000F5C] scale-110 fill-[#000F5C]"
-                                                                : "text-black"
-                                                        }`}
+                                                                ? "text-[#000F5C] scale-110 fill-[#000F5C] cursor-pointer"
+                                                                : "text-black cursor-pointer"
+                                                        }`
+                                                    }
                                                 />
 
                                                 <EllipsisVertical className='cursor-pointer' />

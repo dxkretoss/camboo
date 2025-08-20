@@ -480,17 +480,22 @@ export default function Profile() {
                                                             </span>
                                                         }
                                                         <Heart
-                                                            onClick={() => sendClientSaveitems(item?.item_id)}
+                                                            onClick={() => {
+                                                                if (!loadingIds.includes(item?.item_id)) {
+                                                                    sendClientSaveitems(item?.item_id);
+                                                                }
+                                                            }}
                                                             className={`absolute top-2 right-2 bg-white 
                                                                     ${loadingIds.includes(item?.item_id)
-                                                                    ? "animate-pulse text-gray-400"
+                                                                    ? "animate-pulse text-gray-400 cursor-not-allowed opacity-50"
                                                                     : clientSaveItems?.some(i => i.item_id === item?.item_id)
-                                                                        ? "text-[#4370C2] scale-110 fill-[#4370C2]"
-                                                                        : "text-black"
+                                                                        ? "text-[#4370C2] scale-110 fill-[#4370C2] cursor-pointer"
+                                                                        : "text-black cursor-pointer"
                                                                 } 
-                                                                p-1.5 rounded-full shadow-sm cursor-pointer hover:bg-blue-200 transition`}
+                                                                p-1.5 rounded-full shadow-sm transition`}
                                                             size={30}
                                                         />
+
                                                     </>
                                                 </div>
 

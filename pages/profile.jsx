@@ -133,17 +133,19 @@ export default function Profile() {
             }
         } catch (err) {
             console.error(err);
-            toast.error("Something went wrong.");
         }
     };
 
     useEffect(() => {
-        const mapped = {};
-        clientSaveItems?.forEach(item => {
-            mapped[item.item_id] = item.id;
+        if (!clientSaveItems) return;
+        setSavedItems((prev) => {
+            const mapped = { ...prev };
+            clientSaveItems.forEach(item => {
+                mapped[item.item_id] = true;
+            });
+            return mapped;
         });
-        setSavedItems(mapped);
-    }, [clientSaveItems])
+    }, [clientSaveItems]);
 
     const handleDeleteItem = async (id) => {
         setisDelete(true);

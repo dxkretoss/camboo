@@ -182,12 +182,16 @@ export default function HomePage() {
     };
 
     useEffect(() => {
-        const mapped = {};
-        clientSaveItems?.forEach(item => {
-            mapped[item.item_id] = item.id;
+        if (!clientSaveItems) return;
+        setSavedItems((prev) => {
+            const mapped = { ...prev };
+            clientSaveItems.forEach(item => {
+                mapped[item.item_id] = true;
+            });
+            return mapped;
         });
-        setSavedItems(mapped);
-    }, [clientSaveItems])
+    }, [clientSaveItems]);
+
 
     const sendClientItemsComments = async (id, text) => {
         if (!text.trim()) {

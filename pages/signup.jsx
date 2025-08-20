@@ -168,8 +168,8 @@ export default function signup() {
     });
 
     return (
-        <div className="flex md:flex-row h-screen bg-gray-100">
-            <div className="hidden md:block md:w-1/2">
+        <div className="flex xl:flex-row min-h-screen bg-gray-100">
+            <div className="hidden xl:block xl:w-1/2">
                 <img
                     src="/loginbg.png"
                     alt="Login Visual"
@@ -188,7 +188,7 @@ export default function signup() {
                     </div>
                 </div>
             )}
-            <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
+            <div className="w-full xl:w-1/2 flex flex-col items-center overflow-y-auto py-6">
                 <img
                     src="/logo1.jpeg"
                     alt="Logo"
@@ -197,7 +197,7 @@ export default function signup() {
                         event.preventDefault();
                     }}
                 />
-                <div className="flex justify-center items-start md:items-center w-full px-4 sm:px-6 md:px-8 pt-10 pb-6 sm:pt-16 sm:pb-10">
+                <div className="flex justify-center items-center w-full px-4 py-8">
                     <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 md:p-8 w-full max-w-xl">
                         <h2 className="text-xl sm:text-2xl text-[#000F5C] font-semibold mb-1 sm:mb-2 text-center">
                             Register

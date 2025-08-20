@@ -222,8 +222,8 @@ export default function Index() {
   });
 
   return (
-    <div className="flex md:flex-row h-screen bg-gray-100">
-      <div className="hidden md:block md:w-1/2">
+    <div className="flex xl:flex-row h-screen bg-gray-100">
+      <div className="hidden xl:block xl:w-1/2">
         <img
           src="/loginbg.png"
           alt="Login Visual"
@@ -242,7 +242,7 @@ export default function Index() {
         </div>
       )}
 
-      <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
+      <div className="w-full flex flex-col justify-center items-center xl:w-1/2 overflow-y-auto">
         <img
           src="/logo1.jpeg"
           alt="Logo"

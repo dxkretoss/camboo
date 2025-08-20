@@ -6,6 +6,36 @@ import Cookies from 'js-cookie';
 import { useUser } from '@/context/UserContext';
 import axios from 'axios';
 
+const brazilStates = [
+    { name: "Acre", code: "AC" },
+    { name: "Alagoas", code: "AL" },
+    { name: "Amapá", code: "AP" },
+    { name: "Amazonas", code: "AM" },
+    { name: "Bahia", code: "BA" },
+    { name: "Ceará", code: "CE" },
+    { name: "Distrito Federal (Federal District)", code: "DF" },
+    { name: "Espírito Santo", code: "ES" },
+    { name: "Goiás", code: "GO" },
+    { name: "Maranhão", code: "MA" },
+    { name: "Mato Grosso", code: "MT" },
+    { name: "Mato Grosso do Sul", code: "MS" },
+    { name: "Minas Gerais", code: "MG" },
+    { name: "Pará", code: "PA" },
+    { name: "Paraíba", code: "PB" },
+    { name: "Paraná", code: "PR" },
+    { name: "Pernambuco", code: "PE" },
+    { name: "Piauí", code: "PI" },
+    { name: "Rio de Janeiro", code: "RJ" },
+    { name: "Rio Grande do Norte", code: "RN" },
+    { name: "Rio Grande do Sul", code: "RS" },
+    { name: "Rondônia", code: "RO" },
+    { name: "Roraima", code: "RR" },
+    { name: "Santa Catarina", code: "SC" },
+    { name: "São Paulo", code: "SP" },
+    { name: "Sergipe", code: "SE" },
+    { name: "Tocantins", code: "TO" }
+];
+
 export default function Navbar() {
     const router = useRouter();
     const token = Cookies.get("token");
@@ -13,6 +43,9 @@ export default function Navbar() {
     const dropdownRef = useRef();
     const { profile } = useUser();
     const [searchItems, setsearchItems] = useState('');
+    const [showArea, setshowArea] = useState(false);
+    const [selectedArea, setSelectedArea] = useState({ name: "Recife", code: "PE" });
+
     const requiredFields = [
         "first_name",
         "last_name",
@@ -85,8 +118,6 @@ export default function Navbar() {
                 />
             </div>
 
-
-
             <div className="flex-1 mx-4 max-w-md hidden sm:block">
                 <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2 relative">
                     <Search className="w-5 h-5 text-[#000F5C]" />
@@ -110,10 +141,32 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
                 {isComplete ?
                     <>
-                        <div className="hidden lg:flex items-center text-gray-700 gap-1">
+                        <div className="relative hidden lg:flex items-center text-gray-700 gap-1">
                             <MapPin className="w-5 h-5" />
-                            <span className="text-sm">Recife, PE</span>
-                            <ChevronDown className="w-4 h-4" />
+                            {/* Show selected area */}
+                            <span className="text-sm">{selectedArea.name}, {selectedArea.code}</span>
+
+                            <ChevronDown
+                                className="w-4 h-4 cursor-pointer"
+                                onClick={() => setshowArea(!showArea)}
+                            />
+
+                            {showArea && (
+                                <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-md w-40 z-50 max-h-60 overflow-y-auto">
+                                    {brazilStates.map((state, idx) => (
+                                        <button
+                                            key={idx}
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-blue-100 cursor-pointer"
+                                            onClick={() => {
+                                                setSelectedArea(state);
+                                                setshowArea(false);
+                                            }}
+                                        >
+                                            {state.name} ({state.code})
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         <div className="md:hidden">

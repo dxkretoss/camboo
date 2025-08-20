@@ -26,6 +26,8 @@ export default function Profile() {
     const [socialLinks, setSocialLinks] = useState([]);
     const [savedItems, setSavedItems] = useState({});
     const [isDelete, setisDelete] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedItemId, setSelectedItemId] = useState(null);
     const [getProfileData, setgetProfileData] = useState({
         first_name: '',
         last_name: '',
@@ -40,6 +42,24 @@ export default function Profile() {
     });
     const [openMenuId, setOpenMenuId] = useState(null);
     const menuRefs = useRef({});
+    const dialogRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dialogRef.current && !dialogRef.current.contains(event.target)) {
+                setOpenDialog(false);
+                setSelectedItemId("")
+            }
+        };
+
+        if (openDialog) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [openDialog]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -145,7 +165,8 @@ export default function Profile() {
         <Layout>
             <div className="md:px-10">
                 <div className="flex items-center gap-1 text-gray-700 mb-4">
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-5 h-5 cursor-pointer "
+                        onClick={() => window.history.back()} />
                     <span
                         onClick={() => window.history.back()}
                         className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer transition duration-200"
@@ -371,7 +392,10 @@ export default function Profile() {
                                                                     </button>
                                                                     <button
                                                                         className="w-full px-4 py-2 text-left text-sm cursor-pointer rounded-lg flex items-center gap-2 hover:bg-red-200"
-                                                                        onClick={() => handleDeleteItem(item.id)}
+                                                                        onClick={() => {
+                                                                            setSelectedItemId(item.id);
+                                                                            setOpenDialog(true);
+                                                                        }}
                                                                     >
                                                                         <Trash2 className="w-4 h-4 text-red-600" />
                                                                         Delete
@@ -397,6 +421,40 @@ export default function Profile() {
 
                                                 </div>
                                             ))}
+
+                                        {openDialog && (
+                                            <div className="fixed inset-0 flex justify-center items-center bg-black/50 backdrop-blur-sm z-50">
+                                                <div ref={dialogRef} className="bg-white rounded-xl shadow-lg p-6 w-80">
+                                                    <h2 className="text-lg font-semibold text-gray-800">
+                                                        Confirm Delete
+                                                    </h2>
+                                                    <p className="text-sm text-gray-600 mt-2">
+                                                        Are you sure you want to delete this item?
+                                                    </p>
+
+                                                    <div className="mt-6 flex justify-end gap-3">
+                                                        <button
+                                                            className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700"
+                                                            onClick={() => setOpenDialog(false)}
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white"
+                                                            onClick={() => {
+                                                                if (selectedItemId) {
+                                                                    handleDeleteItem(selectedItemId);
+                                                                }
+                                                                setOpenDialog(false);
+                                                                setSelectedItemId(null);
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-12 text-gray-500">

@@ -762,7 +762,8 @@ export default function addProduct() {
         <Layout>
             <div className="relative min-h-screen bg-[url('/addproBg.png')] bg-no-repeat sm:bg-contain bg-cover bg-center">
                 <div className="flex items-center gap-1 px-3 sm:px-4 md:px-6 lg:px-10">
-                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <ChevronLeft className="w-5 h-5 cursor-pointer "
+                        onClick={() => window.history.back()} />
                     <span
                         onClick={() => window.history.back()}
                         className="text-xs sm:text-sm md:text-base font-medium text-gray-700 hover:text-blue-600 cursor-pointer transition duration-200"
@@ -880,7 +881,7 @@ export default function addProduct() {
                                 {selectedTab === 'Product' ? (
                                     <>
                                         <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Title</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Title *</label>
                                             <input
                                                 type="text"
                                                 placeholder="ex: Yamaha Y12 2024 New Model"
@@ -897,7 +898,7 @@ export default function addProduct() {
                                         </div>
 
                                         <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Description</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Description *</label>
                                             <textarea
                                                 rows="3"
                                                 placeholder="Describe your product here..."
@@ -916,7 +917,7 @@ export default function addProduct() {
                                         <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Category
+                                                    Category *
                                                 </label>
                                                 <select
                                                     value={productData.category}
@@ -941,7 +942,7 @@ export default function addProduct() {
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Sub-Category
+                                                    Sub-Category *
                                                 </label>
                                                 <select
                                                     value={productData.sub_category}
@@ -982,7 +983,7 @@ export default function addProduct() {
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand *</label>
                                                 <input
                                                     type="text"
                                                     placeholder="ex: YAMAHA"
@@ -1001,7 +1002,7 @@ export default function addProduct() {
 
                                             </div>
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Model</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Model *</label>
                                                 <input
                                                     type="text"
                                                     placeholder="ex: Y12 2024"
@@ -1022,7 +1023,7 @@ export default function addProduct() {
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Product Type
+                                                    Product Type *
                                                 </label>
                                                 <div className="flex items-center h-[42px] gap-4">
                                                     <label className="flex items-center space-x-2">
@@ -1062,7 +1063,7 @@ export default function addProduct() {
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Price
+                                                    Price *
                                                 </label>
                                                 <input
                                                     type="text"
@@ -1088,7 +1089,7 @@ export default function addProduct() {
                                 ) : (
                                     <>
                                         <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Title</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Title *</label>
                                             <input
                                                 type="text"
                                                 placeholder="ex: Make the Swimming pool to my home"
@@ -1106,7 +1107,7 @@ export default function addProduct() {
                                         </div>
 
                                         <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Description</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Description *</label>
                                             <textarea
                                                 rows="3"
                                                 placeholder="Describe your service here..."
@@ -1126,7 +1127,7 @@ export default function addProduct() {
                                         <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Category
+                                                    Category *
                                                 </label>
                                                 <select
                                                     value={serviceData.category}
@@ -1151,7 +1152,7 @@ export default function addProduct() {
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Sub-Category
+                                                    Sub-Category *
                                                 </label>
                                                 <select
                                                     value={serviceData.sub_category}
@@ -1176,7 +1177,7 @@ export default function addProduct() {
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Cost of service
+                                                    Cost of service *
                                                 </label>
                                                 <div className="flex items-start h-[42px] gap-4">
                                                     <label className="flex items-center space-x-2">
@@ -1219,7 +1220,7 @@ export default function addProduct() {
 
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                                                        Range of Service Delivery
+                                                        Range of Service Delivery *
                                                     </label>
                                                     <select
                                                         value={serviceData?.range_of_service_delivery || ""}
@@ -1243,7 +1244,7 @@ export default function addProduct() {
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    {serviceData?.cost_of_service === '1' ? 'R$/hr' : 'R$/Day'}
+                                                    {serviceData?.cost_of_service === '1' ? 'R$/hr' : 'R$/Day'} *
                                                 </label>
                                                 <input
                                                     type="text"
@@ -1285,7 +1286,7 @@ export default function addProduct() {
 
                                 <div className="bg-[#f7f9ff] p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl space-y-3 sm:space-y-4">
                                     <div className="space-y-2">
-                                        <label className="block text-xs sm:text-sm font-medium text-gray-700">Trade for what?</label>
+                                        <label className="block text-xs sm:text-sm font-medium text-gray-700">Trade for what? *</label>
                                         <div className="flex xs:flex-row gap-2 xs:gap-6">
                                             <label className="flex items-center space-x-2">
                                                 <input
@@ -1343,7 +1344,7 @@ export default function addProduct() {
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                        Category
+                                                        Category *
                                                     </label>
                                                     <select
                                                         value={tradeforWhat.product_category}
@@ -1368,7 +1369,7 @@ export default function addProduct() {
 
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                        Sub-Category
+                                                        Sub-Category *
                                                     </label>
                                                     <select
                                                         value={tradeforWhat.product_sub_category}
@@ -1392,7 +1393,7 @@ export default function addProduct() {
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
-                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand</label>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand *</label>
                                                     <input
                                                         type="text"
                                                         placeholder="ex: YAMAHA"
@@ -1409,7 +1410,7 @@ export default function addProduct() {
 
                                                 </div>
                                                 <div className="space-y-1 sm:space-y-2">
-                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Model</label>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Model *</label>
                                                     <input
                                                         type="text"
                                                         placeholder="ex: Y12 2024"
@@ -1432,7 +1433,7 @@ export default function addProduct() {
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                        Category
+                                                        Category *
                                                     </label>
                                                     <select
                                                         value={tradeforWhat.service_category}
@@ -1457,7 +1458,7 @@ export default function addProduct() {
 
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                        Sub-Category
+                                                        Sub-Category *
                                                     </label>
                                                     <select
                                                         value={tradeforWhat.service_sub_category}

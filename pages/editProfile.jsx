@@ -34,6 +34,38 @@ export default function EditProfile() {
         profile_image: '',
     });
 
+    const [inputValue, setInputValue] = useState("");
+    const [interests, setInterests] = useState([]);
+
+    useEffect(() => {
+        if (profile?.what_are_you_interested_in) {
+            setInterests(profile.what_are_you_interested_in.split(","));
+        }
+    }, [profile]);
+
+    const handleInterestKeyDown = (e) => {
+        if (e.key === "Enter" && inputValue.trim() !== "") {
+            e.preventDefault();
+            if (!interests.includes(inputValue.trim())) {
+                const updated = [...interests, inputValue.trim()];
+                setInterests(updated);
+                setgetProfileData({
+                    ...getProfileData,
+                    what_are_you_interested_in: updated.join(","),
+                });
+            }
+            setInputValue("");
+        }
+    };
+
+    const removeInterest = (item) => {
+        const updated = interests.filter((i) => i !== item);
+        setInterests(updated);
+        setgetProfileData({
+            ...getProfileData,
+            what_are_you_interested_in: updated.join(","),
+        });
+    };
     useEffect(() => {
         if (!token) router.push('/');
         document.title = "Camboo-EditProfile"
@@ -218,7 +250,8 @@ export default function EditProfile() {
         <Layout>
             <div className="md:px-10">
                 <div className="flex items-center gap-1 text-gray-700">
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-5 h-5 cursor-pointer"
+                        onClick={() => window.history.back()} />
                     <span
                         onClick={() => window.history.back()}
                         className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer"
@@ -266,7 +299,7 @@ export default function EditProfile() {
                         <div className="space-y-4 w-full">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">First Name</label>
+                                    <label className="block text-sm font-medium">First Name *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.first_name}
@@ -277,7 +310,7 @@ export default function EditProfile() {
                                     {errors.first_name && <p className="text-red-500 text-xs">{errors.first_name}</p>}
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Last Name</label>
+                                    <label className="block text-sm font-medium">Last Name *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.last_name}
@@ -291,7 +324,7 @@ export default function EditProfile() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Email</label>
+                                    <label className="block text-sm font-medium">Email *</label>
                                     <input
                                         type="email"
                                         value={getProfileData.email}
@@ -301,7 +334,7 @@ export default function EditProfile() {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Phone Number</label>
+                                    <label className="block text-sm font-medium">Phone Number *</label>
                                     <PhoneInput
                                         country={'in'}
                                         value={getProfileData.phone_number}
@@ -320,7 +353,7 @@ export default function EditProfile() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Street</label>
+                                    <label className="block text-sm font-medium">Street *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.street}
@@ -331,7 +364,7 @@ export default function EditProfile() {
                                     {errors.street && <p className="text-red-500 text-xs">{errors.street}</p>}
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">City</label>
+                                    <label className="block text-sm font-medium">City *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.city}
@@ -345,7 +378,7 @@ export default function EditProfile() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Post-Code</label>
+                                    <label className="block text-sm font-medium">Post-Code *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.post_code}
@@ -430,7 +463,7 @@ export default function EditProfile() {
                             </div>
 
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium">About Me</label>
+                                <label className="block text-sm font-medium">About Me *</label>
                                 <textarea
                                     rows="3"
                                     value={getProfileData.about_me}
@@ -442,19 +475,43 @@ export default function EditProfile() {
                             </div>
 
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium">What are you interested in?</label>
+                                <label className="block text-sm font-medium">What are you interested in? *</label>
                                 <input
                                     type="text"
-                                    value={getProfileData.what_are_you_interested_in}
-                                    onChange={(e) => setgetProfileData({ ...getProfileData, what_are_you_interested_in: e.target.value })}
-                                    onBlur={(e) => validateField('what_are_you_interested_in', e.target.value)}
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={handleInterestKeyDown}
+                                    onBlur={() =>
+                                        validateField("what_are_you_interested_in", getProfileData?.what_are_you_interested_in)
+                                    }
                                     className="w-full border rounded-lg px-4 py-2"
+                                    placeholder="Type and press Enter..."
                                 />
-                                {errors.what_are_you_interested_in && <p className="text-red-500 text-xs">{errors.what_are_you_interested_in}</p>}
+                                {errors?.what_are_you_interested_in && (
+                                    <p className="text-red-500 text-xs">{errors.what_are_you_interested_in}</p>
+                                )}
+
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {interests.map((item, idx) => (
+                                        <span
+                                            key={idx}
+                                            className="flex items-center gap-1 text-[#06145D] bg-[#06145D1A] px-3 py-1 rounded-md text-sm"
+                                        >
+                                            {item}
+                                            <button
+                                                type="button"
+                                                onClick={() => removeInterest(item)}
+                                                className="ml-1 text-red-500 hover:text-red-700"
+                                            >
+                                                ✕
+                                            </button>
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
 
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium">Professional Experience</label>
+                                <label className="block text-sm font-medium">Professional Experience *</label>
                                 <textarea
                                     rows="3"
                                     value={getProfileData.professional_experience}

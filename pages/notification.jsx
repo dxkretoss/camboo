@@ -11,7 +11,8 @@ export default function notification() {
         <Layout>
             <div className="md:px-10">
                 <div className="flex items-center gap-1 text-gray-700">
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-5 h-5 cursor-pointer "
+                        onClick={() => window.history.back()} />
                     <span
                         onClick={() => window.history.back()}
                         className="text-sm md:text-base font-medium text-gray-700 hover:text-blue-600 cursor-pointer transition duration-200"

@@ -160,8 +160,8 @@ export default function Navbar() {
                                 src={profile?.profile_image}
                                 alt="User"
                                 loading="lazy"
-                                onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
-                                className="w-10 h-10 rounded-full object-cover opacity-0 transition-opacity duration-500"
+                                onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                className="w-10 h-10 rounded-full object-contain opacity-0 blur-md transition-all duration-500"
                             />
                         </div>
 

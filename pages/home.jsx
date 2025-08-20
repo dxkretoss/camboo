@@ -282,8 +282,9 @@ export default function HomePage() {
                                                 <img
                                                     src={user?.profile_image}
                                                     alt="User"
-                                                    className="w-10 h-10 rounded-full object-cover border-2 border-white"
                                                     loading="lazy"
+                                                    onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                                    className="w-10 h-10 rounded-full object-contain  border-2 border-white opacity-0 blur-md transition-all duration-500"
                                                 />
                                                 <div>
                                                     <h2 className="text-sm font-semibold text-gray-900">
@@ -370,7 +371,9 @@ export default function HomePage() {
                                             <img
                                                 src={profile?.profile_image}
                                                 alt="User"
-                                                className="w-8 h-8 rounded-full object-cover"
+                                                loading="lazy"
+                                                onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                                className="w-8 h-8  rounded-full object-contain opacity-0 blur-md transition-all duration-500"
                                             />
                                             <input
                                                 type="text"

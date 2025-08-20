@@ -171,8 +171,9 @@ export default function Profile() {
                                 <img
                                     src={getProfileData?.profile_image}
                                     alt="User"
-                                    className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover"
                                     loading="lazy"
+                                    onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                                    className="w-16 h-16 md:w-20 md:h-20 rounded-full object-contain opacity-0 blur-md transition-all duration-500"
                                 />
                             ) : (
                                 <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-200 animate-pulse" />

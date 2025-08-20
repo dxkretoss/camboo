@@ -33,7 +33,9 @@ export default function Sidebar() {
                     <img
                         src={profile?.profile_image}
                         alt="User"
-                        className="w-16 h-16 md:w-20 md:h-20 rounded-full cursor-pointer object-cover"
+                        loading="lazy"
+                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
+                        className="w-16 h-16 md:w-20 md:h-20  rounded-full cursor-pointer object-contain opacity-0 blur-md transition-all duration-500"
                         onClick={() => router.push('./profile')}
                     />
                 ) : (

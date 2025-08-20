@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import Navbar from '@/components/Navbar/Navbar';
 import SectionCard from '@/components/Cards/SectionCard';
-import { Heart, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical } from 'lucide-react';
+import { Heart, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
@@ -30,6 +30,27 @@ export default function HomePage() {
     const [imagesPerPage, setImagesPerPage] = useState(2);
     const [loadingImages, setLoadingImages] = useState({});
     const [fetching, setfetching] = useState(false);
+    const [openDenounceadDialog, setopenDenounceadDialog] = useState(false);
+    const [Denounceadcomment, setDenounceadComment] = useState("");
+
+    const dialogRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dialogRef.current && !dialogRef.current.contains(event.target)) {
+                setopenDenounceadDialog(false);
+                setDenounceadComment("")
+            }
+        };
+
+        if (openDenounceadDialog) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [openDenounceadDialog]);
 
     useEffect(() => {
         const updateImagesPerPage = () => {
@@ -213,6 +234,26 @@ export default function HomePage() {
             setfetching(false)
         }
     }
+
+    const sendDenounceadComment = async (id) => {
+        try {
+            const token = Cookies.get("token");
+            const sendCmt = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/denounce-item`,
+                {
+                    item_id: id,
+                    comment: Denounceadcomment,
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            if (sendCmt?.data?.success) {
+                toast.success(`${sendCmt?.data?.message}`)
+                setopenDenounceadDialog(false);
+                setDenounceadComment("");
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
             <div className="hidden lg:block w-[250px]">
@@ -372,10 +413,56 @@ export default function HomePage() {
                                                     <span className="hidden xl:inline">Get in Touch</span>
                                                 </button>
 
-                                                <button className="flex-1 xl:flex-none border border-[#FF5C5C] text-[#FF5C5C] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                <button className="flex-1 xl:flex-none border border-[#FF5C5C] text-[#FF5C5C] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
+                                                    onClick={() => {
+                                                        setopenDenounceadDialog(true);
+                                                    }}>
                                                     <img src="/denouce.png" alt="Verified" className="w-4 h-4" />
                                                     <span className="hidden xl:inline">Denounce Ad</span>
                                                 </button>
+
+                                                {openDenounceadDialog && (
+                                                    <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-xs z-50 p-4 sm:p-6">
+                                                        <div
+                                                            ref={dialogRef}
+                                                            className="bg-white rounded-lg p-6 w-full max-w-md sm:max-w-lg md:max-w-xl relative shadow-lg"
+                                                        >
+                                                            <button
+                                                                className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 font-bold text-lg"
+                                                                onClick={() => setopenDenounceadDialog(false)}
+                                                            >
+                                                                <X />
+                                                            </button>
+
+                                                            <div className="flex items-center gap-2 mb-4">
+                                                                <img src="/denouce.png" alt="Verified" className="w-4 h-4" />
+                                                                <span className="text-lg font-semibold">Denounce Ad</span>
+                                                            </div>
+
+                                                            <p className="mb-2 text-sm text-gray-600">
+                                                                Write your comment below:
+                                                            </p>
+
+                                                            <textarea
+                                                                value={Denounceadcomment}
+                                                                onChange={(e) => setDenounceadComment(e.target.value)}
+                                                                className="w-full border border-gray-300 rounded-md p-2 mb-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
+                                                                rows={4}
+                                                                placeholder="Your comment..."
+                                                            />
+
+                                                            <div className="flex justify-end">
+                                                                <button
+                                                                    className="px-4 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600"
+                                                                    onClick={() => sendDenounceadComment(user?.id)}
+                                                                >
+                                                                    Send Comment
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+
 
                                                 <button className="flex-1 xl:flex-none border border-[#003EFF] text-[#003EFF] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
                                                     onClick={() => {

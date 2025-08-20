@@ -218,11 +218,10 @@ export default function addProduct() {
             getEditItemsData(editItemId);
         } else if (copyItemId) {
             getCopyItemsData(copyItemId);
-        }
-        else {
+        } else {
             clearState();
         }
-    }, [router?.query?.Editid, router?.query?.Copyad])
+    }, [(router?.query?.Editid || router?.query?.Copyad)])
 
     const priceRegex = /^\d*\.?\d*$/;
     const { getallProdandSer, getClientsProdandSer } = useUser();
@@ -291,6 +290,7 @@ export default function addProduct() {
         setImages(updatedImages);
     };
 
+    // Validate Product Field
     const validateProductForm = () => {
         let newErrors = {};
 
@@ -322,6 +322,7 @@ export default function addProduct() {
         return Object.keys(newErrors).length === 0;
     };
 
+    // Validate Service Field
     const validateServiceForm = () => {
         let newErrors = {};
 
@@ -361,6 +362,7 @@ export default function addProduct() {
         return Object.keys(newErrors).length === 0;
     };
 
+    // Clear State
     const clearState = () => {
         setproductData({
             title: '',
@@ -399,6 +401,7 @@ export default function addProduct() {
         setErrors({});
     }
 
+    // Add Product
     const addProducts = async () => {
         if (!validateProductForm()) return;
         setadding(true);
@@ -446,6 +449,7 @@ export default function addProduct() {
         }
     };
 
+    // Add Service
     const addServices = async () => {
         if (!validateServiceForm()) return;
         setadding(true);
@@ -493,6 +497,7 @@ export default function addProduct() {
         }
     }
 
+    // Get Edit Data
     const getEditItemsData = async (itemId) => {
         setfetchEditData(true);
         try {
@@ -584,8 +589,8 @@ export default function addProduct() {
         }
     }
 
+    // Get Copy ad Data
     const getCopyItemsData = async (itemId) => {
-        console.log(itemId)
         setfetchEditData(true);
         try {
             const getData = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-product_and_service_detail?item_id=${itemId}`,
@@ -645,7 +650,6 @@ export default function addProduct() {
                         service_description: ProductData?.service_description || '',
                     });
                 }
-
             }
         } catch (error) {
             console.log(error)
@@ -653,7 +657,6 @@ export default function addProduct() {
             setfetchEditData(false)
         }
     }
-
 
     // Edit Product
     const editProducts = async () => {
@@ -1427,24 +1430,6 @@ export default function addProduct() {
                                     ) : (
                                         <>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-
-                                                {/* <div className="space-y-1 sm:space-y-2">
-                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Category</label>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="ex: Civil Construction"
-                                                        value={tradeforWhat?.service_category}
-                                                        onChange={(e) => {
-                                                            settradeforWhat({
-                                                                ...tradeforWhat,
-                                                                service_category: e.target.value
-                                                            })
-                                                        }}
-                                                        className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                    />
-                                                    {errors.service_category && <p className="text-red-500 text-xs">{errors.service_category}</p>}
-                                                </div> */}
-
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
                                                         Category

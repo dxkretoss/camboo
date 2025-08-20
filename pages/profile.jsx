@@ -24,7 +24,7 @@ export default function Profile() {
     const router = useRouter();
     const { profile, clientsProductandService, getClientsProdandSer, getallProdandSer, getClientSaveitems, clientSaveItems } = useUser();
     const [socialLinks, setSocialLinks] = useState([]);
-    const [savedItems, setSavedItems] = useState({});
+    const [loadingIds, setLoadingIds] = useState([]);
     const [isDelete, setisDelete] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState(null);
@@ -112,15 +112,8 @@ export default function Profile() {
     const tabs = ['My Ads', 'My History of Trades', 'My Saved Items'];
     const [activeTab, setActiveTab] = useState('My Ads');
 
-    const toggleSave = (id) => {
-        setSavedItems((prev) => ({
-            ...prev,
-            [id]: !prev[id]
-        }));
-        sendClientSaveitems(id);
-    };
-
     const sendClientSaveitems = async (id) => {
+        setLoadingIds((prev) => [...prev, id]);
         try {
             const token = Cookies.get("token");
             const res = await axios.post(
@@ -133,19 +126,10 @@ export default function Profile() {
             }
         } catch (err) {
             console.error(err);
+        } finally {
+            setLoadingIds((prev) => prev.filter((itemId) => itemId !== id));
         }
     };
-
-    useEffect(() => {
-        if (!clientSaveItems) return;
-        setSavedItems((prev) => {
-            const mapped = { ...prev };
-            clientSaveItems.forEach(item => {
-                mapped[item.item_id] = true;
-            });
-            return mapped;
-        });
-    }, [clientSaveItems]);
 
     const handleDeleteItem = async (id) => {
         setisDelete(true);
@@ -496,11 +480,15 @@ export default function Profile() {
                                                             </span>
                                                         }
                                                         <Heart
-                                                            onClick={() => toggleSave(item?.item_id)}
-                                                            className={`absolute top-2 right-2 bg-white ${savedItems[item?.item_id]
-                                                                ? "text-[#4370C2] scale-110 fill-[#4370C2]"
-                                                                : "text-black"
-                                                                } p-1.5 rounded-full shadow-sm cursor-pointer hover:bg-blue-200 transition`}
+                                                            onClick={() => sendClientSaveitems(item?.item_id)}
+                                                            className={`absolute top-2 right-2 bg-white 
+                                                                    ${loadingIds.includes(item?.item_id)
+                                                                    ? "animate-pulse text-gray-400"
+                                                                    : clientSaveItems?.some(i => i.item_id === item?.item_id)
+                                                                        ? "text-[#4370C2] scale-110 fill-[#4370C2]"
+                                                                        : "text-black"
+                                                                } 
+                                                                p-1.5 rounded-full shadow-sm cursor-pointer hover:bg-blue-200 transition`}
                                                             size={30}
                                                         />
                                                     </>

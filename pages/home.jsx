@@ -24,7 +24,7 @@ export default function HomePage() {
     const { loading, allProductandService, profile, clientSaveItems, getClientSaveitems } = useUser();
 
     const [startIndexes, setStartIndexes] = useState({});
-    const [savedItems, setSavedItems] = useState({});
+    const [loadingIds, setLoadingIds] = useState([]);
     const [sendComments, setsendComments] = useState({});
     const [cmtsending, setcmtsending] = useState(false);
     const [imagesPerPage, setImagesPerPage] = useState(2);
@@ -157,15 +157,8 @@ export default function HomePage() {
         );
     }
 
-    const toggleSave = (id) => {
-        setSavedItems((prev) => ({
-            ...prev,
-            [id]: !prev[id]
-        }));
-        sendClientSaveitems(id);
-    };
-
     const sendClientSaveitems = async (id) => {
+        setLoadingIds((prev) => [...prev, id]);
         try {
             const token = Cookies.get("token");
             const res = await axios.post(
@@ -178,20 +171,10 @@ export default function HomePage() {
             }
         } catch (err) {
             console.error(err);
+        } finally {
+            setLoadingIds((prev) => prev.filter((itemId) => itemId !== id));
         }
     };
-
-    useEffect(() => {
-        if (!clientSaveItems) return;
-        setSavedItems((prev) => {
-            const mapped = { ...prev };
-            clientSaveItems.forEach(item => {
-                mapped[item.item_id] = true;
-            });
-            return mapped;
-        });
-    }, [clientSaveItems]);
-
 
     const sendClientItemsComments = async (id, text) => {
         if (!text.trim()) {
@@ -299,10 +282,16 @@ export default function HomePage() {
                                             </div>
                                             <div className="flex items-center gap-1">
                                                 <Heart
-                                                    onClick={() => toggleSave(user?.id)}
-                                                    className={`cursor-pointer transition-transform duration-200
-                                                    ${savedItems[user.id] ? "text-[#000F5C] scale-110 fill-[#000F5C]" : "text-black"}`}
+                                                    onClick={() => sendClientSaveitems(user?.id)}
+                                                    className={`cursor-pointer transition-transform duration-200 
+                                                            ${loadingIds.includes(user?.id)
+                                                            ? "animate-pulse text-gray-400"
+                                                            : clientSaveItems?.some(item => item.item_id === user?.id)
+                                                                ? "text-[#000F5C] scale-110 fill-[#000F5C]"
+                                                                : "text-black"
+                                                        }`}
                                                 />
+
                                                 <EllipsisVertical className='cursor-pointer' />
                                             </div>
                                         </div>

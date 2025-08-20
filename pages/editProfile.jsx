@@ -477,7 +477,7 @@ export default function EditProfile() {
                             <div className="space-y-1">
                                 <label className="block text-sm font-medium">What are you interested in? *</label>
 
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                                     <input
                                         type="text"
                                         value={inputValue}
@@ -495,7 +495,7 @@ export default function EditProfile() {
                                                 handleInterestKeyDown({ key: "Enter", preventDefault: () => { } });
                                             }
                                         }}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                                        className="px-4 py-2 bg-[#000F5C] text-white rounded-lg sm:w-auto w-full"
                                     >
                                         Add
                                     </button>
@@ -523,6 +523,7 @@ export default function EditProfile() {
                                     ))}
                                 </div>
                             </div>
+
 
                             <div className="space-y-1">
                                 <label className="block text-sm font-medium">Professional Experience *</label>

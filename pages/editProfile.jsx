@@ -476,17 +476,31 @@ export default function EditProfile() {
 
                             <div className="space-y-1">
                                 <label className="block text-sm font-medium">What are you interested in? *</label>
-                                <input
-                                    type="text"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    onKeyDown={handleInterestKeyDown}
-                                    onBlur={() =>
-                                        validateField("what_are_you_interested_in", getProfileData?.what_are_you_interested_in)
-                                    }
-                                    className="w-full border rounded-lg px-4 py-2"
-                                    placeholder="Type and press Enter..."
-                                />
+
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        onBlur={() =>
+                                            validateField("what_are_you_interested_in", getProfileData?.what_are_you_interested_in)
+                                        }
+                                        className="flex-1 border rounded-lg px-4 py-2"
+                                        placeholder="Type interest..."
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            if (inputValue.trim() !== "") {
+                                                handleInterestKeyDown({ key: "Enter", preventDefault: () => { } });
+                                            }
+                                        }}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+
                                 {errors?.what_are_you_interested_in && (
                                     <p className="text-red-500 text-xs">{errors.what_are_you_interested_in}</p>
                                 )}

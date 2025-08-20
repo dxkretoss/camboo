@@ -996,8 +996,8 @@ export default function addProduct() {
                                                         })
                                                     }}
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base 
-             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-             disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"                                                />
+                                                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+                                                                disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"                                                />
                                                 {errors.brand && <p className="text-red-500 text-xs">{errors.brand}</p>}
 
                                             </div>
@@ -1067,6 +1067,7 @@ export default function addProduct() {
                                                 </label>
                                                 <input
                                                     type="text"
+                                                    inputMode="decimal"
                                                     placeholder="ex: $2000.00"
                                                     value={productData?.price}
                                                     onChange={(e) => {
@@ -1075,11 +1076,11 @@ export default function addProduct() {
                                                         if (value === "" || regex.test(value)) {
                                                             setproductData({
                                                                 ...productData,
-                                                                price: e.target.value
+                                                                price: value
                                                             });
                                                         }
                                                     }}
-                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 />
                                                 {errors.price && <p className="text-red-500 text-xs">{errors.price}</p>}
                                             </div>

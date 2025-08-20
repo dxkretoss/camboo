@@ -64,13 +64,27 @@ export default function Navbar() {
 
     return (
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
-            <div className="flex items-center gap-4" onClick={() => router.push('/home')}>
+            <div
+                className="flex items-center gap-4 cursor-pointer"
+                onClick={() => router.push('/home')}
+            >
                 <img
-                    src="/logo_camboo.jpeg"
-                    alt="Logo"
-                    className="h-14 w-auto cursor-pointer"
+                    src="/logo3.jpeg"
+                    alt="Logo Small"
+                    className="h-12 w-auto block sm:hidden"
+                />
+                <img
+                    src="/logo2.jpeg"
+                    alt="Logo Medium"
+                    className="h-14 w-auto hidden sm:block md:hidden"
+                />
+                <img
+                    src="/logo1.jpeg"
+                    alt="Logo Large"
+                    className="h-14 w-auto hidden md:block"
                 />
             </div>
+
 
 
             <div className="flex-1 mx-4 max-w-md hidden sm:block">

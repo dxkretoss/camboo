@@ -190,9 +190,9 @@ export default function signup() {
             )}
             <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
                 <img
-                    src="/logo_camboo.jpeg"
+                    src="/logo1.jpeg"
                     alt="Logo"
-                    className="mx-auto mt-6 w-32 h-auto"
+                    className="mx-auto mt-6 w-36 h-auto"
                     onContextMenu={(event) => {
                         event.preventDefault();
                     }}

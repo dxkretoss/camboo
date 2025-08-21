@@ -321,23 +321,26 @@ export default function HomePage() {
                                                         ?.map((img, imgIdx) => (
                                                             <div
                                                                 key={imgIdx}
-                                                                className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100"
+                                                                className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100 relative"
                                                             >
                                                                 {!loadedImages[img] && (
-                                                                    <div className="w-full h-full animate-pulse bg-gray-300" />
+                                                                    <div className="absolute inset-0 animate-pulse bg-gray-300" />
                                                                 )}
                                                                 <img
                                                                     src={img}
                                                                     alt={`product-${user.id}-${imgIdx}`}
                                                                     loading="lazy"
                                                                     decoding="async"
-                                                                    onLoad={() => setLoadedImages(prev => ({ ...prev, [img]: true }))}
-                                                                    className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[img] ? "opacity-100" : "opacity-0 absolute"
+                                                                    onLoad={() =>
+                                                                        setLoadedImages((prev) => ({ ...prev, [img]: true }))
+                                                                    }
+                                                                    className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[img] ? "opacity-100" : "opacity-0"
                                                                         }`}
                                                                 />
                                                             </div>
                                                         ))}
                                                 </div>
+
 
                                                 {user.images.length > imagesPerPage && (
                                                     <>

@@ -152,7 +152,7 @@ export default function Trade() {
                                         </div>
                                         <hr className="w-full border-gray-200 mb-3" />
                                         <div className="relative h-40 sm:h-48 md:h-56 rounded-md overflow-hidden w-full">
-                                            {!loadedImages[matchedData?.images?.[imageIndexes["yourProduct"]]] && (
+                                            {!loadedImages[matchedData?.images?.[imageIndexes[matchedData.id]]] && (
                                                 <div className="w-full h-full animate-pulse bg-gray-300" />
                                             )}
                                             <img
@@ -160,16 +160,15 @@ export default function Trade() {
                                                 alt={matchedData?.title}
                                                 loading="lazy"
                                                 decoding="async"
-                                                onLoad={() => setLoadedImages(prev => ({ ...prev, [matchedData?.images?.[imageIndexes["yourProduct"]]]: true }))}
-                                                className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[matchedData?.images?.[imageIndexes["yourProduct"]]] ? "opacity-100" : "opacity-0 absolute"
-                                                    }`}
+                                                onLoad={() => setLoadedImages(prev => ({ ...prev, [matchedData?.images?.[imageIndexes[matchedData.id]]]: true }))}
+                                                className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[matchedData?.images?.[imageIndexes[matchedData.id]]] ? "opacity-100" : "opacity-0"}`}
                                             />
 
                                             {matchedData?.images?.length > 1 && (
                                                 <>
                                                     <button
                                                         onClick={() =>
-                                                            handlePrev(matchedData.id, matchedData.images.length, matchedData)
+                                                            handlePrev(matchedData?.id, matchedData?.images?.length, matchedData)
                                                         }
                                                         className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
                                                     >
@@ -177,7 +176,7 @@ export default function Trade() {
                                                     </button>
                                                     <button
                                                         onClick={() =>
-                                                            handleNext(matchedData.id, matchedData.images.length, matchedData)
+                                                            handleNext(matchedData?.id, matchedData?.images?.length, matchedData)
                                                         }
                                                         className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
                                                     >
@@ -192,7 +191,7 @@ export default function Trade() {
                                                 {matchedData?.images.map((_, i) => (
                                                     <div
                                                         key={i}
-                                                        className={`w-2 h-2 rounded-full ${i === (imageIndexes["yourProduct"] || 0)
+                                                        className={`w-2 h-2 rounded-full ${i === (imageIndexes[matchedData?.id] || 0)
                                                             ? "bg-blue-600"
                                                             : "bg-gray-300"
                                                             }`}
@@ -252,7 +251,7 @@ export default function Trade() {
                                                         loading="lazy"
                                                         decoding="async"
                                                         onLoad={() => setLoadedImages(prev => ({ ...prev, [item?.images?.[currentIndex]]: true }))}
-                                                        className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0 absolute"}`}
+                                                        className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0"}`}
                                                     />
 
                                                     {item.images?.length > 1 && (

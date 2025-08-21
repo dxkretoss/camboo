@@ -331,11 +331,8 @@ export default function HomePage() {
                                                                     alt={`product-${user.id}-${imgIdx}`}
                                                                     loading="lazy"
                                                                     decoding="async"
-                                                                    onLoad={() =>
-                                                                        setLoadedImages((prev) => ({ ...prev, [img]: true }))
-                                                                    }
-                                                                    className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[img] ? "opacity-100" : "opacity-0"
-                                                                        }`}
+                                                                    onLoad={() => setLoadedImages((prev) => ({ ...prev, [img]: true }))}
+                                                                    className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[img] ? "opacity-100" : "opacity-0"}`}
                                                                 />
                                                             </div>
                                                         ))}

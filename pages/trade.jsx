@@ -161,7 +161,7 @@ export default function Trade() {
                                                 loading="lazy"
                                                 decoding="async"
                                                 onLoad={() => setLoadedImages(prev => ({ ...prev, [matchedData?.images?.[imageIndexes[matchedData.id]]]: true }))}
-                                                className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[matchedData?.images?.[imageIndexes[matchedData.id]]] ? "opacity-100" : "opacity-0"}`}
+                                                className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[matchedData?.images?.[imageIndexes[matchedData.id]]] ? "opacity-100" : "opacity-0"}`}
                                             />
 
                                             {matchedData?.images?.length > 1 && (
@@ -246,12 +246,12 @@ export default function Trade() {
                                                         <div className="w-full h-full animate-pulse bg-gray-300" />
                                                     )}
                                                     <img
-                                                        src={item?.images?.[currentIndex] || "/placeholder.png"}
-                                                        alt={item?.title || "Matched item"}
+                                                        src={item?.images?.[currentIndex]}
+                                                        alt={item?.title}
                                                         loading="lazy"
                                                         decoding="async"
                                                         onLoad={() => setLoadedImages(prev => ({ ...prev, [item?.images?.[currentIndex]]: true }))}
-                                                        className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0"}`}
+                                                        className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0"}`}
                                                     />
 
                                                     {item.images?.length > 1 && (

@@ -18,6 +18,7 @@ import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
+import Image from 'next/image';
 
 export default function Profile() {
     const token = Cookies.get('token');
@@ -342,11 +343,13 @@ export default function Profile() {
                                                         {!loadedImages[item?.images[0]] && (
                                                             <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
                                                         )}
-                                                        <img
+                                                        <Image
                                                             src={item?.images[0]}
                                                             alt={item?.title}
+                                                            fill
+                                                            unoptimized
                                                             className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images[0]] ? "opacity-100" : "opacity-0"}`}
-                                                            onLoad={() => setLoadedImages((prev) => ({ ...prev, [item?.images[0]]: true }))}
+                                                            onLoadingComplete={() => setLoadedImages((prev) => ({ ...prev, [item?.images[0]]: true }))}
                                                         />
                                                         {item?.model && (
                                                             <span className="absolute top-2 left-2 bg-white text-[#06145D] text-xs font-semibold px-2 py-1 rounded">
@@ -471,11 +474,13 @@ export default function Profile() {
                                                     {!loadedImages[item?.images[0]] && (
                                                         <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
                                                     )}
-                                                    <img
+                                                    <Image
                                                         src={item?.images[0]}
                                                         alt={item?.title}
+                                                        fill
+                                                        unoptimized
                                                         className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images[0]] ? "opacity-100" : "opacity-0"}`}
-                                                        onLoad={() => setLoadedImages((prev) => ({ ...prev, [item?.images[0]]: true }))}
+                                                        onLoadingComplete={() => setLoadedImages((prev) => ({ ...prev, [item?.images[0]]: true }))}
                                                     />
                                                     <>
                                                         {item.model &&

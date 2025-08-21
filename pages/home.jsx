@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import Image from 'next/image';
 
 export default function HomePage() {
     const router = useRouter();
@@ -66,12 +67,7 @@ export default function HomePage() {
         return () => window.removeEventListener("resize", updateImagesPerPage);
     }, []);
 
-    const preloadImage = (src) => {
-        const img = new Image();
-        img.src = src;
-    };
-
-    const handlePrev = (id, totalImages, user) => {
+    const handlePrev = (id, totalImages) => {
         setStartIndexes((prev) => {
             const currentIndex = prev[id] || 0;
             const newIndex =
@@ -79,15 +75,11 @@ export default function HomePage() {
                     ? Math.max(totalImages - imagesPerPage, 0)
                     : currentIndex - imagesPerPage;
 
-            user.images
-                .slice(newIndex, newIndex + imagesPerPage + 2)
-                .forEach(preloadImage);
-
             return { ...prev, [id]: newIndex };
         });
     };
 
-    const handleNext = (id, totalImages, user) => {
+    const handleNext = (id, totalImages) => {
         setStartIndexes((prev) => {
             const currentIndex = prev[id] || 0;
             const newIndex =
@@ -95,13 +87,10 @@ export default function HomePage() {
                     ? 0
                     : currentIndex + imagesPerPage;
 
-            user.images
-                .slice(newIndex, newIndex + imagesPerPage + 2)
-                .forEach(preloadImage);
-
             return { ...prev, [id]: newIndex };
         });
     };
+
 
     const suggestedTrades = [
         { title: 'Iphone 16 Pro max', subtitle: 'lorem ipsum dummy content', image: 'https://randomuser.me/api/portraits/men/5.jpg' },
@@ -324,17 +313,20 @@ export default function HomePage() {
                                                                     {!loadedImages[img] && (
                                                                         <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
                                                                     )}
-                                                                    <img
+                                                                    <Image
                                                                         src={img}
                                                                         alt={`product-${user?.id}-${imgIdx}`}
-                                                                        className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[img] ? "opacity-100" : "opacity-0"}`}
-                                                                        onLoad={() => setLoadedImages((prev) => ({ ...prev, [img]: true }))}
+                                                                        fill
+                                                                        unoptimized
+                                                                        className={`object-contain transition-opacity duration-500 ${loadedImages[img] ? "opacity-100" : "opacity-0"}`}
+                                                                        onLoadingComplete={() =>
+                                                                            setLoadedImages((prev) => ({ ...prev, [img]: true }))
+                                                                        }
                                                                     />
                                                                 </div>
                                                             );
                                                         })}
                                                 </div>
-
 
                                                 {user.images.length > imagesPerPage && (
                                                     <>

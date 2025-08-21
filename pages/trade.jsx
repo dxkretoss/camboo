@@ -5,6 +5,7 @@ import axios from "axios";
 import Layout from "@/components/Layout/Layout";
 import { ChevronLeft, ChevronRight, XCircle } from "lucide-react";
 import { useUser } from "@/context/UserContext";
+import Image from "next/image";
 export default function Trade() {
     const router = useRouter();
     const token = Cookies.get("token");
@@ -154,11 +155,15 @@ export default function Trade() {
                                             {!loadedImages[matchedData.id] && (
                                                 <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
                                             )}
-                                            <img
+                                            <Image
                                                 src={matchedData?.images?.[imageIndexes[matchedData.id] || 0]}
                                                 alt={matchedData?.title}
-                                                className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[matchedData.id] ? "opacity-100" : "opacity-0"}`}
-                                                onLoad={() => setLoadedImages((prev) => ({ ...prev, [matchedData.id]: true }))}
+                                                fill
+                                                unoptimized
+                                                className={`object-contain transition-opacity duration-500 ${loadedImages[matchedData.id] ? "opacity-100" : "opacity-0"}`}
+                                                onLoadingComplete={() =>
+                                                    setLoadedImages((prev) => ({ ...prev, [matchedData.id]: true }))
+                                                }
                                             />
                                             {matchedData?.images?.length > 1 && (
                                                 <>
@@ -216,7 +221,7 @@ export default function Trade() {
                                         Your {level.items?.length > 1 ? `Products (${level.items.length})` : "Product"} :
                                     </span>
 
-                                    {level.items?.map((item, idx) => {
+                                    {level?.items?.map((item, idx) => {
                                         const currentIndex = imageIndexes[item.id] || 0;
                                         return (
                                             <div
@@ -238,11 +243,15 @@ export default function Trade() {
                                                     {!loadedImages[item?.images?.[currentIndex]] && (
                                                         <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
                                                     )}
-                                                    <img
+                                                    <Image
                                                         src={item?.images?.[currentIndex]}
                                                         alt={item?.title}
-                                                        className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0"}`}
-                                                        onLoad={() => setLoadedImages((prev) => ({ ...prev, [item?.images?.[currentIndex]]: true }))}
+                                                        fill
+                                                        unoptimized
+                                                        className={`object-contain transition-opacity duration-500 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0"}`}
+                                                        onLoadingComplete={() =>
+                                                            setLoadedImages((prev) => ({ ...prev, [item?.images?.[currentIndex]]: true }))
+                                                        }
                                                     />
                                                     {item.images?.length > 1 && (
                                                         <>

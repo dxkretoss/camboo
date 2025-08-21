@@ -317,7 +317,7 @@ export default function HomePage() {
                                                                         src={img}
                                                                         alt={`product-${user?.id}-${imgIdx}`}
                                                                         fill
-                                                                        unoptimized
+                                                                        priority={imgIdx < 2}
                                                                         className={`object-contain transition-opacity duration-500 ${loadedImages[img] ? "opacity-100" : "opacity-0"}`}
                                                                         onLoadingComplete={() =>
                                                                             setLoadedImages((prev) => ({ ...prev, [img]: true }))

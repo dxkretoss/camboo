@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import axios from "axios";
 import Layout from "@/components/Layout/Layout";
-import { ChevronLeft, ChevronRight, XCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, XCircle, Search } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import Image from "next/image";
 export default function Trade() {
@@ -159,7 +159,7 @@ export default function Trade() {
                                                 src={matchedData?.images?.[imageIndexes[matchedData.id] || 0]}
                                                 alt={matchedData?.title}
                                                 fill
-                                                unoptimized
+                                                priority={(imageIndexes[matchedData.id] || 0) === 0}
                                                 className={`object-contain transition-opacity duration-500 ${loadedImages[matchedData.id] ? "opacity-100" : "opacity-0"}`}
                                                 onLoadingComplete={() =>
                                                     setLoadedImages((prev) => ({ ...prev, [matchedData.id]: true }))
@@ -247,7 +247,7 @@ export default function Trade() {
                                                         src={item?.images?.[currentIndex]}
                                                         alt={item?.title}
                                                         fill
-                                                        unoptimized
+                                                        priority={currentIndex === 0}
                                                         className={`object-contain transition-opacity duration-500 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0"}`}
                                                         onLoadingComplete={() =>
                                                             setLoadedImages((prev) => ({ ...prev, [item?.images?.[currentIndex]]: true }))
@@ -313,12 +313,30 @@ export default function Trade() {
                         </div>
                     ))
                 ) : (
-                    <div className="flex flex-col items-center justify-center text-center min-h-[50vh]">
-                        <XCircle className="w-16 h-16 text-red-500 mb-4" />
-                        <p className="text-gray-600 text-lg font-medium">
-                            No match with items
+
+                    <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 sm:px-6 py-6 text-center">
+                        <div className="relative">
+                            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-tr from-blue-100 to-indigo-200 flex items-center justify-center shadow-md">
+                                <Search className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-[#000F5C]" />
+                            </div>
+                        </div>
+
+                        <h2 className="mt-6 text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
+                            No Ad Match!!
+                        </h2>
+
+                        <p className="mt-2 text-gray-500 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-sm md:max-w-md">
+                            We couldn’t find anything that matches your Ad.
                         </p>
+
+                        <button
+                            onClick={() => router.push("./home")}
+                            className="mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
+                        >
+                            Browse All Ads
+                        </button>
                     </div>
+
                 )}
             </div>
 

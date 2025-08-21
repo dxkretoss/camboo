@@ -347,7 +347,7 @@ export default function Profile() {
                                                             src={item?.images[0]}
                                                             alt={item?.title}
                                                             fill
-                                                            unoptimized
+                                                            priority
                                                             className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images[0]] ? "opacity-100" : "opacity-0"}`}
                                                             onLoadingComplete={() => setLoadedImages((prev) => ({ ...prev, [item?.images[0]]: true }))}
                                                         />
@@ -478,7 +478,7 @@ export default function Profile() {
                                                         src={item?.images[0]}
                                                         alt={item?.title}
                                                         fill
-                                                        unoptimized
+                                                        priority
                                                         className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images[0]] ? "opacity-100" : "opacity-0"}`}
                                                         onLoadingComplete={() => setLoadedImages((prev) => ({ ...prev, [item?.images[0]]: true }))}
                                                     />

@@ -28,7 +28,7 @@ export default function HomePage() {
     const [sendComments, setsendComments] = useState({});
     const [cmtsending, setcmtsending] = useState(false);
     const [imagesPerPage, setImagesPerPage] = useState(2);
-    const [loadingImages, setLoadingImages] = useState({});
+    const [loadedImages, setLoadedImages] = useState({});
     const [fetching, setfetching] = useState(false);
     const [openDenounceadDialog, setopenDenounceadDialog] = useState(false);
     const [Denounceadcomment, setDenounceadComment] = useState("");
@@ -316,34 +316,27 @@ export default function HomePage() {
                                         {user?.images?.length > 0 && (
                                             <div className="mt-3 relative">
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                    {loadingImages[user.id] ? (
-                                                        Array.from({ length: imagesPerPage }).map((_, idx) => (
+                                                    {user?.images
+                                                        ?.slice(startIndexes[user.id] || 0, (startIndexes[user.id] || 0) + imagesPerPage)
+                                                        ?.map((img, imgIdx) => (
                                                             <div
-                                                                key={idx}
-                                                                className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100 animate-pulse"
+                                                                key={imgIdx}
+                                                                className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100"
                                                             >
-                                                                <div className="w-full h-full animate-pulse bg-gray-300" />
+                                                                {!loadedImages[img] && (
+                                                                    <div className="w-full h-full animate-pulse bg-gray-300" />
+                                                                )}
+                                                                <img
+                                                                    src={img}
+                                                                    alt={`product-${user.id}-${imgIdx}`}
+                                                                    loading="lazy"
+                                                                    decoding="async"
+                                                                    onLoad={() => setLoadedImages(prev => ({ ...prev, [img]: true }))}
+                                                                    className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[img] ? "opacity-100" : "opacity-0 absolute"
+                                                                        }`}
+                                                                />
                                                             </div>
-                                                        ))
-                                                    ) : (
-                                                        user.images
-                                                            .slice(startIndexes[user.id] || 0, (startIndexes[user.id] || 0) + imagesPerPage)
-                                                            .map((img, imgIdx) => (
-                                                                <div
-                                                                    key={imgIdx}
-                                                                    className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center"
-                                                                >
-                                                                    <img
-                                                                        src={img}
-                                                                        alt={`product-${user.id}-${imgIdx}`}
-                                                                        loading="lazy"
-                                                                        decoding="async"
-                                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
-                                                                        className="w-full h-full object-contain opacity-0 transition-opacity duration-300"
-                                                                    />
-                                                                </div>
-                                                            ))
-                                                    )}
+                                                        ))}
                                                 </div>
 
                                                 {user.images.length > imagesPerPage && (
@@ -363,7 +356,6 @@ export default function HomePage() {
                                                     </>
                                                 )}
                                             </div>
-
                                         )}
 
                                         <div className="flex items-center gap-2 mt-3 rounded-full py-2">

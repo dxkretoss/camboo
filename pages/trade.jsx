@@ -14,6 +14,7 @@ export default function Trade() {
     const [youritemsData, setYouritemsData] = useState(null);
     const [imageIndexes, setImageIndexes] = useState({});
     const { profile } = useUser();
+    const [loadedImages, setLoadedImages] = useState({});
 
     useEffect(() => {
         if (!token) {
@@ -56,7 +57,6 @@ export default function Trade() {
             };
         });
 
-    // helper to preload images
     const preloadImage = (src) => {
         if (!src) return;
         const img = new Image();
@@ -152,22 +152,24 @@ export default function Trade() {
                                         </div>
                                         <hr className="w-full border-gray-200 mb-3" />
                                         <div className="relative h-40 sm:h-48 md:h-56 rounded-md overflow-hidden w-full">
+                                            {!loadedImages[matchedData?.images?.[imageIndexes["yourProduct"]]] && (
+                                                <div className="w-full h-full animate-pulse bg-gray-300" />
+                                            )}
                                             <img
-                                                src={matchedData?.images?.[imageIndexes["yourProduct"] || 0]}
+                                                src={matchedData?.images?.[imageIndexes[matchedData.id] || 0]}
                                                 alt={matchedData?.title}
                                                 loading="lazy"
                                                 decoding="async"
-                                                onLoad={(e) =>
-                                                    e.currentTarget.classList.remove("opacity-0")
-                                                }
-                                                className="w-full h-full object-contain opacity-0 transition-opacity duration-500"
+                                                onLoad={() => setLoadedImages(prev => ({ ...prev, [matchedData?.images?.[imageIndexes["yourProduct"]]]: true }))}
+                                                className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[matchedData?.images?.[imageIndexes["yourProduct"]]] ? "opacity-100" : "opacity-0 absolute"
+                                                    }`}
                                             />
 
                                             {matchedData?.images?.length > 1 && (
                                                 <>
                                                     <button
                                                         onClick={() =>
-                                                            handlePrev("yourProduct", matchedData.images.length, matchedData)
+                                                            handlePrev(matchedData.id, matchedData.images.length, matchedData)
                                                         }
                                                         className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
                                                     >
@@ -175,7 +177,7 @@ export default function Trade() {
                                                     </button>
                                                     <button
                                                         onClick={() =>
-                                                            handleNext("yourProduct", matchedData.images.length, matchedData)
+                                                            handleNext(matchedData.id, matchedData.images.length, matchedData)
                                                         }
                                                         className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
                                                     >
@@ -241,15 +243,16 @@ export default function Trade() {
                                                 </div>
                                                 <hr className="w-full border-gray-200 mb-3" />
                                                 <div className="relative h-40 sm:h-48 md:h-56 w-full rounded-md overflow-hidden">
+                                                    {!loadedImages[item?.images?.[currentIndex]] && (
+                                                        <div className="w-full h-full animate-pulse bg-gray-300" />
+                                                    )}
                                                     <img
-                                                        src={
-                                                            item?.images?.[currentIndex] || "/placeholder.png"
-                                                        }
+                                                        src={item?.images?.[currentIndex] || "/placeholder.png"}
                                                         alt={item?.title || "Matched item"}
                                                         loading="lazy"
                                                         decoding="async"
-                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
-                                                        className="w-full h-full object-contain opacity-0 transition-opacity duration-500"
+                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, [item?.images?.[currentIndex]]: true }))}
+                                                        className={`w-full h-full object-contain transition-opacity duration-300 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0 absolute"}`}
                                                     />
 
                                                     {item.images?.length > 1 && (

@@ -25,6 +25,7 @@ export default function Profile() {
     const { profile, clientsProductandService, getClientsProdandSer, getallProdandSer, getClientSaveitems, clientSaveItems } = useUser();
     const [socialLinks, setSocialLinks] = useState([]);
     const [loadingIds, setLoadingIds] = useState([]);
+    const [loadedImages, setLoadedImages] = useState({});
     const [isDelete, setisDelete] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedItemId, setSelectedItemId] = useState(null);
@@ -178,7 +179,6 @@ export default function Profile() {
                                 <img
                                     src={getProfileData?.profile_image}
                                     alt="User"
-                                    loading="lazy"
                                     onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
                                     className="w-16 h-16 md:w-20 md:h-20 rounded-full object-contain opacity-0 blur-md transition-all duration-500"
                                 />
@@ -339,12 +339,14 @@ export default function Profile() {
                                                     className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 group relative"
                                                 >
                                                     <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
+                                                        {!loadedImages[item?.images[0]] && (
+                                                            <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
+                                                        )}
                                                         <img
-                                                            src={item.images[0]}
-                                                            alt={item.title}
-                                                            loading="lazy"
-                                                            onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
-                                                            className="w-full h-full object-contain opacity-0 blur-md transition-all duration-500"
+                                                            src={item?.images[0]}
+                                                            alt={item?.title}
+                                                            className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images[0]] ? "opacity-100" : "opacity-0"}`}
+                                                            onLoad={() => setLoadedImages((prev) => ({ ...prev, [item?.images[0]]: true }))}
                                                         />
                                                         {item?.model && (
                                                             <span className="absolute top-2 left-2 bg-white text-[#06145D] text-xs font-semibold px-2 py-1 rounded">
@@ -466,13 +468,14 @@ export default function Profile() {
                                                 className="bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-gray-200 group relative"
                                             >
                                                 <div className="relative bg-gray-100 flex items-center justify-center h-48 overflow-hidden">
+                                                    {!loadedImages[item?.images[0]] && (
+                                                        <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
+                                                    )}
                                                     <img
                                                         src={item?.images[0]}
                                                         alt={item?.title}
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
-                                                        className="w-full h-full object-contain opacity-0 transition-opacity duration-500"
+                                                        className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images[0]] ? "opacity-100" : "opacity-0"}`}
+                                                        onLoad={() => setLoadedImages((prev) => ({ ...prev, [item?.images[0]]: true }))}
                                                     />
                                                     <>
                                                         {item.model &&

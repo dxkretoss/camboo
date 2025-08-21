@@ -795,8 +795,6 @@ export default function addProduct() {
                                             src={images[0]?.preview}
                                             alt="Preview"
                                             className="object-contain w-full h-full  opacity-0 transition-opacity duration-500 rounded-lg sm:rounded-xl"
-                                            loading="lazy"
-                                            decoding="async"
                                             onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
                                         />
                                         {router?.query?.Editid && (
@@ -833,8 +831,6 @@ export default function addProduct() {
                                                     src={images[index]?.preview}
                                                     alt="Preview"
                                                     className="object-contain w-full h-full  opacity-0 transition-opacity duration-500 rounded-lg sm:rounded-xl"
-                                                    loading="lazy"
-                                                    decoding="async"
                                                     onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
                                                 />
                                                 {router?.query?.Editid && (

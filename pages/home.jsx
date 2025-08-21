@@ -268,10 +268,7 @@ export default function HomePage() {
                                                 <img
                                                     src={user?.profile_image}
                                                     alt="User"
-                                                    loading="lazy"
-                                                    decoding="async"
-                                                    onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
-                                                    className="w-10 h-10 rounded-full object-contain  border-2 border-white opacity-0 transition-opacity duration-500"
+                                                    className="w-10 h-10 rounded-full object-contain border-2 border-white"
                                                 />
                                                 <div>
                                                     <h2 className="text-sm font-semibold text-gray-900">
@@ -318,24 +315,24 @@ export default function HomePage() {
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                     {user?.images
                                                         ?.slice(startIndexes[user.id] || 0, (startIndexes[user.id] || 0) + imagesPerPage)
-                                                        ?.map((img, imgIdx) => (
-                                                            <div
-                                                                key={imgIdx}
-                                                                className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100 relative"
-                                                            >
-                                                                {!loadedImages[img] && (
-                                                                    <div className="absolute inset-0 animate-pulse bg-gray-300" />
-                                                                )}
-                                                                <img
-                                                                    src={img}
-                                                                    alt={`product-${user.id}-${imgIdx}`}
-                                                                    loading="lazy"
-                                                                    decoding="async"
-                                                                    onLoad={() => setLoadedImages((prev) => ({ ...prev, [img]: true }))}
-                                                                    className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[img] ? "opacity-100" : "opacity-0"}`}
-                                                                />
-                                                            </div>
-                                                        ))}
+                                                        ?.map((img, imgIdx) => {
+                                                            return (
+                                                                <div
+                                                                    key={imgIdx}
+                                                                    className="h-40 sm:h-48 md:h-56 rounded-md overflow-hidden flex items-center justify-center bg-gray-100 relative"
+                                                                >
+                                                                    {!loadedImages[img] && (
+                                                                        <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
+                                                                    )}
+                                                                    <img
+                                                                        src={img}
+                                                                        alt={`product-${user?.id}-${imgIdx}`}
+                                                                        className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[img] ? "opacity-100" : "opacity-0"}`}
+                                                                        onLoad={() => setLoadedImages((prev) => ({ ...prev, [img]: true }))}
+                                                                    />
+                                                                </div>
+                                                            );
+                                                        })}
                                                 </div>
 
 
@@ -362,9 +359,7 @@ export default function HomePage() {
                                             <img
                                                 src={profile?.profile_image}
                                                 alt="User"
-                                                loading="lazy"
-                                                onLoad={(e) => e.currentTarget.classList.remove("opacity-0", "blur-md")}
-                                                className="w-8 h-8  rounded-full object-contain opacity-0 blur-md transition-all duration-500"
+                                                className="w-8 h-8 rounded-full object-contain"
                                             />
                                             <input
                                                 type="text"

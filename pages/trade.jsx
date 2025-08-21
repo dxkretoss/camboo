@@ -144,7 +144,6 @@ export default function Trade() {
                                                 src={matchedData?.profile_image}
                                                 alt="User"
                                                 className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
-                                                loading="lazy"
                                             />
                                             <h2 className="text-sm font-semibold text-gray-900">
                                                 {`${matchedData?.first_name} ${matchedData?.last_name}` || ""}
@@ -152,18 +151,15 @@ export default function Trade() {
                                         </div>
                                         <hr className="w-full border-gray-200 mb-3" />
                                         <div className="relative h-40 sm:h-48 md:h-56 rounded-md overflow-hidden w-full">
-                                            {!loadedImages[matchedData?.images?.[imageIndexes[matchedData.id]]] && (
-                                                <div className="w-full h-full animate-pulse bg-gray-300" />
+                                            {!loadedImages[matchedData.id] && (
+                                                <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
                                             )}
                                             <img
                                                 src={matchedData?.images?.[imageIndexes[matchedData.id] || 0]}
                                                 alt={matchedData?.title}
-                                                loading="lazy"
-                                                decoding="async"
-                                                onLoad={() => setLoadedImages(prev => ({ ...prev, [matchedData?.images?.[imageIndexes[matchedData.id]]]: true }))}
-                                                className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[matchedData?.images?.[imageIndexes[matchedData.id]]] ? "opacity-100" : "opacity-0"}`}
+                                                className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[matchedData.id] ? "opacity-100" : "opacity-0"}`}
+                                                onLoad={() => setLoadedImages((prev) => ({ ...prev, [matchedData.id]: true }))}
                                             />
-
                                             {matchedData?.images?.length > 1 && (
                                                 <>
                                                     <button
@@ -232,9 +228,6 @@ export default function Trade() {
                                                         src={profile?.profile_image}
                                                         alt="User"
                                                         className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                        onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
                                                     />
                                                     <h2 className="text-sm font-semibold text-gray-900">
                                                         {`${profile?.first_name} ${profile?.last_name}` || ""}
@@ -243,17 +236,14 @@ export default function Trade() {
                                                 <hr className="w-full border-gray-200 mb-3" />
                                                 <div className="relative h-40 sm:h-48 md:h-56 w-full rounded-md overflow-hidden">
                                                     {!loadedImages[item?.images?.[currentIndex]] && (
-                                                        <div className="w-full h-full animate-pulse bg-gray-300" />
+                                                        <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
                                                     )}
                                                     <img
                                                         src={item?.images?.[currentIndex]}
                                                         alt={item?.title}
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, [item?.images?.[currentIndex]]: true }))}
                                                         className={`w-full h-full object-contain transition-opacity duration-500 ${loadedImages[item?.images?.[currentIndex]] ? "opacity-100" : "opacity-0"}`}
+                                                        onLoad={() => setLoadedImages((prev) => ({ ...prev, [item?.images?.[currentIndex]]: true }))}
                                                     />
-
                                                     {item.images?.length > 1 && (
                                                         <>
                                                             <button

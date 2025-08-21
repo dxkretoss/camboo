@@ -66,42 +66,41 @@ export default function HomePage() {
         return () => window.removeEventListener("resize", updateImagesPerPage);
     }, []);
 
-    const handlePrev = (id, totalImages) => {
-        setLoadingImages(prev => ({ ...prev, [id]: true }));
-
-        setTimeout(() => {
-            setStartIndexes(prev => {
-                const currentIndex = prev[id] || 0;
-                return {
-                    ...prev,
-                    [id]:
-                        currentIndex - imagesPerPage < 0
-                            ? Math.max(totalImages - imagesPerPage, 0)
-                            : currentIndex - imagesPerPage
-                };
-            });
-
-            setLoadingImages(prev => ({ ...prev, [id]: false }));
-        }, 300);
+    const preloadImage = (src) => {
+        const img = new Image();
+        img.src = src;
     };
 
-    const handleNext = (id, totalImages) => {
-        setLoadingImages(prev => ({ ...prev, [id]: true }));
+    const handlePrev = (id, totalImages, user) => {
+        setStartIndexes((prev) => {
+            const currentIndex = prev[id] || 0;
+            const newIndex =
+                currentIndex - imagesPerPage < 0
+                    ? Math.max(totalImages - imagesPerPage, 0)
+                    : currentIndex - imagesPerPage;
 
-        setTimeout(() => {
-            setStartIndexes(prev => {
-                const currentIndex = prev[id] || 0;
-                return {
-                    ...prev,
-                    [id]:
-                        currentIndex + imagesPerPage >= totalImages
-                            ? 0
-                            : currentIndex + imagesPerPage
-                };
-            });
+            user.images
+                .slice(newIndex, newIndex + imagesPerPage + 2)
+                .forEach(preloadImage);
 
-            setLoadingImages(prev => ({ ...prev, [id]: false }));
-        }, 300);
+            return { ...prev, [id]: newIndex };
+        });
+    };
+
+    const handleNext = (id, totalImages, user) => {
+        setStartIndexes((prev) => {
+            const currentIndex = prev[id] || 0;
+            const newIndex =
+                currentIndex + imagesPerPage >= totalImages
+                    ? 0
+                    : currentIndex + imagesPerPage;
+
+            user.images
+                .slice(newIndex, newIndex + imagesPerPage + 2)
+                .forEach(preloadImage);
+
+            return { ...prev, [id]: newIndex };
+        });
     };
 
     const suggestedTrades = [
@@ -350,13 +349,13 @@ export default function HomePage() {
                                                 {user.images.length > imagesPerPage && (
                                                     <>
                                                         <button
-                                                            onClick={() => handlePrev(user.id, user.images.length)}
+                                                            onClick={() => handlePrev(user.id, user.images.length, user)}
                                                             className="absolute cursor-pointer left-0 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow hover:bg-gray-100"
                                                         >
                                                             <ChevronLeft size={20} />
                                                         </button>
                                                         <button
-                                                            onClick={() => handleNext(user.id, user.images.length)}
+                                                            onClick={() => handleNext(user.id, user.images.length, user)}
                                                             className="absolute cursor-pointer right-0 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow hover:bg-gray-100"
                                                         >
                                                             <ChevronRight size={20} />

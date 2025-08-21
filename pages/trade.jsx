@@ -56,25 +56,35 @@ export default function Trade() {
             };
         });
 
-    const handlePrev = (itemId, total) => {
-        setImageIndexes((prev) => ({
-            ...prev,
-            [itemId]:
-                prev[itemId] === 0 || prev[itemId] === undefined
-                    ? total - 1
-                    : prev[itemId] - 1,
-        }));
+    // helper to preload images
+    const preloadImage = (src) => {
+        if (!src) return;
+        const img = new Image();
+        img.src = src;
     };
 
-    const handleNext = (itemId, total) => {
-        setImageIndexes((prev) => ({
-            ...prev,
-            [itemId]:
-                prev[itemId] === total - 1 || prev[itemId] === undefined
-                    ? 0
-                    : prev[itemId] + 1,
-        }));
+    const handlePrev = (itemId, total, images) => {
+        setImageIndexes((prev) => {
+            const current = prev[itemId] ?? 0;
+            const newIndex = current === 0 ? total - 1 : current - 1;
+
+            preloadImage(images[newIndex === 0 ? total - 1 : newIndex - 1]);
+
+            return { ...prev, [itemId]: newIndex };
+        });
     };
+
+    const handleNext = (itemId, total, images) => {
+        setImageIndexes((prev) => {
+            const current = prev[itemId] ?? 0;
+            const newIndex = current === total - 1 ? 0 : current + 1;
+
+            preloadImage(images[(newIndex + 1) % total]);
+
+            return { ...prev, [itemId]: newIndex };
+        });
+    };
+
 
     return (
         <Layout>
@@ -157,7 +167,7 @@ export default function Trade() {
                                                 <>
                                                     <button
                                                         onClick={() =>
-                                                            handlePrev("yourProduct", matchedData.images.length)
+                                                            handlePrev("yourProduct", matchedData.images.length, matchedData)
                                                         }
                                                         className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
                                                     >
@@ -165,7 +175,7 @@ export default function Trade() {
                                                     </button>
                                                     <button
                                                         onClick={() =>
-                                                            handleNext("yourProduct", matchedData.images.length)
+                                                            handleNext("yourProduct", matchedData.images.length, matchedData)
                                                         }
                                                         className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
                                                     >
@@ -246,7 +256,7 @@ export default function Trade() {
                                                         <>
                                                             <button
                                                                 onClick={() =>
-                                                                    handlePrev(item.id, item.images.length)
+                                                                    handlePrev(item.id, item.images.length, item)
                                                                 }
                                                                 className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
                                                             >
@@ -254,7 +264,7 @@ export default function Trade() {
                                                             </button>
                                                             <button
                                                                 onClick={() =>
-                                                                    handleNext(item.id, item.images.length)
+                                                                    handleNext(item.id, item.images.length, item)
                                                                 }
                                                                 className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full shadow hover:bg-white"
                                                             >

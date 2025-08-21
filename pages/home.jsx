@@ -384,10 +384,22 @@ export default function HomePage() {
                                                 }
                                                 className="flex-grow border-none focus:outline-none text-sm placeholder:text-gray-500"
                                             />
-                                            <button disabled={cmtsending} className="text-white cursor-pointer disabled:cursor-not-allowed bg-[#000F5C] hover:bg-blue-700 p-2 rounded-full"
-                                                onClick={() => sendClientItemsComments(user.id, sendComments[user.id] || "")}>
-                                                <SendHorizonal size={18} />
+                                            <button
+                                                disabled={cmtsending}
+                                                className="text-white cursor-pointer disabled:cursor-not-allowed bg-[#000F5C] hover:bg-blue-700 p-2 rounded-full flex items-center justify-center"
+                                                onClick={() => sendClientItemsComments(user?.id, sendComments[user?.id] || "")}
+                                            >
+                                                {cmtsending ? (
+                                                    <div className="flex items-center justify-center w-5 h-5 space-x-1">
+                                                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce animation-delay-0"></span>
+                                                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce animation-delay-150"></span>
+                                                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce animation-delay-300"></span>
+                                                    </div>
+                                                ) : (
+                                                    <SendHorizonal size={20} />
+                                                )}
                                             </button>
+
                                         </div>
 
                                         <hr className="text-gray-300" />

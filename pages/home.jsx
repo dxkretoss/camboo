@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import Navbar from '@/components/Navbar/Navbar';
 import SectionCard from '@/components/Cards/SectionCard';
-import { Heart, Inbox, ChevronLeft, ChevronRight, SendHorizonal, EllipsisVertical, X } from 'lucide-react';
+import { Heart, Inbox, ChevronLeft, ChevronRight, MessageCircle, SendHorizonal, EllipsisVertical, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
@@ -393,7 +393,7 @@ export default function HomePage() {
                                                         doingTrade(user?.id, user?.main_type)
                                                     }}>
                                                     <img src="/share.png" alt="Verified" className="w-4 h-4" />
-                                                    <span className="hidden xl:inline">Let's Camboo!!</span>
+                                                    <span className="hidden xl:inline">Camboo!!</span>
                                                 </Button>
                                             </div>
 
@@ -406,8 +406,9 @@ export default function HomePage() {
                                                 </Button>
 
                                                 <button className="flex-1 xl:flex-none border border-[#C7F846] text-[#7FA600] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
-                                                    <img src="/getintouch.png" alt="Verified" className="w-4 h-4" />
-                                                    <span className="hidden xl:inline">Get in Touch</span>
+                                                    {/* <img src="/getintouch.png" alt="Verified" className="w-4 h-4" /> */}
+                                                    <MessageCircle className="w-4 h-4" />
+                                                    <span className="hidden xl:inline">Chat</span>
                                                 </button>
 
                                                 <button className="flex-1 xl:flex-none border border-[#FF5C5C] text-[#FF5C5C] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"

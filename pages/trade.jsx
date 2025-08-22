@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import axios from "axios";
 import Layout from "@/components/Layout/Layout";
-import { ChevronLeft, ChevronRight, XCircle, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageCircle, Search } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import Image from "next/image";
 export default function Trade() {
@@ -213,6 +213,14 @@ export default function Trade() {
                                         <span className="text-gray-500 text-sm text-left line-clamp-2">
                                             <DescriptionToggle text={matchedData?.description} />
                                         </span>
+
+                                        <button
+                                            onClick={() => router.push(`/chat/${matchedData?.user_id}`)}
+                                            className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#000F5C] text-white rounded-lg hover:bg-[#00136e] transition-all shadow-md"
+                                        >
+                                            <MessageCircle size={18} />
+                                            <span className="text-sm font-extrabold">Chat with {matchedData?.first_name}</span>
+                                        </button>
                                     </div>
                                 </div>
 

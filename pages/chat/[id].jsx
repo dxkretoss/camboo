@@ -46,7 +46,7 @@ export default function ChatPage() {
 
         const echo = initEcho(token);
 
-        echo.private(`chat.${profile.id}`)
+        echo.private(`chat.${profile?.id}`)
             .listen("MessageSent", (e) => {
                 console.log("📩 Incoming event:", e);
 
@@ -57,7 +57,7 @@ export default function ChatPage() {
             });
 
         return () => {
-            getEcho()?.leave(`chat.${profile.id}`);
+            getEcho()?.leave(`chat.${profile?.id}`);
         };
     }, [id, token]);
 

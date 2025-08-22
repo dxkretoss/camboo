@@ -34,7 +34,6 @@ export default function HomePage() {
     const [openDenounceadDialog, setopenDenounceadDialog] = useState(false);
     const [Denounceadcomment, setDenounceadComment] = useState("");
     const [sendDenouceCmt, setsendDenouceCmt] = useState(false);
-
     const dialogRef = useRef(null);
 
     useEffect(() => {

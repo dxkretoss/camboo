@@ -33,6 +33,7 @@ export default function HomePage() {
     const [fetching, setfetching] = useState(false);
     const [openDenounceadDialog, setopenDenounceadDialog] = useState(false);
     const [Denounceadcomment, setDenounceadComment] = useState("");
+    const [sendDenouceCmt, setsendDenouceCmt] = useState(false);
 
     const dialogRef = useRef(null);
 
@@ -211,6 +212,8 @@ export default function HomePage() {
     }
 
     const sendDenounceadComment = async (id) => {
+        if (!Denounceadcomment) return;
+        setsendDenouceCmt(true);
         try {
             const token = Cookies.get("token");
             const sendCmt = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/denounce-item`,
@@ -227,6 +230,8 @@ export default function HomePage() {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            setsendDenouceCmt(false);
         }
     }
     return (
@@ -415,10 +420,10 @@ export default function HomePage() {
                                                 </button>
 
                                                 {openDenounceadDialog && (
-                                                    <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-xs z-50 p-4 sm:p-6">
+                                                    <div className="fixed inset-0 flex justify-center items-center bg-black/15 z-50 p-4 sm:p-6">
                                                         <div
                                                             ref={dialogRef}
-                                                            className="bg-white rounded-lg p-6 w-full max-w-md sm:max-w-lg md:max-w-xl relative shadow-lg"
+                                                            className="bg-white rounded-lg p-6 w-full max-w-md sm:max-w-lg md:max-w-xl relative"
                                                         >
                                                             <button
                                                                 className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 font-bold text-lg"
@@ -445,12 +450,46 @@ export default function HomePage() {
                                                             />
 
                                                             <div className="flex justify-end">
-                                                                <button
-                                                                    className="px-4 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600"
+                                                                <Button
+                                                                    disabled={sendDenouceCmt}
+                                                                    className={`flex gap-2 items-center px-4 py-2 rounded-md text-sm font-medium transition-all
+                                                                            ${sendDenouceCmt
+                                                                            ? "bg-gray-400 cursor-not-allowed opacity-70"
+                                                                            : "bg-[#000F5C] hover:bg-[#00136e] text-white shadow-md"}`}
                                                                     onClick={() => sendDenounceadComment(user?.id)}
                                                                 >
-                                                                    Send Comment
-                                                                </button>
+                                                                    {sendDenouceCmt ? (
+                                                                        <>
+                                                                            <svg
+                                                                                className="animate-spin h-4 w-4 text-white"
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                fill="none"
+                                                                                viewBox="0 0 24 24"
+                                                                            >
+                                                                                <circle
+                                                                                    className="opacity-25"
+                                                                                    cx="12"
+                                                                                    cy="12"
+                                                                                    r="10"
+                                                                                    stroke="currentColor"
+                                                                                    strokeWidth="4"
+                                                                                ></circle>
+                                                                                <path
+                                                                                    className="opacity-75"
+                                                                                    fill="currentColor"
+                                                                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                                                                ></path>
+                                                                            </svg>
+                                                                            <span>Sending...</span>
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <SendHorizonal size={20} />
+                                                                            <span>Send Comment</span>
+                                                                        </>
+                                                                    )}
+                                                                </Button>
+
                                                             </div>
                                                         </div>
                                                     </div>

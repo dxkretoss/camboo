@@ -19,48 +19,56 @@ export default function ChatPage() {
     const [input, setInput] = useState("");
     const listRef = useRef();
 
+    // Redirect if no token
     useEffect(() => {
-        if (!token) {
-            router.push("/");
-            return;
-        }
+        if (!token) router.push("/");
     }, [token]);
 
+    // Fetch messages & subscribe to WebSocket
     useEffect(() => {
         if (!id || !token) return;
 
         const fetchMessages = async () => {
+            setLoading(true);
             try {
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-message/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                if (res?.data) {
-                    setMessages(res.data?.messages || []);
-                }
-            } catch (error) {
-                console.error("Error fetching messages:", error);
+                setMessages(res.data?.messages || []);
+            } catch (err) {
+                console.error("Error fetching messages:", err);
+            } finally {
+                setLoading(false);
             }
         };
-
         fetchMessages();
 
+        // Initialize Echo
         const echo = initEcho(token);
 
+        // Listen for incoming messages for current user
         echo.private(`chat.${profile?.id}`)
             .listen("MessageSent", (e) => {
-                console.log("📩 Incoming event:", e);
-
                 const msg = e.message || e.data;
                 if (msg) {
-                    setMessages(prev => [...(Array.isArray(prev) ? prev : []), msg]);
+                    setMessages(prev => [...prev, msg]);
                 }
             });
 
+        // Cleanup on unmount
         return () => {
             getEcho()?.leave(`chat.${profile?.id}`);
         };
-    }, [id, token]);
+    }, [id, token, profile?.id]);
 
+    // Auto scroll to bottom when new message arrives
+    useEffect(() => {
+        if (listRef.current) {
+            listRef.current.scrollTop = listRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+    // Send message
     const sendMessage = async () => {
         if (!input.trim()) return;
 
@@ -75,22 +83,21 @@ export default function ChatPage() {
             );
 
             if (res?.data?.data) {
-                setMessages((prev) => [...(Array.isArray(prev) ? prev : []), res.data.data]);
+                // Append message to state immediately
+                setMessages(prev => [...prev, res.data.data]);
             }
 
             setInput("");
-        } catch (error) {
-            console.error("Error sending message:", error);
+        } catch (err) {
+            console.error("Error sending message:", err);
         }
     };
-
 
     return (
         <Layout>
             <div className="md:px-10">
                 <div className="flex items-center gap-3 mb-4">
-                    <ChevronLeft className="w-5 h-5 cursor-pointer "
-                        onClick={() => window.history.back()} />
+                    <ChevronLeft className="w-5 h-5 cursor-pointer" onClick={() => window.history.back()} />
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 relative rounded-full overflow-hidden">
                             <img src="https://randomuser.me/api/portraits/men/5.jpg" alt="avatar" fill className="object-cover" />
@@ -107,11 +114,10 @@ export default function ChatPage() {
                         ref={listRef}
                         className="flex-1 overflow-y-auto p-4 space-y-4 bg-white custom-scrollbar"
                     >
-
                         {loading ? (
                             <div className="text-center text-sm text-gray-500">Loading messages...</div>
                         ) : Array.isArray(messages) && messages.length > 0 ? (
-                            messages?.sort((a, b) => a.id - b.id)?.map((m) => (
+                            messages.map((m) => (
                                 <motion.div
                                     key={m.id}
                                     initial={{ opacity: 0, y: 10 }}
@@ -121,7 +127,7 @@ export default function ChatPage() {
                                 >
                                     <div
                                         className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-md 
-                                                ${m.sender_id === profile?.id
+                                            ${m.sender_id === profile?.id
                                                 ? "bg-[#000F5C] text-white rounded-br-none"
                                                 : "bg-white text-gray-900 border rounded-bl-none"}`}
                                     >
@@ -135,7 +141,6 @@ export default function ChatPage() {
                         ) : (
                             <div className="text-center text-sm text-gray-500">No messages yet</div>
                         )}
-
                     </div>
 
                     <div className="p-3 border-t bg-white">
@@ -155,8 +160,7 @@ export default function ChatPage() {
                         </div>
                     </div>
                 </div>
-
             </div>
-        </Layout >
+        </Layout>
     );
 }

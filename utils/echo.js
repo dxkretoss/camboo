@@ -1,4 +1,3 @@
-// utils/echo.js
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import Cookies from "js-cookie";
@@ -7,6 +6,8 @@ let echo;
 
 export const initEcho = (token) => {
   if (!echo) {
+    window.Pusher = Pusher;
+
     echo = new Echo({
       broadcaster: "pusher",
       key: process.env.NEXT_PUBLIC_PUSHER_APP_KEY || "anykey",
@@ -25,7 +26,14 @@ export const initEcho = (token) => {
       },
     });
   }
+
   return echo;
 };
 
 export const getEcho = () => echo;
+
+// Optional: check connection
+export const isConnected = () => {
+  if (!echo) return false;
+  return echo.connector?.pusher?.connection?.state === "connected";
+};

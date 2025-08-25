@@ -10,7 +10,7 @@ import Pusher from "pusher-js";
 
 export default function ChatPage() {
     const router = useRouter();
-    const { id } = router?.query; // conversation or user id
+    const { id } = router?.query;
     const token = Cookies.get("token");
     const { profile } = useUser();
     const [messages, setMessages] = useState([]);
@@ -52,18 +52,48 @@ export default function ChatPage() {
 
     // ✅ Setup Pusher for real-time updates
     useEffect(() => {
-        if (!profile?.id) return;
+        if (!profile?.id || !id) return;
 
         const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
             cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
             forceTLS: true,
         });
 
-        // subscribe to "chat" channel
-        const channel = pusher.subscribe("chat");
+        // log connection state changes
+        pusher.connection.bind("state_change", (states) => {
+            console.log("Pusher state changed:", states);
+            // Example states: {previous: "initialized", current: "connecting"}
+        });
+
+        pusher.connection.bind("connected", () => {
+            console.log("✅ Pusher connected with socket ID:", pusher.connection.socket_id);
+        });
+
+        pusher.connection.bind("disconnected", () => {
+            console.log("❌ Pusher disconnected");
+        });
+
+        pusher.connection.bind("error", (err) => {
+            console.error("⚠️ Pusher connection error:", err);
+        });
+
+        // subscribe to channel
+        const channel = pusher.subscribe(`chat.${id}`);
+
+        channel.bind("pusher:subscription_succeeded", () => {
+            console.log(`✅ Subscribed to channel chat.${id}`);
+        });
+
+        channel.bind("pusher:subscription_error", (err) => {
+            console.error("❌ Subscription failed:", err);
+        });
+
         channel.bind("App\\Events\\MessageSent", (data) => {
-            // only append if message belongs to this conversation
-            if (data.message.receiver_id == id || data.message.sender_id == id) {
+            console.log("📩 New message:", data);
+            if (
+                data.message.receiver_id == id ||
+                data.message.sender_id == id
+            ) {
                 setMessages((prev) => [...prev, data.message]);
                 scrollToBottom();
             }
@@ -75,6 +105,8 @@ export default function ChatPage() {
             pusher.disconnect();
         };
     }, [id, profile?.id]);
+
+
 
     const scrollToBottom = () => {
         if (listRef.current) {
@@ -95,7 +127,7 @@ export default function ChatPage() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            // no need to push here, Laravel broadcast will handle it
+            if (res?.data?.data) { setMessages((prev) => [...(Array.isArray(prev) ? prev : []), res.data.data]); scrollToBottom(); }
             setInput("");
         } catch (error) {
             console.error("❌ Error sending message:", error);
@@ -146,8 +178,8 @@ export default function ChatPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.3 }}
                                         className={`flex items-end gap-2 ${m.sender_id === profile?.id
-                                                ? "justify-end"
-                                                : "justify-start"
+                                            ? "justify-end"
+                                            : "justify-start"
                                             }`}
                                     >
                                         <div
@@ -160,8 +192,8 @@ export default function ChatPage() {
                                             <div className="text-sm">{m.message}</div>
                                             <div
                                                 className={`text-[10px] mt-1 text-right ${m.sender_id === profile?.id
-                                                        ? "text-gray-200"
-                                                        : "text-gray-500"
+                                                    ? "text-gray-200"
+                                                    : "text-gray-500"
                                                     }`}
                                             >
                                                 {new Date(m.created_at).toLocaleTimeString([], {

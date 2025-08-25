@@ -54,7 +54,7 @@ export default function ChatPage() {
     }, [id, token, profile?.id]);
 
     useEffect(() => {
-        if (!profile?.id || !id) return;
+        if (!profile?.id || !id || !token) return;
 
         const myId = profile?.id;
         const otherId = parseInt(id);
@@ -66,6 +66,8 @@ export default function ChatPage() {
             cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
             forceTLS: true,
         });
+
+        console.log(pusher)
 
         // log connection state changes
         pusher.connection.bind("state_change", (states) => {
@@ -87,8 +89,6 @@ export default function ChatPage() {
         // subscribe to channel
         const channel = pusher.subscribe(`chat.${chatChannelId}`);
 
-        console.log(channel)
-
         channel.bind("pusher:subscription_succeeded", () => {
             console.log(`✅ Subscribed to channel chat.${chatChannelId}`);
         });
@@ -97,7 +97,7 @@ export default function ChatPage() {
             console.error("❌ Subscription failed:", err);
         });
 
-        channel.bind("App\\Events\\MessageSent", (data) => {
+        channel.bind("MessageSent", (data) => {
             console.log("📩 New message:", data);
             if (
                 data?.message?.receiver_id == id ||
@@ -140,12 +140,20 @@ export default function ChatPage() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            if (res?.data?.data) { setMessages((prev) => [...(Array.isArray(prev) ? prev : []), res.data.data]); scrollToBottom(); }
+            if (res?.data?.data) {
+                setMessages((prev) => {
+                    if (prev.some(m => m.id === res.data.data.id)) return prev;
+                    return [...prev, res.data.data];
+                });
+                scrollToBottom();
+            }
+
             setInput("");
         } catch (error) {
             console.error("❌ Error sending message:", error);
         }
     };
+
 
     return (
         <Layout>

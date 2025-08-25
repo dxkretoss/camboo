@@ -54,6 +54,12 @@ export default function ChatPage() {
     useEffect(() => {
         if (!profile?.id || !id) return;
 
+        const myId = profile?.id;     // current logged-in user
+        const otherId = parseInt(id); // other user from URL param
+
+        const chatChannelId =
+            myId < otherId ? `${myId}.${otherId}` : `${otherId}.${myId}`;
+
         const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
             cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
             forceTLS: true,
@@ -78,10 +84,10 @@ export default function ChatPage() {
         });
 
         // subscribe to channel
-        const channel = pusher.subscribe(`chat.${id}`);
+        const channel = pusher.subscribe(`chat.${chatChannelId}`);
 
         channel.bind("pusher:subscription_succeeded", () => {
-            console.log(`✅ Subscribed to channel chat.${id}`);
+            console.log(`✅ Subscribed to channel chat.${chatChannelId}`);
         });
 
         channel.bind("pusher:subscription_error", (err) => {
@@ -105,8 +111,6 @@ export default function ChatPage() {
             pusher.disconnect();
         };
     }, [id, profile?.id]);
-
-
 
     const scrollToBottom = () => {
         if (listRef.current) {

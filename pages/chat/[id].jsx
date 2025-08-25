@@ -12,10 +12,11 @@ export default function ChatPage() {
     const router = useRouter();
     const { id } = router?.query;
     const token = Cookies.get("token");
-    const { profile } = useUser();
+    const { profile, allProductandService } = useUser();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState("");
+    const [matchUser, setmatchUser] = useState('');
     const listRef = useRef();
 
     useEffect(() => {
@@ -25,9 +26,11 @@ export default function ChatPage() {
         }
     }, [token]);
 
-    // fetch old messages
     useEffect(() => {
         if (!id || !token || !profile?.id) return;
+
+        const matchUserDetails = allProductandService?.find((fetchUser) => parseInt(fetchUser?.user_id) === parseInt(id));
+        setmatchUser(matchUserDetails);
 
         const fetchMessages = async () => {
             setLoading(true);
@@ -37,7 +40,7 @@ export default function ChatPage() {
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
                 if (res?.data) {
-                    setMessages(res.data?.messages || []);
+                    setMessages(res?.data?.messages || []);
                     scrollToBottom();
                 }
             } catch (error) {
@@ -50,12 +53,11 @@ export default function ChatPage() {
         fetchMessages();
     }, [id, token, profile?.id]);
 
-    // ✅ Setup Pusher for real-time updates
     useEffect(() => {
         if (!profile?.id || !id) return;
 
-        const myId = profile?.id;     // current logged-in user
-        const otherId = parseInt(id); // other user from URL param
+        const myId = profile?.id;
+        const otherId = parseInt(id);
 
         const chatChannelId =
             myId < otherId ? `${myId}.${otherId}` : `${otherId}.${myId}`;
@@ -68,7 +70,6 @@ export default function ChatPage() {
         // log connection state changes
         pusher.connection.bind("state_change", (states) => {
             console.log("Pusher state changed:", states);
-            // Example states: {previous: "initialized", current: "connecting"}
         });
 
         pusher.connection.bind("connected", () => {
@@ -86,6 +87,8 @@ export default function ChatPage() {
         // subscribe to channel
         const channel = pusher.subscribe(`chat.${chatChannelId}`);
 
+        console.log(channel)
+
         channel.bind("pusher:subscription_succeeded", () => {
             console.log(`✅ Subscribed to channel chat.${chatChannelId}`);
         });
@@ -97,10 +100,10 @@ export default function ChatPage() {
         channel.bind("App\\Events\\MessageSent", (data) => {
             console.log("📩 New message:", data);
             if (
-                data.message.receiver_id == id ||
-                data.message.sender_id == id
+                data?.message?.receiver_id == id ||
+                data?.message?.sender_id == id
             ) {
-                setMessages((prev) => [...prev, data.message]);
+                setMessages((prev) => [...prev, data?.message]);
                 scrollToBottom();
             }
         });
@@ -117,6 +120,12 @@ export default function ChatPage() {
             listRef.current.scrollTop = listRef.current.scrollHeight;
         }
     };
+
+    useEffect(() => {
+        if (listRef.current) {
+            listRef.current.scrollTop = listRef.current.scrollHeight;
+        }
+    }, [messages, loading]);
 
     const sendMessage = async () => {
         if (!input.trim()) return;
@@ -141,7 +150,6 @@ export default function ChatPage() {
     return (
         <Layout>
             <div className="md:px-10">
-                {/* Header */}
                 <div className="flex items-center gap-3 mb-4">
                     <ChevronLeft
                         className="w-5 h-5 cursor-pointer"
@@ -156,21 +164,40 @@ export default function ChatPage() {
                             />
                         </div>
                         <div>
-                            <div className="font-semibold">User Name</div>
+                            <div className="font-semibold">{matchUser?.first_name}</div>
                             <div className="text-xs text-gray-500">User Name</div>
                         </div>
                     </div>
                 </div>
 
-                {/* Chat Box */}
                 <div className="border border-gray-200 rounded-2xl h-[60vh] md:h-[70vh] flex flex-col overflow-hidden shadow-md">
                     <div
                         ref={listRef}
-                        className="flex-1 overflow-y-auto p-4 space-y-4 bg-white custom-scrollbar"
+                        className="flex-1 overflow-y-auto p-4 space-y-4 bg-[url('/pattern.svg')] bg-gray-50 bg-repeat custom-scrollbar"
                     >
                         {loading ? (
-                            <div className="text-center text-sm text-gray-500">
-                                Loading messages...
+                            <div className="flex justify-center items-center h-full text-sm text-[#000F5C]">
+                                <svg
+                                    className="animate-spin h-5 w-5 text-[#00136e] mr-2"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    />
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                    />
+                                </svg>
+                                <span>Loading messages...</span>
                             </div>
                         ) : Array.isArray(messages) && messages.length > 0 ? (
                             messages
@@ -181,16 +208,14 @@ export default function ChatPage() {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.3 }}
-                                        className={`flex items-end gap-2 ${m.sender_id === profile?.id
-                                            ? "justify-end"
-                                            : "justify-start"
+                                        className={`flex items-end gap-2 ${m.sender_id === profile?.id ? "justify-end" : "justify-start"
                                             }`}
                                     >
                                         <div
                                             className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-md 
-                      ${m.sender_id === profile?.id
+                                                ${m.sender_id === profile?.id
                                                     ? "bg-[#000F5C] text-white rounded-br-none"
-                                                    : "bg-white text-gray-900 border rounded-bl-none"
+                                                    : "bg-white text-[#000F5C] rounded-bl-none"
                                                 }`}
                                         >
                                             <div className="text-sm">{m.message}</div>
@@ -209,13 +234,12 @@ export default function ChatPage() {
                                     </motion.div>
                                 ))
                         ) : (
-                            <div className="text-center text-sm text-gray-500">
+                            <div className="flex justify-center items-center h-full text-sm text-gray-500">
                                 No messages yet
                             </div>
                         )}
                     </div>
 
-                    {/* Input */}
                     <div className="p-3 border-t bg-white">
                         <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-2 shadow-inner">
                             <input
@@ -225,7 +249,9 @@ export default function ChatPage() {
                                 placeholder="Type a message..."
                             />
                             <button
-                                onClick={sendMessage}
+                                onClick={() => {
+                                    sendMessage();
+                                }}
                                 className="px-4 py-2 rounded-full bg-[#000F5C] text-white flex items-center gap-1 shadow-md hover:scale-105 transition-transform"
                             >
                                 <Send size={16} /> Send
@@ -233,6 +259,7 @@ export default function ChatPage() {
                         </div>
                     </div>
                 </div>
+
             </div>
         </Layout>
     );

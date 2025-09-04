@@ -88,11 +88,12 @@ export default function ChatPage() {
         const channel = pusher.subscribe(`chat.${chatChannelId}`);
 
         channel.bind("MessageSent", (data) => {
+            console.log("📩 New message payload:", data);
             if (
                 data?.message?.receiver_id == id ||
                 data?.message?.sender_id == id
             ) {
-                setMessages((prev) => [...prev, data?.message]);
+                setMessages((prev) => [...prev, data]);
                 scrollToBottom();
             }
         });

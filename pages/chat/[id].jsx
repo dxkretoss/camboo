@@ -159,6 +159,7 @@ export default function ChatPage() {
             formData.append("file", selectedFile);
             formData.append("receiver_id", id);
             formData.append("message_type", messageType);
+            formData.append("message", "");
 
             try {
                 const res = await axios.post(
@@ -273,7 +274,37 @@ export default function ChatPage() {
                                                     : "bg-white text-[#000F5C] rounded-bl-none"
                                                 }`}
                                         >
-                                            <div className="text-sm">{m.message}</div>
+                                            {/* <div className="text-sm">{m.message}</div> */}
+                                            {m.message_type === 1 && (
+                                                <div className="text-sm">{m.message}</div>
+                                            )}
+
+                                            {m.message_type === 2 && (
+                                                <img
+                                                    src={m.file_url || m.message}
+                                                    alt="chat-img"
+                                                    className="rounded-lg max-h-60 object-cover"
+                                                />
+                                            )}
+
+                                            {m.message_type === 3 && (
+                                                <video controls className="rounded-lg max-h-60">
+                                                    <source src={m.file_url || m.message} type="video/mp4" />
+                                                    Your browser does not support video.
+                                                </video>
+                                            )}
+
+                                            {m.message_type === 4 && (
+                                                <a
+                                                    href={m.file_url || m.message}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="underline text-sm flex items-center gap-1"
+                                                >
+                                                    📄 Download Document
+                                                </a>
+                                            )}
+
                                             <div
                                                 className={`text-[10px] mt-1 text-right ${m.sender_id === profile?.id
                                                     ? "text-gray-200"

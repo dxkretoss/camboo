@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import axios from "axios";
 import Layout from "@/components/Layout/Layout";
-import { ChevronLeft, Send } from "lucide-react";
+import { ChevronLeft, Send, Paperclip } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { motion } from "framer-motion";
 import Pusher from "pusher-js";
@@ -17,6 +17,8 @@ export default function ChatPage() {
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState("");
     const [matchUser, setmatchUser] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [filePreview, setFilePreview] = useState(null);
     const listRef = useRef();
 
     useEffect(() => {
@@ -25,6 +27,20 @@ export default function ChatPage() {
             return;
         }
     }, [token]);
+
+    const handleFileUpload = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setSelectedFile(file);
+
+        // Preview for images
+        if (file.type.startsWith("image/")) {
+            setFilePreview(URL.createObjectURL(file));
+        } else {
+            setFilePreview(null);
+        }
+    };
 
     useEffect(() => {
         if (!id || !token || !profile?.id) return;
@@ -128,31 +144,62 @@ export default function ChatPage() {
     }, [messages, loading]);
 
     const sendMessage = async () => {
-        if (!input.trim()) return;
+        if (!input.trim() && !selectedFile) return;
 
-        try {
-            const res = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/send-message`,
-                {
-                    message: input,
-                    receiver_id: id,
-                },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+        let messageType = 1; // default text
+        let fileUrl = null;
 
-            if (res?.data?.data) {
-                setMessages((prev) => {
-                    if (prev.some(m => m.id === res.data.data.id)) return prev;
-                    return [...prev, res.data.data];
-                });
-                scrollToBottom();
+        if (selectedFile) {
+            if (selectedFile.type.startsWith("image/")) messageType = 2;
+            else if (selectedFile.type.startsWith("video/")) messageType = 3;
+            else messageType = 4; // docs
+
+            // Upload file to server (or S3, Cloudinary, etc.)
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            formData.append("receiver_id", id);
+            formData.append("message_type", messageType);
+
+            try {
+                const res = await axios.post(
+                    `${process.env.NEXT_PUBLIC_API_CAMBOO}/send-message`,
+                    formData,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+
+                if (res?.data?.data) {
+                    setMessages((prev) => [...prev, res.data.data]);
+                    scrollToBottom();
+                }
+            } catch (err) {
+                console.error("❌ File upload error:", err);
             }
+        } else {
+            try {
+                const res = await axios.post(
+                    `${process.env.NEXT_PUBLIC_API_CAMBOO}/send-message`,
+                    {
+                        message: input,
+                        receiver_id: id,
+                        message_type: 1,
+                    },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
 
-            setInput("");
-        } catch (error) {
-            console.error("❌ Error sending message:", error);
+                if (res?.data?.data) {
+                    setMessages((prev) => [...prev, res.data.data]);
+                    scrollToBottom();
+                }
+            } catch (err) {
+                console.error("❌ Error sending text:", err);
+            }
         }
+
+        setInput("");
+        setSelectedFile(null);
+        setFilePreview(null);
     };
+
 
 
     return (
@@ -250,16 +297,27 @@ export default function ChatPage() {
 
                     <div className="p-3 border-t bg-white">
                         <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-2 shadow-inner">
+                            {/* File upload button */}
+                            <label className="cursor-pointer text-gray-500 hover:text-[#000F5C]">
+                                <Paperclip size={18} />
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    onChange={(e) => handleFileUpload(e)}
+                                />
+                            </label>
+
+                            {/* Text input */}
                             <input
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 className="flex-1 px-3 py-2 bg-transparent focus:outline-none text-sm"
                                 placeholder="Type a message..."
                             />
+
+                            {/* Send button */}
                             <button
-                                onClick={() => {
-                                    sendMessage();
-                                }}
+                                onClick={sendMessage}
                                 className="px-4 py-2 rounded-full bg-[#000F5C] text-white flex items-center gap-1 shadow-md hover:scale-105 transition-transform"
                             >
                                 <Send size={16} /> Send
@@ -267,7 +325,6 @@ export default function ChatPage() {
                         </div>
                     </div>
                 </div>
-
             </div>
         </Layout>
     );

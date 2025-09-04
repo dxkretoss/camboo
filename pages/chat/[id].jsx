@@ -139,7 +139,7 @@ export default function ChatPage() {
                 );
 
                 if (res?.data?.data) {
-                    setMessages((prev) => [...prev, res.data.data]);
+                    // setMessages((prev) => [...prev, res.data.data]);
                     scrollToBottom();
                 }
             } else {
@@ -154,7 +154,7 @@ export default function ChatPage() {
                 );
 
                 if (res?.data?.data) {
-                    setMessages((prev) => [...prev, res.data.data]);
+                    // setMessages((prev) => [...prev, res.data.data]);
                     scrollToBottom();
                 }
             }

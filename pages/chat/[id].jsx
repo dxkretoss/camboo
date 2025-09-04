@@ -130,22 +130,18 @@ export default function ChatPage() {
             formData.append("message", "");
 
             try {
-                const res = await axios.post(
+                await axios.post(
                     `${process.env.NEXT_PUBLIC_API_CAMBOO}/send-message`,
                     formData,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-
-                if (res?.data?.data) {
-                    setMessages((prev) => [...prev, res.data.data]);
-                    scrollToBottom();
-                }
+                // ❌ Do not append locally here — wait for Pusher
             } catch (err) {
                 console.error("❌ File upload error:", err);
             }
         } else {
             try {
-                const res = await axios.post(
+                await axios.post(
                     `${process.env.NEXT_PUBLIC_API_CAMBOO}/send-message`,
                     {
                         message: input,
@@ -154,11 +150,7 @@ export default function ChatPage() {
                     },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-
-                if (res?.data?.data) {
-                    setMessages((prev) => [...prev, res.data.data]);
-                    scrollToBottom();
-                }
+                // ❌ Do not append locally here — wait for Pusher
             } catch (err) {
                 console.error("❌ Error sending text:", err);
             }
@@ -349,6 +341,12 @@ export default function ChatPage() {
                             <input
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey) {
+                                        e.preventDefault(); // prevent new line
+                                        sendMessage();
+                                    }
+                                }}
                                 className="flex-1 px-3 py-2 bg-transparent focus:outline-none text-sm"
                                 placeholder="Type a message..."
                             />

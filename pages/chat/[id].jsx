@@ -15,6 +15,7 @@ export default function ChatPage() {
     const { profile, allProductandService } = useUser();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [sending, setsending] = useState(false);
     const [input, setInput] = useState("");
     const [matchUser, setmatchUser] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
@@ -116,32 +117,33 @@ export default function ChatPage() {
     const sendMessage = async () => {
         if (!input.trim() && !selectedFile) return;
 
-        let messageType = 1;
+        setsending(true);
 
-        if (selectedFile) {
-            if (selectedFile.type.startsWith("image/")) messageType = 2;
-            else if (selectedFile.type.startsWith("video/")) messageType = 3;
-            else messageType = 4;
+        try {
+            let messageType = 1;
+            if (selectedFile) {
+                if (selectedFile.type.startsWith("image/")) messageType = 2;
+                else if (selectedFile.type.startsWith("video/")) messageType = 3;
+                else messageType = 4;
 
-            const formData = new FormData();
-            formData.append("file", selectedFile);
-            formData.append("receiver_id", id);
-            formData.append("message_type", messageType);
-            formData.append("message", "");
+                const formData = new FormData();
+                formData.append("file", selectedFile);
+                formData.append("receiver_id", id);
+                formData.append("message_type", messageType);
+                formData.append("message", "");
 
-            try {
-                await axios.post(
+                const res = await axios.post(
                     `${process.env.NEXT_PUBLIC_API_CAMBOO}/send-message`,
                     formData,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-                // ❌ Do not append locally here — wait for Pusher
-            } catch (err) {
-                console.error("❌ File upload error:", err);
-            }
-        } else {
-            try {
-                await axios.post(
+
+                if (res?.data?.data) {
+                    setMessages((prev) => [...prev, res.data.data]);
+                    scrollToBottom();
+                }
+            } else {
+                const res = await axios.post(
                     `${process.env.NEXT_PUBLIC_API_CAMBOO}/send-message`,
                     {
                         message: input,
@@ -150,15 +152,21 @@ export default function ChatPage() {
                     },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
-                // ❌ Do not append locally here — wait for Pusher
-            } catch (err) {
-                console.error("❌ Error sending text:", err);
-            }
-        }
 
-        setInput("");
-        setSelectedFile(null);
-        setFilePreview(null);
+                if (res?.data?.data) {
+                    setMessages((prev) => [...prev, res.data.data]);
+                    scrollToBottom();
+                }
+            }
+
+            setInput("");
+            setSelectedFile(null);
+            setFilePreview(null);
+        } catch (err) {
+            console.error("❌ Error sending message:", err);
+        } finally {
+            setsending(false);
+        }
     };
 
     return (
@@ -354,10 +362,17 @@ export default function ChatPage() {
                             {/* Send button */}
                             <button
                                 onClick={sendMessage}
-                                className="px-4 py-2 rounded-full bg-[#000F5C] text-white flex items-center gap-1 shadow-md hover:scale-105 transition-transform"
+                                disabled={sending}
+                                className={`px-4 py-2 rounded-full flex items-center gap-1 shadow-md transition-transform 
+                                    ${sending ? "bg-gray-400 cursor-not-allowed" : "bg-[#000F5C] text-white hover:scale-105"}`}
                             >
-                                <Send size={16} /> Send
+                                {sending ? "Sending..." : (
+                                    <>
+                                        <Send size={16} /> Send
+                                    </>
+                                )}
                             </button>
+
                         </div>
                     </div>
                 </div>

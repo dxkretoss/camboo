@@ -274,7 +274,6 @@ export default function ChatPage() {
                                                     : "bg-white text-[#000F5C] rounded-bl-none"
                                                 }`}
                                         >
-                                            {/* <div className="text-sm">{m.message}</div> */}
                                             {m.message_type === 1 && (
                                                 <div className="text-sm">{m.message}</div>
                                             )}

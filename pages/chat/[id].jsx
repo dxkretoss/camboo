@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import axios from "axios";
 import Layout from "@/components/Layout/Layout";
-import { ChevronLeft, Send, Paperclip } from "lucide-react";
+import { ChevronLeft, Send, Paperclip, X } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { motion } from "framer-motion";
 import Pusher from "pusher-js";
@@ -16,7 +16,7 @@ export default function ChatPage() {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState("");
-    const [matchUser, setmatchUser] = useState('');
+    const [matchUser, setmatchUser] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState(null);
     const listRef = useRef();
@@ -34,18 +34,20 @@ export default function ChatPage() {
 
         setSelectedFile(file);
 
-        // Preview for images
-        if (file.type.startsWith("image/")) {
+        // Preview
+        if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
             setFilePreview(URL.createObjectURL(file));
         } else {
-            setFilePreview(null);
+            setFilePreview(file.name);
         }
     };
 
     useEffect(() => {
         if (!id || !token || !profile?.id) return;
 
-        const matchUserDetails = allProductandService?.find((fetchUser) => parseInt(fetchUser?.user_id) === parseInt(id));
+        const matchUserDetails = allProductandService?.find(
+            (fetchUser) => parseInt(fetchUser?.user_id) === parseInt(id)
+        );
         setmatchUser(matchUserDetails);
 
         const fetchMessages = async () => {
@@ -83,38 +85,9 @@ export default function ChatPage() {
             forceTLS: true,
         });
 
-        console.log(pusher)
-
-        // log connection state changes
-        pusher.connection.bind("state_change", (states) => {
-            console.log("Pusher state changed:", states);
-        });
-
-        pusher.connection.bind("connected", () => {
-            console.log("✅ Pusher connected with socket ID:", pusher.connection.socket_id);
-        });
-
-        pusher.connection.bind("disconnected", () => {
-            console.log("❌ Pusher disconnected");
-        });
-
-        pusher.connection.bind("error", (err) => {
-            console.error("⚠️ Pusher connection error:", err);
-        });
-
-        // subscribe to channel
         const channel = pusher.subscribe(`chat.${chatChannelId}`);
 
-        channel.bind("pusher:subscription_succeeded", () => {
-            console.log(`✅ Subscribed to channel chat.${chatChannelId}`);
-        });
-
-        channel.bind("pusher:subscription_error", (err) => {
-            console.error("❌ Subscription failed:", err);
-        });
-
         channel.bind("MessageSent", (data) => {
-            console.log("📩 New message:", data);
             if (
                 data?.message?.receiver_id == id ||
                 data?.message?.sender_id == id
@@ -138,23 +111,19 @@ export default function ChatPage() {
     };
 
     useEffect(() => {
-        if (listRef.current) {
-            listRef.current.scrollTop = listRef.current.scrollHeight;
-        }
+        scrollToBottom();
     }, [messages, loading]);
 
     const sendMessage = async () => {
         if (!input.trim() && !selectedFile) return;
 
-        let messageType = 1; // default text
-        let fileUrl = null;
+        let messageType = 1;
 
         if (selectedFile) {
             if (selectedFile.type.startsWith("image/")) messageType = 2;
             else if (selectedFile.type.startsWith("video/")) messageType = 3;
-            else messageType = 4; // docs
+            else messageType = 4;
 
-            // Upload file to server (or S3, Cloudinary, etc.)
             const formData = new FormData();
             formData.append("file", selectedFile);
             formData.append("receiver_id", id);
@@ -201,11 +170,10 @@ export default function ChatPage() {
         setFilePreview(null);
     };
 
-
-
     return (
         <Layout>
             <div className="md:px-10">
+                {/* Header */}
                 <div className="flex items-center gap-3 mb-4">
                     <ChevronLeft
                         className="w-5 h-5 cursor-pointer"
@@ -220,42 +188,29 @@ export default function ChatPage() {
                             />
                         </div>
                         <div>
-                            <div className="font-semibold">{matchUser?.first_name}</div>
-                            <div className="text-xs text-gray-500">User Name</div>
+                            <div className="font-semibold">
+                                {matchUser?.first_name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                                User Name
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                {/* Chat Box */}
                 <div className="border border-gray-200 rounded-2xl h-[60vh] md:h-[70vh] flex flex-col overflow-hidden shadow-md">
+                    {/* Messages */}
                     <div
                         ref={listRef}
                         className="flex-1 overflow-y-auto p-4 space-y-4 bg-[url('/pattern.svg')] bg-gray-50 bg-repeat custom-scrollbar"
                     >
                         {loading ? (
                             <div className="flex justify-center items-center h-full text-sm text-[#000F5C]">
-                                <svg
-                                    className="animate-spin h-5 w-5 text-[#00136e] mr-2"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    />
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                    />
-                                </svg>
-                                <span>Loading messages...</span>
+                                Loading messages...
                             </div>
-                        ) : Array.isArray(messages) && messages.length > 0 ? (
+                        ) : Array.isArray(messages) &&
+                            messages.length > 0 ? (
                             messages
                                 ?.sort((a, b) => a.id - b.id)
                                 ?.map((m) => (
@@ -264,18 +219,22 @@ export default function ChatPage() {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.3 }}
-                                        className={`flex items-end gap-2 ${m.sender_id === profile?.id ? "justify-end" : "justify-start"
+                                        className={`flex items-end gap-2 ${m.sender_id === profile?.id
+                                            ? "justify-end"
+                                            : "justify-start"
                                             }`}
                                     >
                                         <div
-                                            className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-md 
-                                                ${m.sender_id === profile?.id
-                                                    ? "bg-[#000F5C] text-white rounded-br-none"
-                                                    : "bg-white text-[#000F5C] rounded-bl-none"
+                                            className={`max-w-[75%] px-4 py-3 rounded-2xl shadow-md ${m.sender_id === profile?.id
+                                                ? "bg-[#000F5C] text-white rounded-br-none"
+                                                : "bg-white text-[#000F5C] rounded-bl-none"
                                                 }`}
                                         >
+                                            {/* Render based on message type */}
                                             {m.message_type === 1 && (
-                                                <div className="text-sm">{m.message}</div>
+                                                <div className="text-sm">
+                                                    {m.message}
+                                                </div>
                                             )}
 
                                             {m.message_type === 2 && (
@@ -287,15 +246,27 @@ export default function ChatPage() {
                                             )}
 
                                             {m.message_type === 3 && (
-                                                <video controls className="rounded-lg max-h-60">
-                                                    <source src={m.file_url || m.message} type="video/mp4" />
-                                                    Your browser does not support video.
+                                                <video
+                                                    controls
+                                                    className="rounded-lg max-h-60"
+                                                >
+                                                    <source
+                                                        src={
+                                                            m.file_url ||
+                                                            m.message
+                                                        }
+                                                        type="video/mp4"
+                                                    />
+                                                    Your browser does not
+                                                    support video.
                                                 </video>
                                             )}
 
                                             {m.message_type === 4 && (
                                                 <a
-                                                    href={m.file_url || m.message}
+                                                    href={
+                                                        m.file_url || m.message
+                                                    }
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="underline text-sm flex items-center gap-1"
@@ -310,7 +281,9 @@ export default function ChatPage() {
                                                     : "text-gray-500"
                                                     }`}
                                             >
-                                                {new Date(m.created_at).toLocaleTimeString([], {
+                                                {new Date(
+                                                    m.created_at
+                                                ).toLocaleTimeString([], {
                                                     hour: "2-digit",
                                                     minute: "2-digit",
                                                 })}
@@ -325,7 +298,43 @@ export default function ChatPage() {
                         )}
                     </div>
 
+                    {/* Input */}
                     <div className="p-3 border-t bg-white">
+                        {/* File Preview */}
+                        {filePreview && (
+                            <div className="mb-2 flex items-center gap-3 bg-gray-100 p-2 rounded-lg">
+                                {selectedFile?.type.startsWith("image/") && (
+                                    <img
+                                        src={filePreview}
+                                        alt="preview"
+                                        className="h-16 rounded"
+                                    />
+                                )}
+                                {selectedFile?.type.startsWith("video/") && (
+                                    <video
+                                        src={filePreview}
+                                        className="h-16 rounded"
+                                    />
+                                )}
+                                {selectedFile &&
+                                    !selectedFile.type.startsWith("image/") &&
+                                    !selectedFile.type.startsWith("video/") && (
+                                        <span className="text-sm">
+                                            📄 {filePreview}
+                                        </span>
+                                    )}
+                                <button
+                                    onClick={() => {
+                                        setSelectedFile(null);
+                                        setFilePreview(null);
+                                    }}
+                                    className="text-gray-500 hover:text-red-500"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+                        )}
+
                         <div className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-2 shadow-inner">
                             {/* File upload button */}
                             <label className="cursor-pointer text-gray-500 hover:text-[#000F5C]">
@@ -333,7 +342,7 @@ export default function ChatPage() {
                                 <input
                                     type="file"
                                     className="hidden"
-                                    onChange={(e) => handleFileUpload(e)}
+                                    onChange={handleFileUpload}
                                 />
                             </label>
 

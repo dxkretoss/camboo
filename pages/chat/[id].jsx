@@ -89,10 +89,8 @@ export default function ChatPage() {
 
         channel.bind("MessageSent", (data) => {
             console.log("📩 New message payload:", data);
-            if (
-                data?.message?.receiver_id == id ||
-                data?.message?.sender_id == id
-            ) {
+
+            if (data?.receiver_id == id || data?.sender_id == id) {
                 setMessages((prev) => [...prev, data]);
                 scrollToBottom();
             }

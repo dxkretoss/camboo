@@ -8,7 +8,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/router';
 const productcategoriesData = {
-    "Motors": [
+    "Cars, Motorcycles, Mopeds, and Boats": [
         "Cars & Trucks",
         "Classics",
         "Motorcycles",
@@ -1050,7 +1050,7 @@ export default function addProduct() {
                                                             }}
                                                             className="accent-blue-600 cursor-pointer w-4 h-4"
                                                         />
-                                                        <span className="text-xs sm:text-sm text-gray-700">Old Product</span>
+                                                        <span className="text-xs sm:text-sm text-gray-700">Used Product</span>
                                                     </label>
                                                     <label className="flex items-center space-x-2">
                                                         <input

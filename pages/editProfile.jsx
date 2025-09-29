@@ -18,7 +18,7 @@ export default function EditProfile() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [isEditing, setisEditing] = useState(false);
     const [errors, setErrors] = useState({});
-    const allPlatforms = ['facebook', 'twitter', 'linkedin', 'github', 'instagram', 'website'];
+    const allPlatforms = ['Facebook', 'X', 'Linkedin', 'Instagram',];
     const [socialLinks, setSocialLinks] = useState([]);
     const [getProfileData, setgetProfileData] = useState({
         first_name: '',

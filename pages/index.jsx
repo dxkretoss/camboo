@@ -12,7 +12,6 @@ import { jwtDecode } from 'jwt-decode';
 
 export default function Index() {
   const router = useRouter();
-
   const { getUserProfileData, getallProdandSer, getClientsProdandSer } = useUser();
   const [loginData, setloginData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});

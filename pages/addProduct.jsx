@@ -267,27 +267,69 @@ export default function addProduct() {
     });
 
     const handleImageChange = (event, index) => {
-        const file = event.target.files[0];
-        if (file) {
-            const updatedImages = [...images];
-            updatedImages[index] = {
-                file: file,
-                preview: URL.createObjectURL(file)
-            };
-            setImages(updatedImages);
-        }
+        const files = Array.from(event.target.files);
+        if (files.length === 0) return;
+
+        setImages((prev) => {
+            const updated = [...prev];
+
+            // Find the first available slots starting from the clicked index
+            let insertIndex = index;
+            files.forEach((file) => {
+                // If current slot is filled, find next empty one
+                while (insertIndex < 4 && updated[insertIndex]) {
+                    insertIndex++;
+                }
+
+                if (insertIndex < 4) {
+                    updated[insertIndex] = {
+                        file,
+                        preview: URL.createObjectURL(file),
+                    };
+                }
+            });
+
+            return updated;
+        });
+    };
+
+    const handleDrop = (event) => {
+        event.preventDefault();
+        const files = Array.from(event.dataTransfer.files).filter(file =>
+            file.type.startsWith('image/')
+        );
+        if (files.length === 0) return;
+
+        setImages((prev) => {
+            const updated = [...prev];
+
+            let insertIndex = updated.findIndex((img) => !img);
+            if (insertIndex === -1) insertIndex = 0; // overwrite if all full
+
+            files.forEach((file) => {
+                // find next empty slot
+                while (insertIndex < 4 && updated[insertIndex]) {
+                    insertIndex++;
+                }
+
+                if (insertIndex < 4) {
+                    updated[insertIndex] = {
+                        file,
+                        preview: URL.createObjectURL(file),
+                    };
+                }
+            });
+
+            return updated;
+        });
     };
 
     const handleRemoveImage = (index) => {
-        const updatedImages = [...images];
-
-        if (!updatedImages[index]?.file && updatedImages[index]?.preview) {
-            const filename = updatedImages[index].preview.split('/').pop();
-            setRemovedImages(prev => [...prev, filename]);
-        }
-
-        updatedImages[index] = null;
-        setImages(updatedImages);
+        setImages((prev) => {
+            const updated = [...prev];
+            updated[index] = null;
+            return updated;
+        });
     };
 
     // Validate Product Field
@@ -312,7 +354,7 @@ export default function addProduct() {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
             if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = "Trade product sub-category is required";
             if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
-            if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
+            // if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
         } else {
             if (!tradeforWhat.service_category.trim()) newErrors.service_category = "Trade service category is required";
             if (!tradeforWhat.service_sub_category.trim()) newErrors.service_sub_category = "Trade service sub-category is required";
@@ -352,7 +394,7 @@ export default function addProduct() {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
             if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = "Trade product sub-category is required";
             if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
-            if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
+            // if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
         } else {
             if (!tradeforWhat.service_category.trim()) newErrors.service_category = "Trade service category is required";
             if (!tradeforWhat.service_sub_category.trim()) newErrors.service_sub_category = "Trade service sub-category is required";
@@ -565,7 +607,7 @@ export default function addProduct() {
                         category: ProductData?.category || '',
                         sub_category: ProductData?.sub_category || '',
                         range_of_service_delivery: ProductData?.range_of_service_delivery || '',
-                        cost_of_service: ProductData?.cost_of_service === 'R$/hr' ? '1' : '2' || '1',
+                        cost_of_service: ProductData?.cost_of_service === 'R$/Hr' ? '1' : '2' || '1',
                         hr_price: ProductData?.hr_price || '',
                         day_price: ProductData?.day_price || '',
                     })
@@ -635,7 +677,7 @@ export default function addProduct() {
                         category: ProductData?.category || '',
                         sub_category: ProductData?.sub_category || '',
                         range_of_service_delivery: ProductData?.range_of_service_delivery || '',
-                        cost_of_service: ProductData?.cost_of_service === 'R$/hr' ? '1' : '2' || '1',
+                        cost_of_service: ProductData?.cost_of_service === 'R$/Hr' ? '1' : '2' || '1',
                         hr_price: ProductData?.hr_price || '',
                         day_price: ProductData?.day_price || '',
                     })
@@ -783,7 +825,9 @@ export default function addProduct() {
                 <div className="py-4 sm:py-6 md:py-8 lg:py-10 px-3 sm:px-4 md:px-6 lg:px-10 max-w-7xl mx-auto">
                     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
 
-                        <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6 w-full lg:w-1/2 space-y-3 sm:space-y-4">
+                        <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6 w-full lg:w-1/2 space-y-3 sm:space-y-4"
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={handleDrop} >
                             <h2 className="text-base sm:text-lg font-semibold text-gray-800">
                                 {selectedTab === 'Product' ? "Product Images" : "Service Images"}
                             </h2>
@@ -814,6 +858,7 @@ export default function addProduct() {
                                 <input
                                     type="file"
                                     accept="image/*"
+                                    multiple
                                     className="hidden"
                                     onChange={(e) => handleImageChange(e, 0)}
                                 />
@@ -850,6 +895,7 @@ export default function addProduct() {
                                         <input
                                             type="file"
                                             accept="image/*"
+                                            multiple
                                             className="hidden"
                                             onChange={(e) => handleImageChange(e, index)}
                                         />
@@ -1207,7 +1253,7 @@ export default function addProduct() {
                                                             }}
                                                             className="accent-blue-600 cursor-pointer w-4 h-4"
                                                         />
-                                                        <span className="text-xs sm:text-sm text-gray-700">R$/hr</span>
+                                                        <span className="text-xs sm:text-sm text-gray-700">R$/Hr</span>
                                                     </label>
                                                     <label className="flex items-center space-x-2">
                                                         <input
@@ -1255,7 +1301,7 @@ export default function addProduct() {
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    {serviceData?.cost_of_service === '1' ? 'R$/hr' : 'R$/Day'} *
+                                                    {serviceData?.cost_of_service === '1' ? 'R$/Hr' : 'R$/Day'} *
                                                 </label>
                                                 <input
                                                     type="text"
@@ -1421,7 +1467,7 @@ export default function addProduct() {
 
                                                 </div>
                                                 <div className="space-y-1 sm:space-y-2">
-                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Model *</label>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Model (Optional)</label>
                                                     <input
                                                         type="text"
                                                         placeholder="ex: Y12 2024"
@@ -1434,8 +1480,7 @@ export default function addProduct() {
                                                         }}
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     />
-                                                    {errors.product_model && <p className="text-red-500 text-xs">{errors.product_model}</p>}
-
+                                                    {/* {errors.product_model && <p className="text-red-500 text-xs">{errors.product_model}</p>} */}
                                                 </div>
                                             </div>
                                         </>

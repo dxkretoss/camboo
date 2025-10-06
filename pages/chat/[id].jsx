@@ -50,6 +50,8 @@ export default function ChatPage() {
             (fetchUser) => parseInt(fetchUser?.user_id) === parseInt(id)
         );
         setmatchUser(matchUserDetails);
+        console.log(matchUserDetails);
+
 
         const fetchMessages = async () => {
             setLoading(true);
@@ -71,6 +73,7 @@ export default function ChatPage() {
 
         fetchMessages();
     }, [id, token, profile?.id]);
+
 
     useEffect(() => {
         if (!profile?.id || !id || !token) return;
@@ -179,21 +182,34 @@ export default function ChatPage() {
                         onClick={() => window.history.back()}
                     />
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 relative rounded-full overflow-hidden">
-                            <img
-                                src="https://randomuser.me/api/portraits/men/5.jpg"
-                                alt="avatar"
-                                className="object-cover w-full h-full"
-                            />
-                        </div>
-                        <div>
-                            <div className="font-semibold">
-                                {matchUser?.first_name}
+                        <div className="flex items-center gap-3">
+                            {/* Avatar */}
+                            <div className="w-10 h-10 relative rounded-full overflow-hidden">
+                                {matchUser?.profile_image ? (
+                                    <img
+                                        src={matchUser?.profile_image}
+                                        alt="avatar"
+                                        className="object-cover w-full h-full"
+                                    />
+                                ) : (
+                                    // Skeleton Avatar
+                                    <div className="w-full h-full bg-gray-300 animate-pulse" />
+                                )}
                             </div>
-                            <div className="text-xs text-gray-500">
-                                User Name
+
+                            {/* Name */}
+                            <div>
+                                {matchUser?.first_name ? (
+                                    <div className="font-semibold">
+                                        {`${matchUser.first_name} ${matchUser.last_name}`}
+                                    </div>
+                                ) : (
+                                    // Skeleton Name
+                                    <div className="h-4 w-24 bg-gray-300 rounded animate-pulse"></div>
+                                )}
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -238,7 +254,7 @@ export default function ChatPage() {
 
                                             {m.message_type === 2 && (
                                                 <img
-                                                    src={m.file_url || m.message}
+                                                    src={m.file || m.message}
                                                     alt="chat-img"
                                                     className="rounded-lg max-h-60 object-cover"
                                                 />

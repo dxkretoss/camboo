@@ -54,7 +54,7 @@ export default function Navbar() {
         "phone_number",
         "about_me",
         "what_are_you_interested_in",
-        "professional_experience",
+        // "professional_experience",
         "street",
         "city",
         "post_code",

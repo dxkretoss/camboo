@@ -18,7 +18,7 @@ export default function EditProfile() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [isEditing, setisEditing] = useState(false);
     const [errors, setErrors] = useState({});
-    const allPlatforms = ['Facebook', 'X', 'Linkedin', 'Instagram',];
+    const allPlatforms = ['Facebook', 'X', 'Linkedin', 'Instagram', 'Tiktok'];
     const [socialLinks, setSocialLinks] = useState([]);
     const [getProfileData, setgetProfileData] = useState({
         first_name: '',
@@ -36,6 +36,21 @@ export default function EditProfile() {
 
     const [inputValue, setInputValue] = useState("");
     const [interests, setInterests] = useState([]);
+
+    const [userCountry, setUserCountry] = useState('in');
+
+    useEffect(() => {
+        try {
+            // Detect country from browser locale
+            const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+            const countryCode = locale.split('-')[1]?.toLowerCase();
+            if (countryCode) {
+                setUserCountry(countryCode);
+            }
+        } catch (error) {
+            console.error('Failed to detect browser country:', error);
+        }
+    }, []);
 
     useEffect(() => {
         if (profile?.what_are_you_interested_in) {
@@ -126,9 +141,9 @@ export default function EditProfile() {
             case 'what_are_you_interested_in':
                 if (!value.trim()) error = 'This field is required';
                 break;
-            case 'professional_experience':
-                if (!value.trim()) error = 'Professional Experience is required';
-                break;
+            // case 'professional_experience':
+            //     if (!value.trim()) error = 'Professional Experience is required';
+            //     break;
             default:
                 break;
         }
@@ -337,7 +352,7 @@ export default function EditProfile() {
                                 <div className="space-y-1">
                                     <label className="block text-sm font-medium">Phone Number *</label>
                                     <PhoneInput
-                                        country={'in'}
+                                        country={userCountry}
                                         value={getProfileData.phone_number}
                                         onChange={(value, country) => {
                                             const dialCode = country.dialCode;
@@ -532,10 +547,10 @@ export default function EditProfile() {
                                     rows="3"
                                     value={getProfileData.professional_experience}
                                     onChange={(e) => setgetProfileData({ ...getProfileData, professional_experience: e.target.value })}
-                                    onBlur={(e) => validateField('professional_experience', e.target.value)}
+                                    // onBlur={(e) => validateField('professional_experience', e.target.value)}
                                     className="w-full border rounded-lg px-4 py-2"
                                 />
-                                {errors.professional_experience && <p className="text-red-500 text-xs">{errors.professional_experience}</p>}
+                                {/* {errors.professional_experience && <p className="text-red-500 text-xs">{errors.professional_experience}</p>} */}
                             </div>
 
                             <div className="pt-2">

@@ -296,7 +296,7 @@ export default function HomePage() {
                                                 {user?.title}
                                                 {(user?.price || user?.day_price || user?.hr_price) !== undefined && (
                                                     <span className="text-sm font-medium text-gray-500">
-                                                        ₹{user.price || user?.day_price || user?.hr_price}
+                                                        ${user.price || user?.day_price || user?.hr_price}
                                                     </span>
                                                 )}
                                             </h3>

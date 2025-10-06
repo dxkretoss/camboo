@@ -50,8 +50,6 @@ export default function ChatPage() {
             (fetchUser) => parseInt(fetchUser?.user_id) === parseInt(id)
         );
         setmatchUser(matchUserDetails);
-        console.log(matchUserDetails);
-
 
         const fetchMessages = async () => {
             setLoading(true);
@@ -92,7 +90,7 @@ export default function ChatPage() {
         const channel = pusher.subscribe(`chat.${chatChannelId}`);
 
         channel.bind("MessageSent", (data) => {
-            console.log("📩 New message payload:", data);
+            // console.log("📩 New message payload:", data);
 
             if (data?.receiver_id == id || data?.sender_id == id) {
                 setMessages((prev) => [...prev, data]);

@@ -252,7 +252,7 @@ export default function ChatPage() {
 
                                             {m.message_type === 2 && (
                                                 <img
-                                                    src={m.file || m.message}
+                                                    src={m?.file_url || m?.file || m?.message}
                                                     alt="chat-img"
                                                     className="rounded-lg max-h-60 object-cover"
                                                 />
@@ -265,7 +265,7 @@ export default function ChatPage() {
                                                 >
                                                     <source
                                                         src={
-                                                            m.file_url ||
+                                                            m.file ||
                                                             m.message
                                                         }
                                                         type="video/mp4"

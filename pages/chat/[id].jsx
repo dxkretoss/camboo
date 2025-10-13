@@ -265,8 +265,9 @@ export default function ChatPage() {
                                                 >
                                                     <source
                                                         src={
-                                                            m.file ||
-                                                            m.message
+                                                            m?.file ||
+                                                            m?.file_url ||
+                                                            m?.message
                                                         }
                                                         type="video/mp4"
                                                     />
@@ -278,7 +279,9 @@ export default function ChatPage() {
                                             {m.message_type === 4 && (
                                                 <a
                                                     href={
-                                                        m.file_url || m.message
+                                                        m?.file_url ||
+                                                        m?.file_url ||
+                                                        m?.message
                                                     }
                                                     target="_blank"
                                                     rel="noopener noreferrer"

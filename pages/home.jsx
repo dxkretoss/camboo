@@ -24,6 +24,8 @@ export default function HomePage() {
 
     const { loading, allProductandService, profile, clientSaveItems, getClientSaveitems } = useUser();
 
+    console.log(allProductandService)
+
     const [startIndexes, setStartIndexes] = useState({});
     const [loadingIds, setLoadingIds] = useState([]);
     const [sendComments, setsendComments] = useState({});
@@ -32,6 +34,7 @@ export default function HomePage() {
     const [loadedImages, setLoadedImages] = useState({});
     const [fetching, setfetching] = useState(false);
     const [openDenounceadDialog, setopenDenounceadDialog] = useState(false);
+    const [selectedItemId, setSelectedItemId] = useState(null);
     const [Denounceadcomment, setDenounceadComment] = useState("");
     const [sendDenouceCmt, setsendDenouceCmt] = useState(false);
     const dialogRef = useRef(null);
@@ -41,6 +44,7 @@ export default function HomePage() {
             if (dialogRef.current && !dialogRef.current.contains(event.target)) {
                 setopenDenounceadDialog(false);
                 setDenounceadComment("")
+                setSelectedItemId(null);
             }
         };
 
@@ -211,6 +215,8 @@ export default function HomePage() {
     }
 
     const sendDenounceadComment = async (id) => {
+
+        console.log(id)
         if (!Denounceadcomment) return;
         setsendDenouceCmt(true);
         try {
@@ -226,6 +232,7 @@ export default function HomePage() {
                 toast.success(`${sendCmt?.data?.message}`)
                 setopenDenounceadDialog(false);
                 setDenounceadComment("");
+                setSelectedItemId(null);
             }
         } catch (error) {
             console.log(error)
@@ -280,7 +287,7 @@ export default function HomePage() {
                                                     className={`transition-transform duration-200 
                                                                 ${loadingIds.includes(user?.id)
                                                             ? "animate-pulse text-gray-400 cursor-not-allowed"
-                                                            : clientSaveItems?.some(item => item.item_id === user?.id)
+                                                            : clientSaveItems?.some(item => item?.item_id === user?.id)
                                                                 ? "text-[#000F5C] scale-110 fill-[#000F5C] cursor-pointer"
                                                                 : "text-black cursor-pointer"
                                                         }`
@@ -413,6 +420,7 @@ export default function HomePage() {
 
                                                 <button className="flex-1 xl:flex-none border border-[#FF5C5C] text-[#FF5C5C] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
                                                     onClick={() => {
+                                                        setSelectedItemId(user?.id);
                                                         setopenDenounceadDialog(true);
                                                     }}>
                                                     <img src="/denouce.png" alt="Verified" className="w-4 h-4" />
@@ -427,7 +435,10 @@ export default function HomePage() {
                                                         >
                                                             <button
                                                                 className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 font-bold text-lg"
-                                                                onClick={() => setopenDenounceadDialog(false)}
+                                                                onClick={() => {
+                                                                    setopenDenounceadDialog(false);
+                                                                    setSelectedItemId(null);
+                                                                }}
                                                             >
                                                                 <X />
                                                             </button>
@@ -456,7 +467,7 @@ export default function HomePage() {
                                                                             ${sendDenouceCmt
                                                                             ? "bg-gray-400 cursor-not-allowed opacity-70"
                                                                             : "bg-[#000F5C] hover:bg-[#00136e] text-white shadow-md"}`}
-                                                                    onClick={() => sendDenounceadComment(user?.id)}
+                                                                    onClick={() => sendDenounceadComment(selectedItemId)}
                                                                 >
                                                                     {sendDenouceCmt ? (
                                                                         <>

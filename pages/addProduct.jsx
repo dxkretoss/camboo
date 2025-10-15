@@ -348,12 +348,17 @@ export default function addProduct() {
             newErrors.price = "Enter a valid price (e.g. 1199 or 115.90)";
         }
 
-        if (images.length !== 4 || images.some(img => !(img?.file || img?.preview))) newErrors.images = "All images are required";
+        // if (images.length !== 4 || images.some(img => !(img?.file || img?.preview))) newErrors.images = "All images are required";
 
+        const validImages = images.filter(img => img?.file || img?.preview);
+
+        if (validImages.length < 2) {
+            newErrors.images = "At least 2 images are required";
+        }
         if (tradeType === '1') {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
             if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = "Trade product sub-category is required";
-            if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
+            // if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
             // if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
         } else {
             if (!tradeforWhat.service_category.trim()) newErrors.service_category = "Trade service category is required";
@@ -388,12 +393,17 @@ export default function addProduct() {
             }
         }
 
-        if (images.length !== 4 || images.some(img => !(img?.file || img?.preview))) newErrors.images = "All images are required";
+        // if (images.length !== 4 || images.some(img => !(img?.file || img?.preview))) newErrors.images = "At least 2 images are required";
 
+        const validImages = images.filter(img => img?.file || img?.preview);
+
+        if (validImages.length < 2) {
+            newErrors.images = "At least 2 images are required";
+        }
         if (tradeType === '1') {
             if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
             if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = "Trade product sub-category is required";
-            if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
+            // if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
             // if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
         } else {
             if (!tradeforWhat.service_category.trim()) newErrors.service_category = "Trade service category is required";
@@ -1450,7 +1460,7 @@ export default function addProduct() {
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
-                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand *</label>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand (Optional)</label>
                                                     <input
                                                         type="text"
                                                         placeholder="ex: YAMAHA"
@@ -1463,7 +1473,7 @@ export default function addProduct() {
                                                         }}
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     />
-                                                    {errors.product_brand && <p className="text-red-500 text-xs">{errors.product_brand}</p>}
+                                                    {/* {errors.product_brand && <p className="text-red-500 text-xs">{errors.product_brand}</p>} */}
 
                                                 </div>
                                                 <div className="space-y-1 sm:space-y-2">

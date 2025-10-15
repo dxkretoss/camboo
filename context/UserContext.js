@@ -23,6 +23,7 @@ export const UserProvider = ({ children }) => {
       getallProdandSer(),
       getClientsProdandSer(),
       getClientSaveitems(),
+      getsuggestedTrades(),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -96,6 +97,25 @@ export const UserProvider = ({ children }) => {
       console.error(err);
     }
   };
+
+  const [suggestedTrades, setsuggestedTrades] = useState();
+
+  const getsuggestedTrades = async () => {
+    try {
+      const getTrades = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-suggested_trades`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (getTrades?.data?.success) {
+        setsuggestedTrades(getTrades?.data?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -109,6 +129,7 @@ export const UserProvider = ({ children }) => {
         loading,
         getClientSaveitems,
         clientSaveItems,
+        suggestedTrades,
       }}
     >
       {children}

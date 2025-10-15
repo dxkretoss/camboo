@@ -542,7 +542,7 @@ export default function EditProfile() {
 
 
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium">Professional Experience *</label>
+                                <label className="block text-sm font-medium">Professional Experience</label>
                                 <textarea
                                     rows="3"
                                     value={getProfileData.professional_experience}

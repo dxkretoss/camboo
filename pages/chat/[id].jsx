@@ -380,12 +380,37 @@ export default function ChatPage() {
                             <button
                                 onClick={sendMessage}
                                 disabled={sending}
-                                className={`px-4 py-2 rounded-full flex items-center gap-1 shadow-md transition-transform 
+                                className={`px-2 md:px-4 py-2 rounded-full flex items-center gap-1 shadow-md transition-transform 
                                     ${sending ? "bg-gray-400 cursor-not-allowed" : "bg-[#000F5C] text-white hover:scale-105"}`}
                             >
-                                {sending ? "Sending..." : (
+                                {sending ? (
+                                    <span className="flex items-center">
+                                        <svg
+                                            className="animate-spin h-4 w-4 text-white mr-0 sm:mr-2"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            ></circle>
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                            ></path>
+                                        </svg>
+                                        <span className="hidden sm:inline">Sending...</span>
+                                    </span>
+                                ) : (
                                     <>
-                                        <Send size={16} /> Send
+                                        <Send size={16} />
+                                        <span className="hidden sm:inline">Send</span>
                                     </>
                                 )}
                             </button>

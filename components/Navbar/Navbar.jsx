@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import { useUser } from '@/context/UserContext';
 import axios from 'axios';
+import { useSearch } from '@/context/SearchContext';
 
 const brazilStates = [
     { name: "Acre", code: "AC" },
@@ -42,7 +43,8 @@ export default function Navbar() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
     const { profile } = useUser();
-    const [searchItems, setsearchItems] = useState('');
+    // const [searchItems, setsearchItems] = useState('');
+    const { searchItems, setsearchItems } = useSearch();
     const [showArea, setshowArea] = useState(false);
     const [logOut, setlogOut] = useState(false);
     const [selectedArea, setSelectedArea] = useState({ name: "Recife", code: "PE" });

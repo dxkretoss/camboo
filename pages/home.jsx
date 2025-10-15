@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import Image from 'next/image';
+import { useSearch } from '@/context/SearchContext';
 
 export default function HomePage() {
     const router = useRouter();
@@ -22,9 +23,16 @@ export default function HomePage() {
         }
     }, [token]);
 
-    const { loading, allProductandService, profile, clientSaveItems, getClientSaveitems } = useUser();
+    const { loading, allProductandService, profile, clientSaveItems, getClientSaveitems, suggestedTrades, getallProdandSer } = useUser();
+    const { searchItems } = useSearch();
 
-    console.log(allProductandService)
+    const filteredProducts = allProductandService?.filter((user) => {
+        if (!searchItems) return true;
+        const text = searchItems.toLowerCase();
+        return (
+            user?.title?.toLowerCase().includes(text)
+        );
+    });
 
     const [startIndexes, setStartIndexes] = useState({});
     const [loadingIds, setLoadingIds] = useState([]);
@@ -38,6 +46,12 @@ export default function HomePage() {
     const [Denounceadcomment, setDenounceadComment] = useState("");
     const [sendDenouceCmt, setsendDenouceCmt] = useState(false);
     const dialogRef = useRef(null);
+
+    const [openCmtDialogId, setOpenCmtDialogId] = useState(null); // track which item is open
+    const cmtdialogRef = useRef(null);
+
+    const handleOpenDialog = (id) => setOpenCmtDialogId(id);
+    const handleCloseDialog = () => setOpenCmtDialogId(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -94,15 +108,6 @@ export default function HomePage() {
             return { ...prev, [id]: newIndex };
         });
     };
-
-
-    const suggestedTrades = [
-        { title: 'Iphone 16 Pro max', subtitle: 'lorem ipsum dummy content', image: 'https://randomuser.me/api/portraits/men/5.jpg' },
-        { title: 'Hardly Davidson New Model', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/6.jpg' },
-        { title: 'Vivo A1', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/7.jpg' },
-        { title: 'Iphone 15 Pro max', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/8.jpg' },
-        { title: 'Dell Z51902 Laptop', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/9.jpg' },
-    ];
 
     const historyOfTrades = [
         { title: 'HP Z109 Laptop Refurbished', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/10.jpg' },
@@ -183,6 +188,8 @@ export default function HomePage() {
             if (res.data.success) {
                 toast.success(`${res?.data?.message}`);
                 setsendComments((prev) => ({ ...prev, [id]: "" }));
+
+                await getallProdandSer();
             }
         } catch (err) {
             console.error(err);
@@ -215,8 +222,6 @@ export default function HomePage() {
     }
 
     const sendDenounceadComment = async (id) => {
-
-        console.log(id)
         if (!Denounceadcomment) return;
         setsendDenouceCmt(true);
         try {
@@ -259,8 +264,8 @@ export default function HomePage() {
                 )}
                 <div className="flex flex-col lg:flex-row p-2 gap-2">
                     <div className="flex-1 space-y-2">
-                        {allProductandService?.length > 0 ? (
-                            allProductandService?.sort((a, b) => b.id - a.id)?.map((user, idx) => {
+                        {filteredProducts?.length > 0 ? (
+                            filteredProducts?.sort((a, b) => b.id - a.id)?.map((user, idx) => {
                                 return (
                                     <div key={idx} className="bg-white rounded-xl shadow p-3 sm:p-4">
                                         <div className="flex items-start justify-between flex-wrap gap-3">
@@ -385,13 +390,98 @@ export default function HomePage() {
                                                         <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce animation-delay-300"></span>
                                                     </div>
                                                 ) : (
-                                                    <SendHorizonal size={20} />
+                                                    <img src='/sendCmt.svg' />
                                                 )}
                                             </button>
-
                                         </div>
 
                                         <hr className="text-gray-300" />
+
+                                        {user?.comments.length > 0 ?
+                                            <div>
+                                                <span className='text-sm text-gray-400'>comments</span>
+                                            </div>
+                                            : null}
+
+
+                                        {user?.comments?.length > 0 && (
+                                            <>
+                                                <div className="mb-1 mt-2">
+                                                    <div className="flex gap-2">
+                                                        <div>
+                                                            <img
+                                                                src={`${user?.comments[0]?.user.profile_image}`}
+                                                                className="w-10 h-10 rounded-full"
+                                                            />
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <p className="text-base">
+                                                                {user?.comments[0]?.user.name}{" "}
+                                                                <span className="text-sm text-gray-500">
+                                                                    {user?.comments[0]?.created_at}
+                                                                </span>
+                                                            </p>
+                                                            <span className="text-sm text-gray-500">
+                                                                {user?.comments[0]?.comment}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {user?.comments?.length > 1 && (
+                                                    <button
+                                                        onClick={() => handleOpenDialog(user?.id)}
+                                                        className="text-xs text-blue-600 hover:underline"
+                                                    >
+                                                        View all comments ({user.comments.length})
+                                                    </button>
+                                                )}
+
+                                                {openCmtDialogId === user?.id && (
+                                                    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 p-4">
+                                                        <div
+                                                            ref={cmtdialogRef}
+                                                            className="bg-white rounded-lg p-4 w-full max-w-md relative"
+                                                        >
+                                                            <button
+                                                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                                                                onClick={handleCloseDialog}
+                                                            >
+                                                                <X />
+                                                            </button>
+
+                                                            <h3 className="text-lg font-semibold mb-3 text-[#000F5C]">All Comments</h3>
+
+                                                            {/* Scrollable content */}
+                                                            <div className="max-h-[400px] overflow-y-auto">
+                                                                {user.comments?.map((cmt) => (
+                                                                    <div key={cmt.id} className="mb-1 py-2">
+                                                                        <div className="flex gap-2 p-2 border-b border-gray-200">
+                                                                            <div>
+                                                                                <img
+                                                                                    src={`${cmt?.user?.profile_image}`}
+                                                                                    className="w-10 h-10 rounded-full"
+                                                                                />
+                                                                            </div>
+                                                                            <div className="flex flex-col">
+                                                                                <p className="text-base">
+                                                                                    {cmt?.user.name}{" "}
+                                                                                    <span className="text-sm text-gray-500">
+                                                                                        {cmt?.created_at}
+                                                                                    </span>
+                                                                                </p>
+                                                                                <span className="text-sm text-gray-500">{cmt?.comment}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                            </>
+                                        )}
 
                                         <div className="flex flex-col xl:flex-row xl:justify-between xl:items-center mt-4 gap-3">
                                             <div className="hidden xl:block w-full xl:w-auto">
@@ -412,7 +502,8 @@ export default function HomePage() {
                                                     <img src="/share.png" alt="Verified" className="w-4 h-4" />
                                                 </Button>
 
-                                                <button className="flex-1 xl:flex-none border border-[#C7F846] text-[#7FA600] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium">
+                                                <button className="flex-1 xl:flex-none border border-[#C7F846] text-[#7FA600] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
+                                                    onClick={() => router.push(`/chat/${user?.user_id}`)}>
                                                     {/* <img src="/getintouch.png" alt="Verified" className="w-4 h-4" /> */}
                                                     <MessageCircle className="w-4 h-4" />
                                                     <span className="hidden xl:inline">Chat</span>
@@ -532,7 +623,46 @@ export default function HomePage() {
                     </div>
 
                     <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
-                        <SectionCard title="Suggested Trades" items={suggestedTrades} />
+                        {/* <SectionCard title="Suggested Trades" items={suggestedTrades} /> */}
+
+                        <div className="bg-white shadow rounded-lg p-2 mb-2">
+                            <div className="flex justify-between items-center mb-3">
+                                <h3 className="font-semibold text-sm">{"Suggested Trades"}</h3>
+                                <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button>
+                            </div>
+
+                            <ul className="space-y-3">
+                                {suggestedTrades
+                                    ? suggestedTrades?.slice(0, 5)?.map((item, index) => (
+                                        <li key={index} className="flex items-start gap-3">
+                                            <img
+                                                src={item?.image || item?.images}
+                                                alt={item?.title}
+                                                className="w-10 h-10 rounded-full object-cover"
+                                            />
+                                            <div>
+                                                <p className="text-sm font-semibold">{item?.title}</p>
+                                                <p className="text-xs text-gray-500">
+                                                    {(item?.subtitle || item?.description)?.length > 100
+                                                        ? (item?.subtitle || item?.description).substring(0, 45) + "..."
+                                                        : (item?.subtitle || item?.description)}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    ))
+                                    : // Skeleton Placeholder (5 rows)
+                                    Array.from({ length: 5 }).map((_, index) => (
+                                        <li key={index} className="flex items-start gap-3 animate-pulse">
+                                            <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+                                            <div className="flex-1 space-y-2">
+                                                <div className="w-3/4 h-4 bg-gray-300 rounded"></div>
+                                                <div className="w-1/2 h-3 bg-gray-200 rounded"></div>
+                                            </div>
+                                        </li>
+                                    ))}
+                            </ul>
+                        </div>
+
                         <SectionCard title="History of Trades" items={historyOfTrades} />
                         <SectionCard title="Marketings" items={marketings} />
                     </div>

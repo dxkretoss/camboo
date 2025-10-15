@@ -10,7 +10,7 @@ import {
     Twitter,
     Facebook, Trash2,
     Instagram, Github, Globe,
-    Package, Heart, EllipsisVertical
+    Package, Heart, EllipsisVertical,
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/router';
@@ -105,7 +105,8 @@ export default function Profile() {
 
     const platformMap = {
         linkedin: { name: "LinkedIn", icon: Linkedin },
-        twitter: { name: "Twitter", icon: Twitter },
+        x: { name: "X", icon: Twitter },
+        tiktok: { name: "TikTok", icon: Globe },
         facebook: { name: "Facebook", icon: Facebook },
         instagram: { name: "Instagram", icon: Instagram },
         github: { name: "GitHub", icon: Github },
@@ -245,49 +246,57 @@ export default function Profile() {
                         </div>
                         <hr />
 
-                        <div>
-                            <h3 className="text-md font-semibold text-[#13121F] mb-2">Professional Experience</h3>
-                            {getProfileData?.professional_experience ? (
-                                <ul className="space-y-4 text-sm">{getProfileData.professional_experience}</ul>
-                            ) : (
-                                <div className="space-y-2">
-                                    <div className="h-3 w-2/3 bg-gray-200 rounded animate-pulse"></div>
-                                    <div className="h-3 w-1/2 bg-gray-200 rounded animate-pulse"></div>
-                                    <div className="h-3 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+                        {getProfileData?.professional_experience ? (
+                            <>
+                                <div>
+                                    <h3 className="text-md font-semibold text-[#13121F] mb-2">Professional Experience</h3>
+                                    {getProfileData?.professional_experience ? (
+                                        <ul className="space-y-4 text-sm">{getProfileData.professional_experience}</ul>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            <div className="h-3 w-2/3 bg-gray-200 rounded animate-pulse"></div>
+                                            <div className="h-3 w-1/2 bg-gray-200 rounded animate-pulse"></div>
+                                            <div className="h-3 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                        <hr />
+                                <hr />
+                            </>
+                        ) : null}
 
-                        <div>
-                            <h3 className="text-md font-semibold text-[#13121F] mb-2">Social Links</h3>
-                            {socialLinks?.length > 0 ? (
-                                <div className="flex gap-3">
-                                    {socialLinks.map(({ platform, link }, index) => {
-                                        const data = platformMap[platform?.toLowerCase()] || { name: platform, icon: Globe };
-                                        const Icon = data?.icon;
-                                        return (
-                                            <a
-                                                key={index}
-                                                href={link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-[#00136e] transition"
-                                                aria-label={data.name}
-                                            >
-                                                <Icon className="w-4 h-4" />
-                                            </a>
-                                        );
-                                    })}
+                        {socialLinks?.length > 0 ? (
+                            <>
+                                <div>
+                                    <h3 className="text-md font-semibold text-[#13121F] mb-2">Social Links</h3>
+                                    {socialLinks?.length > 0 ? (
+                                        <div className="flex gap-3">
+                                            {socialLinks.map(({ platform, link }, index) => {
+                                                const data = platformMap[platform?.toLowerCase()] || { name: platform, icon: Globe };
+                                                const Icon = data?.icon;
+                                                return (
+                                                    <a
+                                                        key={index}
+                                                        href={link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-[#00136e] transition"
+                                                        aria-label={data.name}
+                                                    >
+                                                        <Icon className="w-4 h-4" />
+                                                    </a>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="flex gap-3">
+                                            <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                            <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                        </div>
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="flex gap-3">
-                                    <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
-                                    <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
-                                </div>
-                            )}
-                        </div>
-                        <hr />
+                                <hr />
+                            </>
+                        ) : null}
 
                         <div>
                             <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>

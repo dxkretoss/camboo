@@ -340,8 +340,8 @@ export default function addProduct() {
         if (!productData.description.trim()) newErrors.description = "Description is required";
         if (!productData.category.trim()) newErrors.category = "Category is required";
         if (!productData.sub_category.trim()) newErrors.sub_category = "Sub-Category is required";
-        if (!productData.brand.trim() && productData?.unbranded_product !== 'check') newErrors.brand = "Brand is required";
-        if (!productData.model.trim()) newErrors.model = "Model is required";
+        // if (!productData.brand.trim() && productData?.unbranded_product !== 'check') newErrors.brand = "Brand is required";
+        // if (!productData.model.trim()) newErrors.model = "Model is required";
         if (!productData.price.trim()) {
             newErrors.price = "Price is required";
         } else if (!priceRegex.test(productData.price)) {
@@ -1049,7 +1049,7 @@ export default function addProduct() {
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand *</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand (Optional)</label>
                                                 <input
                                                     type="text"
                                                     placeholder="ex: YAMAHA"
@@ -1064,11 +1064,11 @@ export default function addProduct() {
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base 
                                                                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
                                                                 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"                                                />
-                                                {errors.brand && <p className="text-red-500 text-xs">{errors.brand}</p>}
+                                                {/* {errors.brand && <p className="text-red-500 text-xs">{errors.brand}</p>} */}
 
                                             </div>
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Model *</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Model (Optional)</label>
                                                 <input
                                                     type="text"
                                                     placeholder="ex: Y12 2024"
@@ -1081,7 +1081,7 @@ export default function addProduct() {
                                                     }}
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 />
-                                                {errors.model && <p className="text-red-500 text-xs">{errors.model}</p>}
+                                                {/* {errors.model && <p className="text-red-500 text-xs">{errors.model}</p>} */}
 
                                             </div>
                                         </div>

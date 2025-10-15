@@ -36,9 +36,9 @@ export default function SuggestedTrades() {
                                     className="flex items-start gap-3 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-200 last:border-b-0 p-2"
                                 >
                                     <img
-                                        src={item?.image || item?.images}
+                                        src={item?.image || item?.images[0]}
                                         alt={item?.title}
-                                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover flex-shrink-0"
+                                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-contain flex-shrink-0"
                                     />
                                     <div className="flex-1">
                                         <p className="text-sm sm:text-base font-semibold text-gray-900">

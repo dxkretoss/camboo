@@ -620,9 +620,9 @@ export default function HomePage() {
                                     ? suggestedTrades?.slice(0, 5)?.map((item, index) => (
                                         <li key={index} className="flex items-start gap-3">
                                             <img
-                                                src={item?.image || item?.images}
+                                                src={item?.image || item?.images[0]}
                                                 alt={item?.title}
-                                                className="w-10 h-10 rounded-full object-cover"
+                                                className="w-10 h-10 rounded-full object-contain"
                                             />
                                             <div>
                                                 <p className="text-sm font-semibold">{item?.title}</p>

@@ -491,11 +491,11 @@ export default function addProduct() {
                 clearState();
                 router.push('/home')
             } else {
-                toast.error(`${addProd?.data?.message}`);
+                toast.error(`${addProd?.data?.message || 'something went wrong with add product'}`);
             }
         } catch (error) {
             console.log(error);
-            toast.error(`${error?.response?.data?.message}`);
+            toast.error(`${error?.response?.data?.message || 'something went wrong with add product'}`);
         } finally {
             setadding(false);
         }

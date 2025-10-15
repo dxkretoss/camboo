@@ -1,10 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/Layout/Layout';
 import { useUser } from '@/context/UserContext';
-import { Inbox, ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 export default function SuggestedTrades() {
     const { suggestedTrades } = useUser();
+    const [fetching, setfetching] = useState(false);
+    const router = useRouter();
+
+    const doingTrade = async (id, type) => {
+        setfetching(true);
+        try {
+            const token = Cookies.get("token");
+            const letsCamboo = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/lets-trade?item_id=${id}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            if (letsCamboo?.data?.success) {
+                router.push({
+                    pathname: "./trade",
+                    query: {
+                        Type: type,
+                        Trade: letsCamboo?.data?.other_item?.id
+                    },
+                })
+            }
+        } catch (err) {
+            console.log(err)
+        } finally {
+            setfetching(false)
+        }
+    }
 
     return (
         <Layout>
@@ -33,7 +61,8 @@ export default function SuggestedTrades() {
                             {suggestedTrades.map((item, index) => (
                                 <li
                                     key={index}
-                                    className="flex items-start gap-3 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-200 last:border-b-0 p-2"
+                                    className="flex items-start gap-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors border-b border-gray-200 last:border-b-0 p-2"
+                                    onClick={() => { doingTrade(item?.id, item?.main_type) }}
                                 >
                                     <img
                                         src={item?.image || item?.images[0]}
@@ -73,7 +102,7 @@ export default function SuggestedTrades() {
                     ) : (
                         // No data found
                         <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-                            <Inbox className="w-16 h-16 mb-4" />
+                            <img src='/notfound.svg' className='w-100 h-100' />
                             <p className="text-sm sm:text-base">No suggested trades found</p>
                         </div>
                     )}

@@ -618,7 +618,11 @@ export default function HomePage() {
                             <ul className="space-y-3">
                                 {suggestedTrades
                                     ? suggestedTrades?.slice(0, 5)?.map((item, index) => (
-                                        <li key={index} className="flex items-start gap-3">
+                                        <li
+                                            key={index}
+                                            className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors"
+                                            onClick={() => { doingTrade(item?.id, item?.main_type) }}
+                                        >
                                             <img
                                                 src={item?.image || item?.images[0]}
                                                 alt={item?.title}
@@ -633,8 +637,9 @@ export default function HomePage() {
                                                 </p>
                                             </div>
                                         </li>
+
                                     ))
-                                    : // Skeleton Placeholder (5 rows)
+                                    :
                                     Array.from({ length: 5 }).map((_, index) => (
                                         <li key={index} className="flex items-start gap-3 animate-pulse">
                                             <div className="w-10 h-10 rounded-full bg-gray-300"></div>

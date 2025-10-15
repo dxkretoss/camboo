@@ -11,8 +11,14 @@ import Pusher from "pusher-js";
 export default function ChatPage() {
     const router = useRouter();
     const { id } = router?.query;
+    const getTradeid = router?.query?.trade;
+    useEffect(() => {
+        if (getTradeid) {
+            doingTrade(getTradeid);
+        }
+    }, [getTradeid]);
     const token = Cookies.get("token");
-    const { profile, allProductandService } = useUser();
+    const { profile } = useUser();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [sending, setsending] = useState(false);
@@ -21,6 +27,7 @@ export default function ChatPage() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState(null);
     const listRef = useRef();
+
 
     useEffect(() => {
         if (!token) {
@@ -46,11 +53,6 @@ export default function ChatPage() {
     useEffect(() => {
         if (!id || !token || !profile?.id) return;
 
-        const matchUserDetails = allProductandService?.find(
-            (fetchUser) => parseInt(fetchUser?.user_id) === parseInt(id)
-        );
-        setmatchUser(matchUserDetails);
-
         const fetchMessages = async () => {
             setLoading(true);
             try {
@@ -70,8 +72,8 @@ export default function ChatPage() {
         };
 
         fetchMessages();
-    }, [id, token, profile?.id]);
 
+    }, [id, token, profile?.id]);
 
     useEffect(() => {
         if (!profile?.id || !id || !token) return;
@@ -170,6 +172,22 @@ export default function ChatPage() {
         }
     };
 
+
+    const doingTrade = async (id) => {
+        try {
+            const token = Cookies.get("token");
+            const letsCamboo = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/lets-trade?item_id=${id}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (letsCamboo?.data?.success) {
+                setmatchUser(letsCamboo?.data?.other_item);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <Layout>
             <div className="md:px-10">
@@ -212,7 +230,7 @@ export default function ChatPage() {
                 </div>
 
                 {/* Chat Box */}
-                <div className="border border-gray-200 rounded-2xl h-[60vh] md:h-[70vh] flex flex-col overflow-hidden shadow-md">
+                <div className="border border-gray-200 rounded-2xl h-[calc(100vh-200px)] flex flex-col overflow-hidden shadow-md">
                     {/* Messages */}
                     <div
                         ref={listRef}

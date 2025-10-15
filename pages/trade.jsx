@@ -215,7 +215,7 @@ export default function Trade() {
                                         </span>
 
                                         <button
-                                            onClick={() => router.push(`/chat/${matchedData?.user_id}`)}
+                                            onClick={() => router.push(`/chat/${matchedData?.user_id}?trade=${matchedData?.id}`)}
                                             className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#000F5C] text-white rounded-lg hover:bg-[#00136e] transition-all shadow-md"
                                         >
                                             <MessageCircle size={18} />

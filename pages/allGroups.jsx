@@ -15,7 +15,9 @@ export default function allGroups() {
                         Back
                     </span>
                 </div>
-                Coming soon
+                <div className='flex justify-center'>
+                    <img src='/notfound.svg' className='w-100 h-100' />
+                </div>
             </div>
         </Layout>
     )

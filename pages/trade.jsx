@@ -323,13 +323,15 @@ export default function Trade() {
                 ) : (
 
                     <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 sm:px-6 py-6 text-center">
-                        <div className="relative">
+                        {/* <div className="relative">
                             <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-tr from-blue-100 to-indigo-200 flex items-center justify-center shadow-md">
                                 <Search className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-[#000F5C]" />
                             </div>
-                        </div>
+                        </div> */}
 
-                        <h2 className="mt-6 text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
+                        <img src='/notfound.svg' className='w-56 h-56' />
+
+                        <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
                             No Ad Match!!
                         </h2>
 

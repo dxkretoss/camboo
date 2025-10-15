@@ -601,9 +601,9 @@ export default function HomePage() {
                                 );
                             })
                         ) : (
-                            <div className="flex flex-col items-center justify-center h-64 bg-white rounded-xl shadow">
-                                <Inbox className="w-20 h-20 mb-3 text-gray-400" />
-                                <p className="text-gray-500 text-sm">No products or services found</p>
+                            <div className="flex flex-col items-center justify-center  bg-white rounded-xl shadow">
+                                <img src='/notfound.svg' className='w-100 h-100' />
+                                <p className="text-gray-500 text-xl font-extrabold mb-6">No products or services found</p>
                             </div>
                         )}
                     </div>
@@ -653,8 +653,27 @@ export default function HomePage() {
                                     <h3 className="font-semibold text-sm">History of Trades</h3>
                                     {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
                                 </div>
-                                <div>
-                                    Coming soon
+                                <div className='flex justify-center'>
+                                    {/* <img src='/no-document.png' className='' /> */}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="54"
+                                        height="54"
+                                        viewBox="0 0 64 64"
+                                        className="w-18 h-18"
+                                    >
+                                        <g>
+                                            <path
+                                                d="M38.793 27.793 32 34.586l-6.793-6.793a1 1 0 0 0-1.414 1.414L30.586 36l-6.793 6.793A1.007 1.007 0 0 0 24.5 44.5a.997.997 0 0 0 .707-.293L32 37.414l6.793 6.793a1 1 0 1 0 1.414-1.414L33.414 36l6.793-6.793a1 1 0 0 0-1.414-1.414Z"
+                                                fill="#000f5c"
+                                            />
+                                            <path
+                                                d="m51.071 16.657-9.728-9.728A9.934 9.934 0 0 0 34.273 4H20a10.011 10.011 0 0 0-10 10v36a10.011 10.011 0 0 0 10 10h24a10.011 10.011 0 0 0 10-10V23.728a9.936 9.936 0 0 0-2.929-7.071ZM39 7.557c-.143-.42 10.46 10.367 10.657 10.514a8.084 8.084 0 0 1 .787.929H42.5a3.504 3.504 0 0 1-3.5-3.5ZM52 50a8.01 8.01 0 0 1-8 8H20a8.01 8.01 0 0 1-8-8V14a8.01 8.01 0 0 1 8-8h14.272A7.991 7.991 0 0 1 37 6.485V15.5a5.507 5.507 0 0 0 5.5 5.5h9.015c.925-.282.328 28.008.485 29Z"
+                                                fill="#000f5c"
+                                            />
+                                        </g>
+                                    </svg>
+
                                 </div>
                             </div>
                         </div>
@@ -665,9 +684,30 @@ export default function HomePage() {
                                     <h3 className="font-semibold text-sm">Marketings</h3>
                                     {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
                                 </div>
-                                <div>
-                                    Coming soon
+
+                                <div className='flex justify-center'>
+                                    {/* <img src='/no-document.png' className='' /> */}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="54"
+                                        height="54"
+                                        viewBox="0 0 64 64"
+                                        className="w-18 h-18"
+                                    >
+                                        <g>
+                                            <path
+                                                d="M38.793 27.793 32 34.586l-6.793-6.793a1 1 0 0 0-1.414 1.414L30.586 36l-6.793 6.793A1.007 1.007 0 0 0 24.5 44.5a.997.997 0 0 0 .707-.293L32 37.414l6.793 6.793a1 1 0 1 0 1.414-1.414L33.414 36l6.793-6.793a1 1 0 0 0-1.414-1.414Z"
+                                                fill="#000f5c"
+                                            />
+                                            <path
+                                                d="m51.071 16.657-9.728-9.728A9.934 9.934 0 0 0 34.273 4H20a10.011 10.011 0 0 0-10 10v36a10.011 10.011 0 0 0 10 10h24a10.011 10.011 0 0 0 10-10V23.728a9.936 9.936 0 0 0-2.929-7.071ZM39 7.557c-.143-.42 10.46 10.367 10.657 10.514a8.084 8.084 0 0 1 .787.929H42.5a3.504 3.504 0 0 1-3.5-3.5ZM52 50a8.01 8.01 0 0 1-8 8H20a8.01 8.01 0 0 1-8-8V14a8.01 8.01 0 0 1 8-8h14.272A7.991 7.991 0 0 1 37 6.485V15.5a5.507 5.507 0 0 0 5.5 5.5h9.015c.925-.282.328 28.008.485 29Z"
+                                                fill="#000f5c"
+                                            />
+                                        </g>
+                                    </svg>
+
                                 </div>
+
                             </div>
                         </div>
                     </div>

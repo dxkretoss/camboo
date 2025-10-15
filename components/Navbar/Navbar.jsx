@@ -45,7 +45,6 @@ export default function Navbar() {
     const { profile } = useUser();
     // const [searchItems, setsearchItems] = useState('');
     const { searchItems, setsearchItems } = useSearch();
-    const [showArea, setshowArea] = useState(false);
     const [logOut, setlogOut] = useState(false);
     const [selectedArea, setSelectedArea] = useState({ name: "Recife", code: "PE" });
 
@@ -101,6 +100,27 @@ export default function Navbar() {
         }
     };
 
+    const [showArea, setshowArea] = useState(false);
+    const locdropdownRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (locdropdownRef.current && !locdropdownRef.current.contains(e.target)) {
+                setshowArea(false);
+            }
+        }
+
+        if (showArea) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showArea]);
+
     return (
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
             <div
@@ -147,7 +167,8 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
                 {isComplete ?
                     <>
-                        <div className="relative hidden lg:flex items-center text-gray-700 gap-1">
+                        <div ref={locdropdownRef}
+                            className="relative hidden lg:flex items-center text-gray-700 gap-1">
                             <MapPin className="w-5 h-5" />
                             {/* Show selected area */}
                             <span className="text-sm">{selectedArea.name}, {selectedArea.code}</span>
@@ -216,7 +237,7 @@ export default function Navbar() {
                 <div className="relative w-10 h-10 flex items-center justify-center bg-[#000F5C] rounded-full cursor-pointer"
                     onClick={() => router.push('notification')}>
                     <Bell className="w-5 h-5 text-white" />
-                    <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
+                    {/* <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" /> */}
                 </div>
 
                 <div className="relative" ref={dropdownRef}>

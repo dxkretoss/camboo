@@ -9,6 +9,8 @@ import 'react-phone-input-2/lib/style.css';
 import toast, { Toaster } from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { useUser } from '@/context/UserContext';
+import Cookies from 'js-cookie';
 
 export default function signup() {
     const router = useRouter();
@@ -30,6 +32,10 @@ export default function signup() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const [isSignup, setisSignup] = useState(false)
+
+    const now = new Date();
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const { getUserProfileData, getallProdandSer, getClientsProdandSer, getsuggestedTrades } = useUser();
 
     const validateForm = () => {
         const newErrors = {};
@@ -150,6 +156,11 @@ export default function signup() {
 
             if (res?.data?.success) {
                 toast.success("User registered successfully.");
+                Cookies.set("token", res?.data?.data?.token, { expires: endOfDay });
+                await getallProdandSer();
+                await getUserProfileData();
+                await getClientsProdandSer();
+                await getsuggestedTrades();
                 router.push('/');
             } else {
                 toast.error("Google login failed");

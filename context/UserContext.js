@@ -130,6 +130,7 @@ export const UserProvider = ({ children }) => {
         getClientSaveitems,
         clientSaveItems,
         suggestedTrades,
+        getsuggestedTrades,
       }}
     >
       {children}

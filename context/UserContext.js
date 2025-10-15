@@ -12,6 +12,7 @@ export const UserProvider = ({ children }) => {
     useState(null);
   const [loading, setLoading] = useState(true);
   const [clientSaveItems, setclientSaveItems] = useState(null);
+  const [suggestedTrades, setsuggestedTrades] = useState(null);
 
   useEffect(() => {
     if (!token) {
@@ -98,10 +99,9 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const [suggestedTrades, setsuggestedTrades] = useState();
-
   const getsuggestedTrades = async () => {
     try {
+      const token = Cookies.get("token");
       const getTrades = await axios.get(
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-suggested_trades`,
         {

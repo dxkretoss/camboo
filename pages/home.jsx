@@ -109,20 +109,6 @@ export default function HomePage() {
         });
     };
 
-    const historyOfTrades = [
-        { title: 'HP Z109 Laptop Refurbished', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/10.jpg' },
-        { title: 'Hero Honda Czcuk Luck', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/11.jpg' },
-        { title: 'Iphone 16 Pro Max', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/12.jpg' },
-        { title: 'Iphone 11 Pro', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/13.jpg' },
-        { title: 'Mercedes C-Class 1200', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/14.jpg' },
-    ];
-
-    const marketings = [
-        { title: 'HP Z109 Laptop Refurbished', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/15.jpg' },
-        { title: 'Hero Honda Czcuk Luck', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/16.jpg' },
-        { title: 'Iphone 16 Pro Max', subtitle: 'lorem ipsum dummy', image: 'https://randomuser.me/api/portraits/men/18.jpg' },
-    ];
-
     function DescriptionToggle({ text }) {
         const [expanded, setExpanded] = useState(false);
 
@@ -299,7 +285,7 @@ export default function HomePage() {
                                                     }
                                                 />
 
-                                                <EllipsisVertical className='cursor-pointer' />
+                                                {/* <EllipsisVertical className='cursor-pointer' /> */}
                                             </div>
                                         </div>
 
@@ -623,11 +609,9 @@ export default function HomePage() {
                     </div>
 
                     <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
-                        {/* <SectionCard title="Suggested Trades" items={suggestedTrades} /> */}
-
                         <div className="bg-white shadow rounded-lg p-2 mb-2">
                             <div className="flex justify-between items-center mb-3">
-                                <h3 className="font-semibold text-sm">{"Suggested Trades"}</h3>
+                                <h3 className="font-semibold text-sm">Suggested Trades</h3>
                                 <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button>
                             </div>
 
@@ -663,8 +647,29 @@ export default function HomePage() {
                             </ul>
                         </div>
 
-                        <SectionCard title="History of Trades" items={historyOfTrades} />
-                        <SectionCard title="Marketings" items={marketings} />
+                        <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
+                            <div className="bg-white shadow rounded-lg p-2 mb-2">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h3 className="font-semibold text-sm">History of Trades</h3>
+                                    {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
+                                </div>
+                                <div>
+                                    Coming soon
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
+                            <div className="bg-white shadow rounded-lg p-2 mb-2">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h3 className="font-semibold text-sm">Marketings</h3>
+                                    {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
+                                </div>
+                                <div>
+                                    Coming soon
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

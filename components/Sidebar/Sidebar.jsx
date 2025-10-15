@@ -283,7 +283,7 @@ export default function Sidebar() {
                             className="flex items-center gap-3 pb-3 border-b border-gray-200"
                         >
                             <img
-                                src={group.group_profile}
+                                src={group.group_profile || '/defualtgrp.png'}
                                 alt={group.group_name}
                                 className="w-16 h-16 md:w-12 md:h-12 rounded-full object-cover"
                             />
@@ -314,7 +314,7 @@ export default function Sidebar() {
             {gettingallGroups?.length > 5 && (
                 <span
                     className="flex justify-center text-blue-600 cursor-pointer mt-2 hover:underline"
-                    onClick={() => router.push("/all-groups")}
+                    onClick={() => router.push("/allGroups")}
                 >
                     View all
                 </span>

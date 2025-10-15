@@ -489,7 +489,7 @@ export default function HomePage() {
                                                 </Button>
 
                                                 <button className="flex-1 xl:flex-none border border-[#C7F846] text-[#7FA600] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
-                                                    onClick={() => router.push(`/chat/${user?.user_id}`)}>
+                                                    onClick={() => router.push(`/chat/${user?.user_id}?trade=${user?.id}`)}>
                                                     {/* <img src="/getintouch.png" alt="Verified" className="w-4 h-4" /> */}
                                                     <MessageCircle className="w-4 h-4" />
                                                     <span className="hidden xl:inline">Chat</span>

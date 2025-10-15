@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, MapPin, ChevronDown, Plus, User, LogOut, Edit3, X } from 'lucide-react';
+import {
+    Search, Bell, MapPin, ChevronDown, Plus, User,
+    LogOut, Edit3, X, Menu, UserRoundPlus
+} from 'lucide-react';
 import Button from '../ui/Button';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
@@ -47,6 +50,8 @@ export default function Navbar() {
     const { searchItems, setsearchItems } = useSearch();
     const [logOut, setlogOut] = useState(false);
     const [selectedArea, setSelectedArea] = useState({ name: "Recife", code: "PE" });
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
 
     const requiredFields = [
         "first_name",
@@ -123,26 +128,87 @@ export default function Navbar() {
 
     return (
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
-            <div
-                className="flex items-center gap-4 cursor-pointer"
-                onClick={() => router.push('/home')}
-            >
-                <img
-                    src="/logo3.jpeg"
-                    alt="Logo Small"
-                    className="h-12 w-auto block sm:hidden"
+            <div className='flex gap-2 items-center'>
+                <Menu
+                    className="h-8 w-auto block lg:hidden"
+                    onClick={() => setSidebarOpen(true)}
                 />
-                <img
-                    src="/logo2.jpeg"
-                    alt="Logo Medium"
-                    className="h-14 w-auto hidden sm:block md:hidden"
-                />
-                <img
-                    src="/logo1.jpeg"
-                    alt="Logo Large"
-                    className="h-14 w-auto hidden md:block"
-                />
+                <div
+                    className="flex items-center cursor-pointer"
+                    onClick={() => router.push('/home')}
+                >
+                    <img
+                        src="/logo3.jpeg"
+                        alt="Logo Small"
+                        className="h-12 w-auto block sm:hidden"
+                    />
+                    <img
+                        src="/logo2.jpeg"
+                        alt="Logo Medium"
+                        className="h-14 w-auto hidden sm:block md:hidden"
+                    />
+                    <img
+                        src="/logo1.jpeg"
+                        alt="Logo Large"
+                        className="h-14 w-auto hidden md:block"
+                    />
+                </div>
             </div>
+            {sidebarOpen && (
+                <div className="fixed inset-0 z-50">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                        onClick={() => setSidebarOpen(false)}
+                    ></div>
+
+                    {/* Sidebar */}
+                    <div className="absolute top-0 left-0 h-full w-72 bg-white shadow-lg transform transition-transform duration-300">
+                        <div className="flex items-center justify-between px-4 py-4 border-b">
+                            <h2 className="text-lg font-semibold text-[#000F5C]">Menu</h2>
+                            <button onClick={() => setSidebarOpen(false)}>
+                                <X className="w-6 h-6 text-gray-600" />
+                            </button>
+                        </div>
+
+                        {/* Send Invite Button */}
+                        <div className="px-4 py-4 border-b">
+                            <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                                <UserRoundPlus className="w-4 h-4" />
+                                Send Invite
+                            </button>
+                        </div>
+
+                        {/* Tabs */}
+                        <div className="flex flex-col px-2 py-4 space-y-1">
+                            <button
+                                onClick={() => { router.push("/allGroups") }}
+                                className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
+                            >
+                                Groups
+                            </button>
+                            <button
+                                onClick={() => { router.push('/suggestedtrades') }}
+                                className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
+                            >
+                                Suggested Trade
+                            </button>
+                            <button
+                                onClick={() => { }}
+                                className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
+                            >
+                                History Trade
+                            </button>
+                            <button
+                                onClick={() => { }}
+                                className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
+                            >
+                                Marketings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="flex-1 mx-4 max-w-md hidden sm:block">
                 <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2 relative">

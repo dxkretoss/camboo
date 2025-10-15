@@ -608,7 +608,7 @@ export default function HomePage() {
                         )}
                     </div>
 
-                    <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
+                    <div className="hidden lg:block w-full lg:w-[300px] xl:w-[340px] space-y-2">
                         <div className="bg-white shadow rounded-lg p-2 mb-2">
                             <div className="flex justify-between items-center mb-3">
                                 <h3 className="font-semibold text-sm">Suggested Trades</h3>

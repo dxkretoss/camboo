@@ -3,13 +3,27 @@ import {
     UserRoundPlus,
     Star,
     X,
-    Upload
+    Upload,
+    Copy
 } from 'lucide-react';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
+import {
+    TwitterIcon,
+    WhatsappIcon,
+    TelegramIcon,
+    FacebookIcon,
+} from "react-share";
+import {
+    FacebookShareButton,
+    WhatsappShareButton,
+    TelegramShareButton,
+    TwitterShareButton,
+} from 'react-share';
+
 export default function Sidebar() {
     const { profile } = useUser();
     const token = Cookies.get("token");
@@ -36,7 +50,7 @@ export default function Sidebar() {
     const [groupImagePreview, setGroupImagePreview] = useState(null);
     const [isCreating, setisCreating] = useState(false);
     const [gettingallGroups, setgettingallGroups] = useState();
-
+    const [open, setOpen] = useState(false);
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -89,13 +103,69 @@ export default function Sidebar() {
         }
     }
 
+    const [url] = useState("https://camboo-woad.vercel.app");
+    const [title] = useState("Please Join this awesome platform!");
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(url);
+        toast.success("Invite link copied successfully!");
+        setOpen(false);
+    };
+
     return (
         <div className="bg-white p-4 space-y-6 w-full">
-            <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2">
+            <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                onClick={() => setOpen(true)}>
                 <UserRoundPlus className="w-4 h-4" />
                 Send Invite
             </button>
 
+            {open && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
+                    <div className="bg-white rounded-2xl shadow-lg p-6 w-[90%] max-w-md relative animate-fadeIn">
+                        <h2 className="text-xl font-semibold mb-5 text-gray-800 text-center">
+                            Share Invite Link
+                        </h2>
+
+                        {/* Copy section */}
+                        <div className="flex items-center justify-between border rounded-full px-4 py-2 mb-5">
+                            <span className="text-gray-700 text-sm truncate">{url}</span>
+                            <button
+                                onClick={handleCopy}
+                                className="ml-2 bg-[#000F5C] hover:bg-[#00136e] text-white rounded-full px-3 py-1 text-sm transition"
+                            >
+                                Copy
+                            </button>
+                        </div>
+
+                        {/* Share buttons */}
+                        <div className="flex justify-center gap-4 mb-6">
+                            <WhatsappShareButton url={url} title={title}>
+                                <WhatsappIcon size={48} round />
+                            </WhatsappShareButton>
+                            <FacebookShareButton url={url} title={title}>
+                                <FacebookIcon size={48} round />
+                            </FacebookShareButton>
+                            <TelegramShareButton url={url} title={title}>
+                                <TelegramIcon size={48} round />
+                            </TelegramShareButton>
+                            <TwitterShareButton url={url} title={title}>
+                                <TwitterIcon size={48} round />
+                            </TwitterShareButton>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex justify-center">
+                            <button
+                                onClick={() => setOpen(false)}
+                                className="px-6 py-2 bg-gray-200 rounded-full font-medium hover:bg-gray-300 transition"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="flex items-center gap-4">
                 {profile?.profile_image ? (

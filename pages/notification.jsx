@@ -9,12 +9,13 @@ export default function notification() {
     const token = Cookies.get("token");
 
     useEffect(() => {
+        if (!token) router.push('/');
         document.title = 'Camboo-Notification';
         getAllNotification();
     }, [])
 
     const [getallNotification, setgetallNotification] = useState();
-    console.log(getallNotification)
+
     const getAllNotification = async () => {
         try {
             const getNoti = await axios.get(
@@ -31,6 +32,28 @@ export default function notification() {
         }
     }
 
+    const [processingId, setProcessingId] = useState(null);
+
+    const handleFriendAction = async (notificationId, action) => {
+        setProcessingId(notificationId);
+        try {
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/group/invite/action`,
+                {
+                    group_id: notificationId,
+                    status: action
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (res?.data?.success) {
+                getAllNotification();
+            }
+        } catch (error) {
+            console.error("❌ Error fetching messages:", error);
+        } finally {
+            setProcessingId(null);
+        }
+    };
     return (
         <Layout>
             <div className="md:px-10">
@@ -70,12 +93,57 @@ export default function notification() {
                         {selectedTab === 'Notifications' && (
                             <div>
                                 {getallNotification
-                                    ? getallNotification.map((noti) => (
+                                    ? getallNotification?.map((noti) => (
                                         <div
                                             key={noti?.id}
                                             className="flex flex-col border-b border-gray-200 pb-2"
                                         >
-                                            <span className="text-base text-[#12111D]">{noti.message}</span>
+                                            <div className='flex justify-between'>
+                                                {/* <span className="text-base text-[#12111D]">{noti.message}</span> */}
+                                                {(() => {
+                                                    const [before, after] = noti.message.split(':');
+                                                    return (
+                                                        <span className="text-base text-[#12111D]">
+                                                            {before}:
+                                                            {after && <strong className="font-semibold text-black">{after}</strong>}
+                                                        </span>
+                                                    );
+                                                })()}
+                                                {noti?.type === 'friend_request' && (
+                                                    <div className="flex gap-3">
+                                                        {/* Accept Button */}
+                                                        <button
+                                                            onClick={() => handleFriendAction(noti?.group_id, 'accepted')}
+                                                            disabled={processingId === noti?.group_id}
+                                                            className={`px-3 py-1.5 text-sm rounded-[8px] transition border
+        ${processingId === noti?.group_id
+                                                                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                                                    : 'bg-[#4370C21F] border-[#4370C266] text-[#4370C2]'
+                                                                }`}
+                                                        >
+                                                            <span className="text-[16px] font-semibold">
+                                                                {processingId === noti?.group_id ? 'Accepting...' : 'Accept'}
+                                                            </span>
+                                                        </button>
+
+                                                        {/* Refuse Button */}
+                                                        <button
+                                                            onClick={() => handleFriendAction(noti?.group_id, 'rejected')}
+                                                            disabled={processingId === noti?.group_id}
+                                                            className={`px-3 py-1.5 text-sm rounded-[8px] transition border
+                                                            ${processingId === noti?.group_id
+                                                                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                                                    : 'bg-[#E73E391F] border-[#E73E3966] text-[#E73E39]'
+                                                                }`}
+                                                        >
+                                                            <span className="text-[16px] font-semibold">
+                                                                {processingId === noti?.group_id ? 'Refusing...' : 'Refuse'}
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                )}
+
+                                            </div>
                                             <span className="text-sm text-[#464E5F]">{noti.time_display}</span>
                                         </div>
                                     ))

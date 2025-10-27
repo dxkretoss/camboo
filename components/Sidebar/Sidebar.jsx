@@ -60,7 +60,7 @@ export default function Sidebar() {
                     "Content-Type": "multipart/form-data",
                 })
             if (create?.data?.success) {
-                toast.success("Service created successfully");
+                toast.success("Group created successfully");
                 setGroupName("");
                 setGroupImage(null);
                 setGroupImagePreview(null);
@@ -277,10 +277,11 @@ export default function Sidebar() {
 
             <ul className="space-y-3">
                 {gettingallGroups
-                    ? gettingallGroups.slice(0, 5).map((group, i) => (
+                    ? gettingallGroups.slice(0, 5)?.map((group, i) => (
                         <li
                             key={i}
-                            className="flex items-center gap-3 pb-3 border-b border-gray-200"
+                            className="flex items-center gap-3 pb-3 border-b border-gray-200 cursor-pointer"
+                            onClick={() => { router.push(`/group/${group?.id}`) }}
                         >
                             <img
                                 src={group.group_profile || '/defualtgrp.png'}

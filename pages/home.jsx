@@ -652,15 +652,15 @@ export default function HomePage() {
                             </ul>
                         </div>
 
-                        <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
+                        {/* <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
                             <div className="bg-white shadow rounded-lg p-2 mb-2">
                                 <div className="flex justify-between items-center mb-3">
-                                    <h3 className="font-semibold text-sm">History of Trades</h3>
-                                    {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
-                                </div>
-                                <div className='flex justify-center'>
-                                    {/* <img src='/no-document.png' className='' /> */}
-                                    <svg
+                                    <h3 className="font-semibold text-sm">History of Trades</h3> */}
+                        {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
+                        {/* </div>
+                                <div className='flex justify-center'> */}
+                        {/* <img src='/no-document.png' className='' /> */}
+                        {/* <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="54"
                                         height="54"
@@ -681,18 +681,18 @@ export default function HomePage() {
 
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
-                        <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
+                        {/* <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
                             <div className="bg-white shadow rounded-lg p-2 mb-2">
                                 <div className="flex justify-between items-center mb-3">
-                                    <h3 className="font-semibold text-sm">Marketings</h3>
-                                    {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
-                                </div>
+                                    <h3 className="font-semibold text-sm">Marketings</h3> */}
+                        {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
+                        {/* </div>
 
-                                <div className='flex justify-center'>
-                                    {/* <img src='/no-document.png' className='' /> */}
-                                    <svg
+                                <div className='flex justify-center'> */}
+                        {/* <img src='/no-document.png' className='' /> */}
+                        {/* <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="54"
                                         height="54"
@@ -711,13 +711,12 @@ export default function HomePage() {
                                         </g>
                                     </svg>
 
-                                </div>
-
-                            </div>
-                        </div>
+                                </div> 
+                                </div> 
+                            </div> */}
                     </div>
                 </div>
-            </div>
+            </div >
             <Toaster />
         </div >
     );

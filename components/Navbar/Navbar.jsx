@@ -10,48 +10,54 @@ import { useUser } from '@/context/UserContext';
 import axios from 'axios';
 import { useSearch } from '@/context/SearchContext';
 
-const brazilStates = [
-    { name: "Acre", code: "AC" },
-    { name: "Alagoas", code: "AL" },
-    { name: "Amapá", code: "AP" },
-    { name: "Amazonas", code: "AM" },
-    { name: "Bahia", code: "BA" },
-    { name: "Ceará", code: "CE" },
-    { name: "Distrito Federal (Federal District)", code: "DF" },
-    { name: "Espírito Santo", code: "ES" },
-    { name: "Goiás", code: "GO" },
-    { name: "Maranhão", code: "MA" },
-    { name: "Mato Grosso", code: "MT" },
-    { name: "Mato Grosso do Sul", code: "MS" },
-    { name: "Minas Gerais", code: "MG" },
-    { name: "Pará", code: "PA" },
-    { name: "Paraíba", code: "PB" },
-    { name: "Paraná", code: "PR" },
-    { name: "Pernambuco", code: "PE" },
-    { name: "Piauí", code: "PI" },
-    { name: "Rio de Janeiro", code: "RJ" },
-    { name: "Rio Grande do Norte", code: "RN" },
-    { name: "Rio Grande do Sul", code: "RS" },
-    { name: "Rondônia", code: "RO" },
-    { name: "Roraima", code: "RR" },
-    { name: "Santa Catarina", code: "SC" },
-    { name: "São Paulo", code: "SP" },
-    { name: "Sergipe", code: "SE" },
-    { name: "Tocantins", code: "TO" }
-];
+// const brazilStates = [
+//     { name: "Acre", code: "AC" },
+//     { name: "Alagoas", code: "AL" },
+//     { name: "Amapá", code: "AP" },
+//     { name: "Amazonas", code: "AM" },
+//     { name: "Bahia", code: "BA" },
+//     { name: "Ceará", code: "CE" },
+//     { name: "Distrito Federal (Federal District)", code: "DF" },
+//     { name: "Espírito Santo", code: "ES" },
+//     { name: "Goiás", code: "GO" },
+//     { name: "Maranhão", code: "MA" },
+//     { name: "Mato Grosso", code: "MT" },
+//     { name: "Mato Grosso do Sul", code: "MS" },
+//     { name: "Minas Gerais", code: "MG" },
+//     { name: "Pará", code: "PA" },
+//     { name: "Paraíba", code: "PB" },
+//     { name: "Paraná", code: "PR" },
+//     { name: "Pernambuco", code: "PE" },
+//     { name: "Piauí", code: "PI" },
+//     { name: "Rio de Janeiro", code: "RJ" },
+//     { name: "Rio Grande do Norte", code: "RN" },
+//     { name: "Rio Grande do Sul", code: "RS" },
+//     { name: "Rondônia", code: "RO" },
+//     { name: "Roraima", code: "RR" },
+//     { name: "Santa Catarina", code: "SC" },
+//     { name: "São Paulo", code: "SP" },
+//     { name: "Sergipe", code: "SE" },
+//     { name: "Tocantins", code: "TO" }
+// ];
 
 export default function Navbar() {
     const router = useRouter();
     const token = Cookies.get("token");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
-    const { profile } = useUser();
+    const { profile, getUserProfileData } = useUser();
     // const [searchItems, setsearchItems] = useState('');
     const { searchItems, setsearchItems } = useSearch();
     const [logOut, setlogOut] = useState(false);
-    const [selectedArea, setSelectedArea] = useState({ name: "Recife", code: "PE" });
+    const [selectedArea, setSelectedArea] = useState();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [getLocations, setgetLocations] = useState();
+    const [locsetting, setlocsetting] = useState(false);
 
+    useEffect(() => {
+        if (!token) router.push('/');
+        GetAllLocations();
+    }, [])
 
     const requiredFields = [
         "first_name",
@@ -126,6 +132,38 @@ export default function Navbar() {
         };
     }, [showArea]);
 
+    const GetAllLocations = async () => {
+        try {
+            const res = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-location`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (res?.data?.success) {
+                setgetLocations(res?.data?.data)
+            }
+        } catch (error) {
+            console.error("❌ Error fetching messages:", error);
+        }
+    }
+
+    const selectedLocation = async (locId) => {
+        setlocsetting(true);
+        try {
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/user-set-location`,
+                { location_id: locId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (res?.data?.success) {
+                await getUserProfileData();
+            }
+        } catch (error) {
+            console.error("❌ Error fetching messages:", error);
+        } finally {
+            setlocsetting(false);
+        }
+    }
+
     return (
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
             <div className='flex gap-2 items-center'>
@@ -193,7 +231,7 @@ export default function Navbar() {
                             >
                                 Suggested Trade
                             </button>
-                            <button
+                            {/* <button
                                 onClick={() => { }}
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
@@ -204,7 +242,7 @@ export default function Navbar() {
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
                                 Marketings
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>
@@ -236,8 +274,12 @@ export default function Navbar() {
                         <div ref={locdropdownRef}
                             className="relative hidden lg:flex items-center text-gray-700 gap-1">
                             <MapPin className="w-5 h-5" />
-                            {/* Show selected area */}
-                            <span className="text-sm">{selectedArea.name}, {selectedArea.code}</span>
+
+                            {locsetting ? (
+                                <span className="inline-block bg-gray-200 rounded-md h-4 w-24 animate-pulse"></span>
+                            ) : (
+                                <span className="text-sm">{profile?.location || "Select Area"}</span>
+                            )}
 
                             <ChevronDown
                                 className="w-4 h-4 cursor-pointer"
@@ -246,16 +288,16 @@ export default function Navbar() {
 
                             {showArea && (
                                 <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-md w-40 z-50 max-h-60 overflow-y-auto">
-                                    {brazilStates.map((state, idx) => (
+                                    {getLocations?.map((state, idx) => (
                                         <button
                                             key={idx}
                                             className="w-full text-left px-4 py-2 text-sm hover:bg-blue-100 cursor-pointer"
                                             onClick={() => {
-                                                setSelectedArea(state);
+                                                selectedLocation(state.id);
                                                 setshowArea(false);
                                             }}
                                         >
-                                            {state.name} ({state.code})
+                                            {state.location_name}
                                         </button>
                                     ))}
                                 </div>

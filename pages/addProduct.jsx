@@ -277,11 +277,11 @@ export default function addProduct() {
             let insertIndex = index;
             files.forEach((file) => {
                 // If current slot is filled, find next empty one
-                while (insertIndex < 4 && updated[insertIndex]) {
+                while (insertIndex < 7 && updated[insertIndex]) {
                     insertIndex++;
                 }
 
-                if (insertIndex < 4) {
+                if (insertIndex < 7) {
                     updated[insertIndex] = {
                         file,
                         preview: URL.createObjectURL(file),
@@ -308,11 +308,11 @@ export default function addProduct() {
 
             files.forEach((file) => {
                 // find next empty slot
-                while (insertIndex < 4 && updated[insertIndex]) {
+                while (insertIndex < 7 && updated[insertIndex]) {
                     insertIndex++;
                 }
 
-                if (insertIndex < 4) {
+                if (insertIndex < 7) {
                     updated[insertIndex] = {
                         file,
                         preview: URL.createObjectURL(file),
@@ -602,7 +602,7 @@ export default function addProduct() {
                             file: null,
                             preview: imgUrl
                         }));
-                        while (formattedImages.length < 4) {
+                        while (formattedImages.length < 7) {
                             formattedImages.push(null);
                         }
 
@@ -875,7 +875,7 @@ export default function addProduct() {
                             </label>
 
                             <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                                {[1, 2, 3].map((index) => (
+                                {[1, 2, 3, 4, 5].map((index) => (
                                     <label
                                         key={index}
                                         className="relative aspect-square border border-dashed border-gray-300 rounded-lg sm:rounded-xl flex items-center justify-center cursor-pointer overflow-hidden hover:border-blue-400 transition-colors"

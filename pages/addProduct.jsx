@@ -842,7 +842,7 @@ export default function addProduct() {
                                 {selectedTab === 'Product' ? "Product Images" : "Service Images"}
                             </h2>
 
-                            <label className="relative cursor-pointer border border-dashed border-gray-300 rounded-lg sm:rounded-xl w-full aspect-square flex items-center justify-center overflow-hidden hover:border-blue-400 transition-colors">
+                            {/* <label className="relative cursor-pointer border border-dashed border-gray-300 rounded-lg sm:rounded-xl w-full aspect-square flex items-center justify-center overflow-hidden hover:border-blue-400 transition-colors">
                                 {images[0] ? (
                                     <>
                                         <img
@@ -914,7 +914,58 @@ export default function addProduct() {
                             </div>
                             {errors.images && (
                                 <p className="text-red-500 text-xs sm:text-sm">{errors.images}</p>
+                            )} */}
+
+                            <div className="grid grid-cols-2 gap-3 w-full">
+                                {[0, 1, 2, 3, 4, 5].map((index) => (
+                                    <label
+                                        key={index}
+                                        className="relative cursor-pointer border border-dashed border-gray-300 rounded-lg sm:rounded-xl aspect-square flex items-center justify-center overflow-hidden hover:border-blue-400 transition-colors"
+                                    >
+                                        {images[index] ? (
+                                            <>
+                                                <img
+                                                    src={images[index]?.preview}
+                                                    alt="Preview"
+                                                    className="object-cover w-full h-full opacity-0 transition-opacity duration-500 rounded-lg sm:rounded-xl"
+                                                    onLoad={(e) => e.currentTarget.classList.remove("opacity-0")}
+                                                />
+                                                {router?.query?.Editid && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleRemoveImage(index);
+                                                        }}
+                                                        className="absolute top-2 right-2 bg-black/70 text-white rounded-full p-1 hover:bg-black/90"
+                                                        aria-label="Remove image"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <img
+                                                src="./addimage.png"
+                                                alt="Add"
+                                                className="w-8 h-8 sm:w-10 sm:h-10 opacity-70"
+                                            />
+                                        )}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            multiple
+                                            className="hidden"
+                                            onChange={(e) => handleImageChange(e, index)}
+                                        />
+                                    </label>
+                                ))}
+                            </div>
+
+                            {errors.images && (
+                                <p className="text-red-500 text-xs sm:text-sm">{errors.images}</p>
                             )}
+
                         </div>
 
                         <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6 w-full lg:w-1/2 space-y-4 sm:space-y-6">

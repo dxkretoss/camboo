@@ -14,6 +14,10 @@ export default function AllGroups() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!token) {
+            router.push('/');
+        }
+        document.title = "Camboo-GroupList"
         getallGroups();
     }, []);
 

@@ -23,6 +23,12 @@ import Image from 'next/image';
 export default function Profile() {
     const token = Cookies.get('token');
     const router = useRouter();
+
+    useEffect(() => {
+        if (!token) router.push('/');
+        document.title = "Camboo-Profile";
+    }, [token]);
+
     const { profile, clientsProductandService, getClientsProdandSer, getallProdandSer, getClientSaveitems, clientSaveItems } = useUser();
     const [socialLinks, setSocialLinks] = useState([]);
     const [loadingIds, setLoadingIds] = useState([]);
@@ -78,11 +84,6 @@ export default function Profile() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [openMenuId]);
-
-    useEffect(() => {
-        if (!token) router.push('/');
-        document.title = "Camboo-Profile";
-    }, [token, router]);
 
     useEffect(() => {
         if (profile) {

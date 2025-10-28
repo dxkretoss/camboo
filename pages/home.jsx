@@ -14,8 +14,23 @@ import { useSearch } from '@/context/SearchContext';
 
 export default function HomePage() {
     const router = useRouter();
+    const { page } = router.query;
     const token = Cookies.get('token');
+    const [currentPage, setCurrentPage] = useState(Number(page) || 1);
+    const itemsPerPage = 10;
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+        router.push(
+            {
+                pathname: router.pathname,
+                query: { ...router.query, page: newPage },
+            },
+            undefined,
+            { shallow: true }
+        );
 
+        window.scrollTo({ top: 0, behavior: "auto" });
+    };
     useEffect(() => {
         document.title = "Camboo-Homepage"
         if (!token) {
@@ -33,6 +48,12 @@ export default function HomePage() {
             user?.title?.toLowerCase().includes(text)
         );
     });
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedProducts = filteredProducts
+        ?.sort((a, b) => b.id - a.id)
+        ?.slice(startIndex, endIndex);
 
     const [startIndexes, setStartIndexes] = useState({});
     const [loadingIds, setLoadingIds] = useState([]);
@@ -250,8 +271,8 @@ export default function HomePage() {
                 )}
                 <div className="flex flex-col lg:flex-row p-2 gap-2">
                     <div className="flex-1 space-y-2">
-                        {filteredProducts?.length > 0 ? (
-                            filteredProducts?.sort((a, b) => b.id - a.id)?.map((user, idx) => {
+                        {paginatedProducts?.length > 0 ? (
+                            paginatedProducts?.sort((a, b) => b.id - a.id)?.map((user, idx) => {
                                 return (
                                     <div key={idx} className="bg-white rounded-xl shadow p-3 sm:p-4">
                                         <div className="flex items-start justify-between flex-wrap gap-3">
@@ -599,6 +620,7 @@ export default function HomePage() {
 
                                     </div>
                                 );
+
                             })
                         ) : (
                             <div className="flex flex-col items-center justify-center  bg-white rounded-xl shadow">
@@ -606,6 +628,45 @@ export default function HomePage() {
                                 <p className="text-gray-500 text-xl font-extrabold mb-6">No products or services found</p>
                             </div>
                         )}
+
+                        {
+                            filteredProducts?.length > itemsPerPage && (
+                                <div className="flex justify-center items-center mt-6 gap-2">
+                                    <button
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium ${currentPage === 1
+                                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                            : "bg-[#000F5C] text-white hover:bg-[#00136e]"
+                                            }`}
+                                    >
+                                        Previous
+                                    </button>
+
+                                    <span className="text-sm font-medium text-gray-600">
+                                        Page {currentPage} of {Math.ceil(filteredProducts.length / itemsPerPage)}
+                                    </span>
+
+                                    <button
+                                        onClick={() =>
+                                            handlePageChange(
+                                                Math.min(
+                                                    currentPage + 1,
+                                                    Math.ceil(filteredProducts.length / itemsPerPage)
+                                                )
+                                            )
+                                        }
+                                        disabled={currentPage === Math.ceil(filteredProducts.length / itemsPerPage)}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium ${currentPage === Math.ceil(filteredProducts.length / itemsPerPage)
+                                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                            : "bg-[#000F5C] text-white hover:bg-[#00136e]"
+                                            }`}
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            )
+                        }
                     </div>
 
                     <div className="hidden lg:block w-full lg:w-[300px] xl:w-[340px] space-y-2">
@@ -651,16 +712,25 @@ export default function HomePage() {
                                     ))}
                             </ul>
                         </div>
+                    </div>
+                </div>
+            </div >
+            <Toaster />
+        </div >
+    );
+}
 
-                        {/* <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
+
+
+{/* <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
                             <div className="bg-white shadow rounded-lg p-2 mb-2">
                                 <div className="flex justify-between items-center mb-3">
                                     <h3 className="font-semibold text-sm">History of Trades</h3> */}
-                        {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
-                        {/* </div>
+{/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */ }
+{/* </div>
                                 <div className='flex justify-center'> */}
-                        {/* <img src='/no-document.png' className='' /> */}
-                        {/* <svg
+{/* <img src='/no-document.png' className='' /> */ }
+{/* <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="54"
                                         height="54"
@@ -683,16 +753,16 @@ export default function HomePage() {
                             </div>
                         </div> */}
 
-                        {/* <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
+{/* <div className="w-full lg:w-[300px] xl:w-[340px] space-y-2">
                             <div className="bg-white shadow rounded-lg p-2 mb-2">
                                 <div className="flex justify-between items-center mb-3">
                                     <h3 className="font-semibold text-sm">Marketings</h3> */}
-                        {/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */}
-                        {/* </div>
+{/* <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button> */ }
+{/* </div>
 
                                 <div className='flex justify-center'> */}
-                        {/* <img src='/no-document.png' className='' /> */}
-                        {/* <svg
+{/* <img src='/no-document.png' className='' /> */ }
+{/* <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="54"
                                         height="54"
@@ -714,10 +784,3 @@ export default function HomePage() {
                                 </div> 
                                 </div> 
                             </div> */}
-                    </div>
-                </div>
-            </div >
-            <Toaster />
-        </div >
-    );
-}

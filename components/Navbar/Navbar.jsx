@@ -45,7 +45,7 @@ export default function Navbar() {
     const token = Cookies.get("token");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
-    const { profile, getUserProfileData } = useUser();
+    const { profile, getUserProfileData, getallNotification } = useUser();
     // const [searchItems, setsearchItems] = useState('');
     const { searchItems, setsearchItems } = useSearch();
     const [logOut, setlogOut] = useState(false);
@@ -53,11 +53,17 @@ export default function Navbar() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [getLocations, setgetLocations] = useState();
     const [locsetting, setlocsetting] = useState(false);
+    const [unreadNotification, setunreadNotification] = useState();
+
+    useEffect(() => {
+        const getListofunreadnoti = getallNotification?.filter((noti) => noti.is_read === 0);
+        setunreadNotification(getListofunreadnoti)
+    }, [getallNotification]);
 
     useEffect(() => {
         if (!token) router.push('/');
         GetAllLocations();
-    }, [])
+    }, [token])
 
     const requiredFields = [
         "first_name",
@@ -89,6 +95,42 @@ export default function Navbar() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const GetAllLocations = async () => {
+        const token = Cookies.get("token");
+        if (!token) return;
+        try {
+            const res = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-location`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (res?.data?.success) {
+                setgetLocations(res?.data?.data)
+            }
+        } catch (error) {
+            console.error("❌ Error fetching messages:", error);
+        }
+    }
+
+    const selectedLocation = async (locId) => {
+        const token = Cookies.get("token");
+        if (!token) return;
+        setlocsetting(true);
+        try {
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/user-set-location`,
+                { location_id: locId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (res?.data?.success) {
+                await getUserProfileData();
+            }
+        } catch (error) {
+            console.error("❌ Error fetching messages:", error);
+        } finally {
+            setlocsetting(false);
+        }
+    }
 
     const logOutUser = async () => {
         setlogOut(true);
@@ -132,37 +174,6 @@ export default function Navbar() {
         };
     }, [showArea]);
 
-    const GetAllLocations = async () => {
-        try {
-            const res = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-location`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            if (res?.data?.success) {
-                setgetLocations(res?.data?.data)
-            }
-        } catch (error) {
-            console.error("❌ Error fetching messages:", error);
-        }
-    }
-
-    const selectedLocation = async (locId) => {
-        setlocsetting(true);
-        try {
-            const res = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/user-set-location`,
-                { location_id: locId },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            if (res?.data?.success) {
-                await getUserProfileData();
-            }
-        } catch (error) {
-            console.error("❌ Error fetching messages:", error);
-        } finally {
-            setlocsetting(false);
-        }
-    }
 
     return (
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
@@ -345,7 +356,9 @@ export default function Navbar() {
                 <div className="relative w-10 h-10 flex items-center justify-center bg-[#000F5C] rounded-full cursor-pointer"
                     onClick={() => router.push('notification')}>
                     <Bell className="w-5 h-5 text-white" />
-                    {/* <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" /> */}
+                    {unreadNotification?.length > 0 &&
+                        <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
+                    }
                 </div>
 
                 <div className="relative" ref={dropdownRef}>

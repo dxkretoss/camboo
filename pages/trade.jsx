@@ -18,6 +18,8 @@ export default function Trade() {
     const [loadedImages, setLoadedImages] = useState({});
 
     useEffect(() => {
+        document.title = 'Camboo-Trade'
+
         if (!token) {
             router.push("/");
         }

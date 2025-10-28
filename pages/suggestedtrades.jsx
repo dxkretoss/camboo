@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout/Layout';
 import { useUser } from '@/context/UserContext';
 import { ChevronLeft } from 'lucide-react';
@@ -10,6 +10,12 @@ export default function SuggestedTrades() {
     const { suggestedTrades } = useUser();
     const [fetching, setfetching] = useState(false);
     const router = useRouter();
+    const token = Cookies.get("token");
+
+    useEffect(() => {
+        if (!token) router.push('/');
+        document.title = "Camboo-Suggested Trades";
+    }, [token]);
 
     const doingTrade = async (id, type) => {
         setfetching(true);

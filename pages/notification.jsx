@@ -3,34 +3,66 @@ import Layout from '@/components/Layout/Layout'
 import { ChevronLeft } from 'lucide-react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { useUser } from '@/context/UserContext';
 
 export default function notification() {
     const [selectedTab, setSelectedTab] = useState('Notifications');
     const token = Cookies.get("token");
+    const { getallNotification, getAllNotification } = useUser();
 
     useEffect(() => {
         if (!token) router.push('/');
         document.title = 'Camboo-Notification';
-        getAllNotification();
     }, [])
 
-    const [getallNotification, setgetallNotification] = useState();
+    useEffect(() => {
+        if (getallNotification?.length > 0) {
+            markAllUnreadAsRead();
+        }
+    }, [getallNotification])
 
-    const getAllNotification = async () => {
+    const markAllUnreadAsRead = async () => {
+        const unread = getallNotification?.filter((n) => n.is_read == 0) || [];
+        for (const noti of unread) {
+            await markNotificationAsRead(noti.id);
+        }
+    };
+
+    const markNotificationAsRead = async (notificationId) => {
         try {
-            const getNoti = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-notification`,
+            const token = Cookies.get("token");
+
+            const response = await axios.patch(
+                `${process.env.NEXT_PUBLIC_API_CAMBOO}/notification/read/${notificationId}`,
+                { is_read: 1 },
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
-            if (getNoti?.data?.success) {
-                setgetallNotification(getNoti?.data?.data)
-            }
+            getAllNotification();
         } catch (error) {
-            console.log(error)
+            console.error("Error marking notification as read:", error);
         }
-    }
+    };
+    // const [getallNotification, setgetallNotification] = useState();
+
+    // const getAllNotification = async () => {
+    //     try {
+    //         const getNoti = await axios.get(
+    //             `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-notification`,
+    //             {
+    //                 headers: { Authorization: `Bearer ${token}` },
+    //             }
+    //         );
+    //         if (getNoti?.data?.success) {
+    //             setgetallNotification(getNoti?.data?.data)
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     const [processingId, setProcessingId] = useState(null);
 
@@ -96,7 +128,8 @@ export default function notification() {
                                     ? getallNotification?.map((noti) => (
                                         <div
                                             key={noti?.id}
-                                            className="flex flex-col border-b border-gray-200 pb-2"
+                                            className={`flex flex-col border-b border-gray-200 p-2 mb-1 ${noti.is_read === 0 ? "bg-gray-100" : "bg-white"}`}
+
                                         >
                                             <div className='flex justify-between'>
                                                 {/* <span className="text-base text-[#12111D]">{noti.message}</span> */}
@@ -116,7 +149,7 @@ export default function notification() {
                                                             onClick={() => handleFriendAction(noti?.group_id, 'accepted')}
                                                             disabled={processingId === noti?.group_id}
                                                             className={`px-3 py-1.5 text-sm rounded-[8px] transition border
-        ${processingId === noti?.group_id
+                                                            ${processingId === noti?.group_id
                                                                     ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                                                                     : 'bg-[#4370C21F] border-[#4370C266] text-[#4370C2]'
                                                                 }`}

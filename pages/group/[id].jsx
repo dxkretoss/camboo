@@ -31,7 +31,7 @@ export default function GroupPage() {
     const [inviteSending, setinviteSending] = useState(false);
     const [invitedUsers, setInvitedUsers] = useState([]);
     const [sendingFor, setSendingFor] = useState(null);
-
+    const [searchTerm, setSearchTerm] = useState("");
     useEffect(() => {
         if (!token) {
             router.push("/");
@@ -129,7 +129,6 @@ export default function GroupPage() {
                 );
                 if (res?.data) {
                     setMessages(res?.data?.messages || []);
-                    console.log(res?.data?.messages)
                     scrollToBottom();
                 }
             } catch (error) {
@@ -233,6 +232,11 @@ export default function GroupPage() {
         }
     };
 
+    const filteredUsers = gettingAllusers?.filter((user) => {
+        const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.toLowerCase();
+        return fullName.includes(searchTerm.toLowerCase());
+    });
+
     return (
         <Layout>
             <div className="md:px-10">
@@ -303,6 +307,14 @@ export default function GroupPage() {
 
                             <h2 className="text-lg font-semibold mb-4">Add Members</h2>
 
+                            <input
+                                type="text"
+                                placeholder="Search by name..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+
                             <div className="space-y-3 max-h-60 overflow-y-auto">
                                 {userGetting ? (
                                     Array.from({ length: 5 }).map((_, i) => (
@@ -317,8 +329,8 @@ export default function GroupPage() {
                                             <div className="h-8 w-20 bg-gray-300 rounded"></div>
                                         </div>
                                     ))
-                                ) : gettingAllusers?.length > 0 ? (
-                                    gettingAllusers.map((user) => (
+                                ) : filteredUsers?.length > 0 ? (
+                                    filteredUsers.map((user) => (
                                         <div
                                             key={user.id}
                                             className="flex justify-between items-center border-b border-gray-200 pb-2"

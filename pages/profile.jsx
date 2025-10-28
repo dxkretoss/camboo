@@ -113,7 +113,7 @@ export default function Profile() {
         github: { name: "GitHub", icon: Github },
     };
 
-    const tabs = ['My Ads', 'My History of Trades', 'My Saved Items'];
+    const tabs = ['My Ads', 'My Saved Items'];
     const [activeTab, setActiveTab] = useState('My Ads');
 
     const sendClientSaveitems = async (id) => {
@@ -204,11 +204,12 @@ export default function Profile() {
                                             <span className="ml-2 text-gray-700 font-medium">5.0</span>
                                             <span className="ml-1 text-gray-500">(248 Reviews)</span>
                                         </div>
-                                        <div className="flex gap-1 text-sm text-gray-500 mt-1 items-center">
-                                            <MapPin className="w-4 h-4" />
-                                            {/* <span>Recife, PE</span> */}
-                                            <span>{getProfileData?.street}, {getProfileData?.city}</span>
-                                        </div>
+                                        {(getProfileData?.street || getProfileData?.city) ?
+                                            <div className="flex gap-1 text-sm text-gray-500 mt-1 items-center">
+                                                <MapPin className="w-4 h-4" />
+                                                <span>{getProfileData?.street}, {getProfileData?.city}</span>
+                                            </div>
+                                            : null}
                                     </>
                                 ) : (
                                     <div className="space-y-2">
@@ -236,91 +237,101 @@ export default function Profile() {
 
 
                 <div className="flex flex-col lg:flex-row gap-4 mt-6">
-                    <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-sm p-6 space-y-6">
-                        <div>
-                            <h3 className="text-md font-semibold text-[#13121F] mb-1">About Me</h3>
+                    {(getProfileData?.about_me || getProfileData?.professional_experience || getProfileData?.what_are_you_interested_in || socialLinks?.length > 0) ?
+                        <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-sm p-6 space-y-6">
                             {getProfileData?.about_me ? (
-                                <p className="text-sm text-gray-600">{getProfileData.about_me}</p>
-                            ) : (
-                                <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse"></div>
-                            )}
-                        </div>
-                        <hr className='text-gray-200' />
+                                <>
+                                    <div>
+                                        <h3 className="text-md font-semibold text-[#13121F] mb-1">About Me</h3>
+                                        {getProfileData?.about_me ? (
+                                            <p className="text-sm text-gray-600">{getProfileData.about_me}</p>
+                                        ) : (
+                                            <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+                                        )}
+                                    </div>
+                                    <hr className='text-gray-200' />
+                                </>
+                            ) : null}
 
-                        {getProfileData?.professional_experience ? (
-                            <>
-                                <div>
-                                    <h3 className="text-md font-semibold text-[#13121F] mb-2">Professional Experience</h3>
-                                    {getProfileData?.professional_experience ? (
-                                        <ul className="space-y-4 text-sm">{getProfileData.professional_experience}</ul>
-                                    ) : (
-                                        <div className="space-y-2">
-                                            <div className="h-3 w-2/3 bg-gray-200 rounded animate-pulse"></div>
-                                            <div className="h-3 w-1/2 bg-gray-200 rounded animate-pulse"></div>
-                                            <div className="h-3 w-3/4 bg-gray-200 rounded animate-pulse"></div>
-                                        </div>
-                                    )}
-                                </div>
-                                <hr className='text-gray-200' />
-                            </>
-                        ) : null}
+                            {getProfileData?.professional_experience ? (
+                                <>
+                                    <div>
+                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">Professional Experience</h3>
+                                        {getProfileData?.professional_experience ? (
+                                            <ul className="space-y-4 text-sm">{getProfileData.professional_experience}</ul>
+                                        ) : (
+                                            <div className="space-y-2">
+                                                <div className="h-3 w-2/3 bg-gray-200 rounded animate-pulse"></div>
+                                                <div className="h-3 w-1/2 bg-gray-200 rounded animate-pulse"></div>
+                                                <div className="h-3 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <hr className='text-gray-200' />
+                                </>
+                            ) : null}
 
-                        {socialLinks?.length > 0 ? (
-                            <>
-                                <div>
-                                    <h3 className="text-md font-semibold text-[#13121F] mb-2">Social Links</h3>
-                                    {socialLinks?.length > 0 ? (
-                                        <div className="flex gap-3">
-                                            {socialLinks.map(({ platform, link }, index) => {
-                                                const data = platformMap[platform?.toLowerCase()] || { name: platform, icon: Globe };
-                                                const Icon = data?.icon;
-                                                return (
-                                                    <a
-                                                        key={index}
-                                                        href={link}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-[#00136e] transition"
-                                                        aria-label={data.name}
-                                                    >
-                                                        <Icon className="w-4 h-4" />
-                                                    </a>
-                                                );
-                                            })}
-                                        </div>
-                                    ) : (
-                                        <div className="flex gap-3">
-                                            <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
-                                            <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
-                                        </div>
-                                    )}
-                                </div>
-                                <hr className='text-gray-200' />
-                            </>
-                        ) : null}
+                            {socialLinks?.length > 0 ? (
+                                <>
+                                    <div>
+                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">Social Links</h3>
+                                        {socialLinks?.length > 0 ? (
+                                            <div className="flex gap-3">
+                                                {socialLinks.map(({ platform, link }, index) => {
+                                                    const data = platformMap[platform?.toLowerCase()] || { name: platform, icon: Globe };
+                                                    const Icon = data?.icon;
+                                                    return (
+                                                        <a
+                                                            key={index}
+                                                            href={link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="p-2 bg-[#000F5C] text-white rounded-full hover:bg-[#00136e] transition"
+                                                            aria-label={data.name}
+                                                        >
+                                                            <Icon className="w-4 h-4" />
+                                                        </a>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <div className="flex gap-3">
+                                                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <hr className='text-gray-200' />
+                                </>
+                            ) : null}
 
-                        <div>
-                            <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
                             {getProfileData?.what_are_you_interested_in ? (
-                                <div className="flex flex-wrap gap-2">
-                                    {getProfileData?.what_are_you_interested_in?.split(',').map((item, idx) => (
-                                        <span
-                                            key={idx}
-                                            className="px-3 py-1 rounded-md text-[#06145D] bg-[#06145D1A] text-sm font-semibold"
-                                        >
-                                            {item.trim()}
-                                        </span>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="flex flex-wrap gap-2">
-                                    <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
-                                    <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
-                                    <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
-                                </div>
-                            )}
+                                <>
+                                    <div>
+                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
+                                        {getProfileData?.what_are_you_interested_in ? (
+                                            <div className="flex flex-wrap gap-2">
+                                                {getProfileData?.what_are_you_interested_in?.split(',').map((item, idx) => (
+                                                    <span
+                                                        key={idx}
+                                                        className="px-3 py-1 rounded-md text-[#06145D] bg-[#06145D1A] text-sm font-semibold"
+                                                    >
+                                                        {item.trim()}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-wrap gap-2">
+                                                <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                                                <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+                                                <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            ) : null}
                         </div>
-                    </div>
+                        : null}
 
                     <div className="w-full lg:w-3/4">
                         <div className="flex flex-nowrap gap-4 border-b border-gray-300 mb-4">

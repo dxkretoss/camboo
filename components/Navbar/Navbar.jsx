@@ -198,6 +198,63 @@ export default function Navbar() {
         setOpen(false);
     };
 
+    // useEffect(() => {
+    //     const initGoogleTranslate = () => {
+    //         const container = document.getElementById("google_translate_element");
+    //         if (!container) return;
+
+    //         container.innerHTML = "";
+
+    //         if (window.google?.translate) {
+    //             new window.google.translate.TranslateElement(
+    //                 { pageLanguage: "en" },
+    //                 "google_translate_element"
+    //             );
+
+    //             // Filter allowed languages
+    //             const filterLanguages = () => {
+    //                 const select = document.querySelector(".goog-te-combo");
+    //                 if (select) {
+    //                     const allowed = ["en", "pt", "br"];
+    //                     [...select.options].forEach((opt) => {
+    //                         if (!allowed.includes(opt.value)) opt.remove();
+    //                     });
+    //                 }
+    //             };
+    //             const interval = setInterval(filterLanguages, 1000);
+    //             setTimeout(() => clearInterval(interval), 15000);
+    //         }
+    //     };
+
+    //     const waitForContainer = () => {
+    //         const el = document.getElementById("google_translate_element");
+    //         if (el) {
+    //             initGoogleTranslate();
+    //         } else {
+    //             setTimeout(waitForContainer, 300);
+    //         }
+    //     };
+
+    //     if (!window.googleTranslateScriptLoaded) {
+    //         window.googleTranslateScriptLoaded = true;
+    //         window.googleTranslateElementInit = initGoogleTranslate;
+
+    //         const script = document.createElement("script");
+    //         script.src =
+    //             "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    //         script.async = true;
+    //         document.body.appendChild(script);
+    //     } else {
+    //         waitForContainer();
+    //     }
+
+    //     return () => {
+    //         const el = document.getElementById("google_translate_element");
+    //         if (el) el.innerHTML = "";
+    //     };
+    // }, [router?.asPath]);
+
+
     return (
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
             <div className='flex gap-2 items-center'>
@@ -349,6 +406,8 @@ export default function Navbar() {
                     )}
                 </div>
             </div>
+
+            {/* <div id="google_translate_element" /> */}
 
             <div className="flex items-center gap-4">
                 {isComplete ?

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import axios from "axios";
 import Layout from "@/components/Layout/Layout";
-import { ChevronLeft, ChevronRight, MessageCircle, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageCircle, Search, Edit3, Plus } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import Image from "next/image";
 export default function Trade() {
@@ -14,7 +14,7 @@ export default function Trade() {
     const [fetching, setFetching] = useState(false);
     const [youritemsData, setYouritemsData] = useState(null);
     const [imageIndexes, setImageIndexes] = useState({});
-    const { profile } = useUser();
+    const { profile, clientsProductandService } = useUser();
     const [loadedImages, setLoadedImages] = useState({});
 
     useEffect(() => {
@@ -88,6 +88,28 @@ export default function Trade() {
         });
     };
 
+    const requiredFields = [
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "about_me",
+        "what_are_you_interested_in",
+        // "professional_experience",
+        "street",
+        "city",
+        "post_code",
+    ];
+
+    const isComplete = requiredFields.every((field) => {
+        const value = profile?.[field];
+        if (Array.isArray(value)) {
+            return value.length > 0;
+        }
+        return value !== null && value !== undefined && value !== "";
+    });
+
+    const hasProfileData = Array.isArray(clientsProductandService) && clientsProductandService.length > 0;
 
     return (
         <Layout>
@@ -322,14 +344,39 @@ export default function Trade() {
                             )}
                         </div>
                     ))
-                ) : (
-
+                ) : (isComplete && !hasProfileData) ? (
                     <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 sm:px-6 py-6 text-center">
-                        {/* <div className="relative">
-                            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-tr from-blue-100 to-indigo-200 flex items-center justify-center shadow-md">
-                                <Search className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-[#000F5C]" />
-                            </div>
-                        </div> */}
+                        <img src='/notfound.svg' className='w-56 h-56' />
+                        <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
+                            Not any Ads ared added.
+                        </h2>
+
+                        <p className="mt-2 text-gray-500 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-sm md:max-w-md">
+                            We couldn’t find anything your Ads.
+                        </p>
+
+                        <button
+                            onClick={() => router.push("./addProduct")}
+                            className="flex items-center gap-2 mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
+                        >
+                            <Plus className="w-4 h-4" />
+                            New Ad
+                        </button>
+                    </div>
+                ) : !hasProfileData ? (
+                    <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 sm:px-6 py-6 text-center">
+
+                        <img src='/notfound.svg' className='w-56 h-56' />
+                        <button
+                            onClick={() => router.push("./editProfile")}
+                            className="flex items-center gap-2 mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
+                        >
+                            <Edit3 className="w-4 h-4" />
+                            Please Complete Your Profile
+                        </button>
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 sm:px-6 py-6 text-center">
 
                         <img src='/notfound.svg' className='w-56 h-56' />
 
@@ -342,10 +389,10 @@ export default function Trade() {
                         </p>
 
                         <button
-                            onClick={() => router.push("./home")}
+                            onClick={() => router.push("./profile")}
                             className="mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
                         >
-                            Browse All Ads
+                            Change your settings
                         </button>
                     </div>
 

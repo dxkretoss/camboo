@@ -131,13 +131,11 @@ export default function notification() {
                         {/* 🔔 Notifications List */}
                         {selectedTab === "Notifications" && (
                             <div className="divide-y divide-gray-200">
-                                {getallNotification && getallNotification.length > 0 ? (
+                                {getallNotification?.length > 0 ? (
                                     getallNotification.map((noti) => (
                                         <div
                                             key={noti?.id}
-                                            className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-2 sm:p-3 ${noti.is_read === 0
-                                                ? "bg-gray-100"
-                                                : "bg-white"
+                                            className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-2 sm:p-3 ${noti.is_read === 0 ? "bg-gray-100" : "bg-white"
                                                 }`}
                                         >
                                             {/* 📨 Message */}
@@ -148,9 +146,7 @@ export default function notification() {
                                                         <span className="text-sm sm:text-base text-[#12111D]">
                                                             {before}:
                                                             {after && (
-                                                                <strong className="font-semibold text-black">
-                                                                    {after}
-                                                                </strong>
+                                                                <strong className="font-semibold text-black">{after}</strong>
                                                             )}
                                                         </span>
                                                     );
@@ -174,9 +170,7 @@ export default function notification() {
                                                             : "bg-[#4370C21F] border-[#4370C266] text-[#4370C2]"
                                                             }`}
                                                     >
-                                                        {processingId === noti?.group_id
-                                                            ? "Accepting..."
-                                                            : "Accept"}
+                                                        {processingId === noti?.group_id ? "Accepting..." : "Accept"}
                                                     </button>
 
                                                     {/* Refuse */}
@@ -190,16 +184,19 @@ export default function notification() {
                                                             : "bg-[#E73E391F] border-[#E73E3966] text-[#E73E39]"
                                                             }`}
                                                     >
-                                                        {processingId === noti?.group_id
-                                                            ? "Refusing..."
-                                                            : "Refuse"}
+                                                        {processingId === noti?.group_id ? "Refusing..." : "Refuse"}
                                                     </button>
                                                 </div>
                                             )}
                                         </div>
                                     ))
+                                ) : (getallNotification?.length === 0 || getallNotification === null) ? (
+                                    <div className="flex justify-center items-center w-full py-10">
+                                        <span className="text-center text-gray-500 text-sm sm:text-base">
+                                            No notification found.
+                                        </span>
+                                    </div>
                                 ) : (
-                                    /* Skeleton Loader */
                                     Array.from({ length: 5 }).map((_, i) => (
                                         <div
                                             key={i}
@@ -212,6 +209,7 @@ export default function notification() {
                                 )}
                             </div>
                         )}
+
 
                         {/* 📈 Other Tab */}
                         {selectedTab === "New Potential Trades" && (

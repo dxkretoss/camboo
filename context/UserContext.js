@@ -120,6 +120,7 @@ export const UserProvider = ({ children }) => {
 
   const getAllNotification = async () => {
     try {
+      const token = Cookies.get("token");
       const getNoti = await axios.get(
         `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-notification`,
         {

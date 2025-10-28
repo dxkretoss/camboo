@@ -209,35 +209,39 @@ export default function Sidebar() {
             </div>
             <hr />
 
-            <div>
-                <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
-                <div className="flex flex-wrap gap-2">
-                    {profile?.what_are_you_interested_in ? (
+            {profile?.what_are_you_interested_in ? (
+                <>
+                    <div>
+                        <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
                         <div className="flex flex-wrap gap-2">
-                            {profile?.what_are_you_interested_in?.split(',').map((item, idx) => (
-                                <span
-                                    key={idx}
-                                    className="px-3 py-1 rounded-md text-[#06145D] bg-[#06145D1A] text-sm font-semibold"
-                                >
-                                    {item.trim()}
-                                </span>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="flex flex-wrap gap-2">
-                            <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
-                            <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
-                            <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
-                        </div>
-                    )}
-                    {/* {interests.map((interest, index) => (
+                            {profile?.what_are_you_interested_in ? (
+                                <div className="flex flex-wrap gap-2">
+                                    {profile?.what_are_you_interested_in?.split(',').map((item, idx) => (
+                                        <span
+                                            key={idx}
+                                            className="px-3 py-1 rounded-md text-[#06145D] bg-[#06145D1A] text-sm font-semibold"
+                                        >
+                                            {item.trim()}
+                                        </span>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="flex flex-wrap gap-2">
+                                    <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                                    <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+                                    <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+                                </div>
+                            )}
+                            {/* {interests.map((interest, index) => (
                         <span key={index} className="px-3 py-1 text-xs font-semibold bg-[#06145D1A] text-[#000F5C] rounded-md">
                             {interest}
                         </span>
                     ))} */}
-                </div>
-            </div>
-            <hr />
+                        </div>
+                    </div>
+                    <hr />
+                </>
+            ) : null}
 
             <div>
                 {/* Header */}
@@ -391,6 +395,13 @@ export default function Sidebar() {
                 </span>
             )}
 
+            {gettingallGroups?.length === 0 && (
+                <div className="flex justify-center items-center w-full py-10">
+                    <span className="text-center text-gray-500">
+                        No group created yet.
+                    </span>
+                </div>
+            )}
             <Toaster />
         </div>
     )

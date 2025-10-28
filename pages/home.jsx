@@ -673,7 +673,9 @@ export default function HomePage() {
                         <div className="bg-white shadow rounded-lg p-2 mb-2">
                             <div className="flex justify-between items-center mb-3">
                                 <h3 className="font-semibold text-sm">Suggested Trades</h3>
-                                <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button>
+                                {suggestedTrades?.length > 0 &&
+                                    <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>View All</button>
+                                }
                             </div>
 
                             <ul className="space-y-3">
@@ -711,6 +713,14 @@ export default function HomePage() {
                                         </li>
                                     ))}
                             </ul>
+
+                            {suggestedTrades?.length === 0 && (
+                                <div className="flex justify-center items-center w-full py-10">
+                                    <span className="text-center text-gray-500">
+                                        No suggested trades found.
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

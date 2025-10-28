@@ -245,7 +245,7 @@ export default function Profile() {
                                 <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse"></div>
                             )}
                         </div>
-                        <hr />
+                        <hr className='text-gray-200' />
 
                         {getProfileData?.professional_experience ? (
                             <>
@@ -261,7 +261,7 @@ export default function Profile() {
                                         </div>
                                     )}
                                 </div>
-                                <hr />
+                                <hr className='text-gray-200' />
                             </>
                         ) : null}
 
@@ -295,7 +295,7 @@ export default function Profile() {
                                         </div>
                                     )}
                                 </div>
-                                <hr />
+                                <hr className='text-gray-200' />
                             </>
                         ) : null}
 

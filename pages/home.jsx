@@ -14,8 +14,15 @@ import { useSearch } from '@/context/SearchContext';
 
 export default function HomePage() {
     const router = useRouter();
-    const { page } = router.query;
     const token = Cookies.get('token');
+    useEffect(() => {
+        document.title = "Camboo-Homepage"
+        if (!token) {
+            router.push('/');
+        }
+    }, [token]);
+
+    const { page } = router.query;
     const [currentPage, setCurrentPage] = useState(Number(page) || 1);
     const itemsPerPage = 10;
     const handlePageChange = (newPage) => {
@@ -31,12 +38,6 @@ export default function HomePage() {
 
         window.scrollTo({ top: 0, behavior: "auto" });
     };
-    useEffect(() => {
-        document.title = "Camboo-Homepage"
-        if (!token) {
-            router.push('/');
-        }
-    }, [token]);
 
     const { loading, allProductandService, profile, clientSaveItems, getClientSaveitems, suggestedTrades, getallProdandSer } = useUser();
     const { searchItems } = useSearch();
@@ -67,7 +68,6 @@ export default function HomePage() {
     const [Denounceadcomment, setDenounceadComment] = useState("");
     const [sendDenouceCmt, setsendDenouceCmt] = useState(false);
     const dialogRef = useRef(null);
-
     const [openCmtDialogId, setOpenCmtDialogId] = useState(null); // track which item is open
     const cmtdialogRef = useRef(null);
 

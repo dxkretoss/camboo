@@ -113,7 +113,7 @@ export default function Sidebar() {
     };
 
     return (
-        <div className="bg-white p-4 space-y-6 w-full">
+        <div className="bg-white p-4 space-y-6 w-full min-h-screen rounded-br-xl rounded-bl-xl">
             <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
                 onClick={() => setOpen(true)}>
                 <UserRoundPlus className="w-4 h-4" />

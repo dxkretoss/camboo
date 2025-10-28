@@ -236,7 +236,7 @@ export default function AllGroups() {
                         ? Array.from({ length: 6 }).map((_, i) => (
                             <div
                                 key={i}
-                                className="p-4 border rounded-xl shadow-sm animate-pulse space-y-3"
+                                className="p-4 border border-gray-200 rounded-xl shadow-sm animate-pulse space-y-3"
                             >
                                 <div className="w-16 h-16 rounded-full bg-gray-300 mx-auto"></div>
                                 <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>

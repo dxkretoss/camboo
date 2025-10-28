@@ -236,7 +236,7 @@ export default function Navbar() {
 
                     {/* Sidebar */}
                     <div className="absolute top-0 left-0 h-full w-72 bg-white shadow-lg transform transition-transform duration-300">
-                        <div className="flex items-center justify-between px-4 py-4 border-b">
+                        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 ">
                             <h2 className="text-lg font-semibold text-[#000F5C]">Menu</h2>
                             <button onClick={() => setSidebarOpen(false)}>
                                 <X className="w-6 h-6 text-gray-600" />
@@ -244,7 +244,7 @@ export default function Navbar() {
                         </div>
 
                         {/* Send Invite Button */}
-                        <div className="px-4 py-4 border-b">
+                        <div className="px-4 py-4 border-b border-gray-200">
                             <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
                                 onClick={() => setOpen(true)}>
                                 <UserRoundPlus className="w-4 h-4" />

@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
   const [clientSaveItems, setclientSaveItems] = useState(null);
   const [suggestedTrades, setsuggestedTrades] = useState(null);
   const [getallNotification, setgetallNotification] = useState(null);
+  const [recentchatUsers, setrecentchatUsers] = useState(null);
 
   useEffect(() => {
     if (!token) {
@@ -27,6 +28,7 @@ export const UserProvider = ({ children }) => {
       getClientSaveitems(),
       getsuggestedTrades(),
       getAllNotification(),
+      getrecentchatUsers(),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -135,6 +137,23 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getrecentchatUsers = async () => {
+    try {
+      const token = Cookies.get("token");
+      const getTrades = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-all-user-message`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (getTrades?.data?.success) {
+        setrecentchatUsers(getTrades?.data?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -152,6 +171,8 @@ export const UserProvider = ({ children }) => {
         getsuggestedTrades,
         getallNotification,
         getAllNotification,
+        getrecentchatUsers,
+        recentchatUsers,
       }}
     >
       {children}

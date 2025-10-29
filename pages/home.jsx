@@ -39,7 +39,7 @@ export default function HomePage() {
         window.scrollTo({ top: 0, behavior: "auto" });
     };
 
-    const { loading, allProductandService, profile, clientSaveItems, getClientSaveitems, suggestedTrades, getallProdandSer } = useUser();
+    const { loading, allProductandService, profile, clientSaveItems, getClientSaveitems, suggestedTrades, recentchatUsers, getallProdandSer } = useUser();
     const { searchItems } = useSearch();
 
     const filteredProducts = allProductandService?.filter((user) => {
@@ -510,7 +510,7 @@ export default function HomePage() {
                                                 </Button>
 
                                                 <button className="flex-1 xl:flex-none border border-[#C7F846] text-[#7FA600] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
-                                                    onClick={() => router.push(`/chat/${user?.user_id}?trade=${user?.id}`)}>
+                                                    onClick={() => router.push(`/chat/${user?.user_id}`)}>
                                                     {/* <img src="/getintouch.png" alt="Verified" className="w-4 h-4" /> */}
                                                     <MessageCircle className="w-4 h-4" />
                                                     <span className="hidden xl:inline">Chat</span>
@@ -722,7 +722,67 @@ export default function HomePage() {
                                 </div>
                             )}
                         </div>
+
+                        <div className="bg-white shadow rounded-lg p-2 mb-2">
+                            <div className="flex justify-between items-center mb-3">
+                                <h3 className="font-semibold text-sm">Recent Chats</h3>
+                                {recentchatUsers?.length > 0 &&
+                                    <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/recentChats') }}>View All</button>
+                                }
+                            </div>
+
+                            <ul className="space-y-3">
+                                {recentchatUsers
+                                    ? recentchatUsers?.slice(0, 5)?.map((item, index) => (
+                                        <li
+                                            key={index}
+                                            className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors"
+                                            onClick={() => router.push(`/chat/${item?.user_id}`)}
+                                        >
+                                            <img
+                                                src={item?.profile_image}
+                                                alt={item?.first_name}
+                                                className="w-10 h-10 rounded-full object-contain"
+                                            />
+                                            <div>
+                                                <p className="text-sm font-semibold">{item?.name}</p>
+                                                <p className="text-xs text-gray-500 flex justify-between w-full">
+                                                    <span>
+                                                        {(item?.last_message)?.length > 100
+                                                            ? (item?.last_message).substring(0, 45) + "..."
+                                                            : (item?.last_message)}
+                                                    </span>
+                                                    {/* <span>
+                                                        {item?.last_message_time}
+                                                    </span> */}
+                                                </p>
+                                            </div>
+                                        </li>
+
+                                    ))
+                                    :
+                                    Array.from({ length: 5 }).map((_, index) => (
+                                        <li key={index} className="flex items-start gap-3 animate-pulse">
+                                            <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+                                            <div className="flex-1 space-y-2">
+                                                <div className="w-3/4 h-4 bg-gray-300 rounded"></div>
+                                                <div className="w-1/2 h-3 bg-gray-200 rounded"></div>
+                                            </div>
+                                        </li>
+                                    ))}
+                            </ul>
+
+                            {suggestedTrades?.length === 0 && (
+                                <div className="flex justify-center items-center w-full py-10">
+                                    <span className="text-center text-gray-500">
+                                        No suggested trades found.
+                                    </span>
+                                </div>
+                            )}
+                        </div>
                     </div>
+
+
                 </div>
             </div >
             <Toaster />

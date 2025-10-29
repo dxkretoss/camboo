@@ -12,7 +12,7 @@ import { jwtDecode } from 'jwt-decode';
 
 export default function Index() {
   const router = useRouter();
-  const { getUserProfileData, getallProdandSer, getClientsProdandSer, getsuggestedTrades, getAllNotification } = useUser();
+  const { getUserProfileData, getallProdandSer, getClientsProdandSer, getsuggestedTrades, getrecentchatUsers, getAllNotification } = useUser();
   const [loginData, setloginData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -79,6 +79,7 @@ export default function Index() {
         await getClientsProdandSer();
         await getsuggestedTrades();
         await getAllNotification();
+        await getrecentchatUsers();
         router.push('/home')
         setloginData({
           email: '', password: ''
@@ -206,6 +207,7 @@ export default function Index() {
         await getClientsProdandSer();
         await getsuggestedTrades();
         await getAllNotification();
+        await getrecentchatUsers();
         router.push('/home')
         setloginData({ email: '', password: '' });
       } else {

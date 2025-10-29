@@ -11,23 +11,37 @@ import Pusher from "pusher-js";
 export default function ChatPage() {
     const router = useRouter();
     const { id } = router?.query;
-    const getTradeid = router?.query?.trade;
-    useEffect(() => {
-        if (getTradeid) {
-            doingTrade(getTradeid);
-        }
-    }, [getTradeid]);
+
+    // const getTradeid = router?.query?.trade;
+    // useEffect(() => {
+    //     if (getTradeid) {
+    //         doingTrade(getTradeid);
+    //     }
+    // }, [getTradeid]);
     const token = Cookies.get("token");
-    const { profile } = useUser();
+    const { profile, allProductandService } = useUser();
+
+
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [sending, setsending] = useState(false);
     const [input, setInput] = useState("");
-    const [matchUser, setmatchUser] = useState("");
+    const [matchUser, setmatchUser] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState(null);
     const listRef = useRef();
 
+    useEffect(() => {
+        if (!id || !allProductandService?.length) return;
+
+        const findUser = allProductandService.filter(
+            (item) => Number(item.user_id) === Number(id)
+        );
+
+        if (findUser.length > 0) {
+            setmatchUser(findUser[0]);
+        }
+    }, [id, allProductandService]);
 
     useEffect(() => {
         if (!token) {
@@ -172,21 +186,20 @@ export default function ChatPage() {
         }
     };
 
-
-    const doingTrade = async (id) => {
-        try {
-            const token = Cookies.get("token");
-            const letsCamboo = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/lets-trade?item_id=${id}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            if (letsCamboo?.data?.success) {
-                setmatchUser(letsCamboo?.data?.other_item);
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    // const doingTrade = async (id) => {
+    //     try {
+    //         const token = Cookies.get("token");
+    //         const letsCamboo = await axios.get(
+    //             `${process.env.NEXT_PUBLIC_API_CAMBOO}/lets-trade?item_id=${id}`,
+    //             { headers: { Authorization: `Bearer ${token}` } }
+    //         );
+    //         if (letsCamboo?.data?.success) {
+    //             setmatchUser(letsCamboo?.data?.other_item);
+    //         }
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // };
 
     return (
         <Layout>
@@ -208,7 +221,6 @@ export default function ChatPage() {
                                         className="object-cover w-full h-full"
                                     />
                                 ) : (
-                                    // Skeleton Avatar
                                     <div className="w-full h-full bg-gray-300 animate-pulse" />
                                 )}
                             </div>
@@ -220,7 +232,6 @@ export default function ChatPage() {
                                         {`${matchUser.first_name} ${matchUser.last_name}`}
                                     </div>
                                 ) : (
-                                    // Skeleton Name
                                     <div className="h-4 w-24 bg-gray-300 rounded animate-pulse"></div>
                                 )}
                             </div>

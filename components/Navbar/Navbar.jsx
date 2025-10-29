@@ -111,7 +111,6 @@ export default function Navbar() {
 
     const GetAllLocations = async () => {
         const token = Cookies.get("token");
-        if (!token) return;
         try {
             const res = await axios.get(
                 `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-location`,
@@ -369,6 +368,13 @@ export default function Navbar() {
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
                                 Suggested Trade
+                            </button>
+
+                            <button
+                                onClick={() => { router.push('/recentChats') }}
+                                className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
+                            >
+                                Recent Chats
                             </button>
                             {/* <button
                                 onClick={() => { }}

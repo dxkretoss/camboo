@@ -324,12 +324,24 @@ export default function addProduct() {
         });
     };
 
+    // const handleRemoveImage = (index) => {
+    //     setImages((prev) => {
+    //         const updated = [...prev];
+    //         updated[index] = null;
+    //         return updated;
+    //     });
+    // };
+
     const handleRemoveImage = (index) => {
-        setImages((prev) => {
-            const updated = [...prev];
-            updated[index] = null;
-            return updated;
-        });
+        const updatedImages = [...images];
+
+        if (!updatedImages[index]?.file && updatedImages[index]?.preview) {
+            const filename = updatedImages[index].preview.split('/').pop();
+            setRemovedImages(prev => [...prev, filename]);
+        }
+
+        updatedImages[index] = null;
+        setImages(updatedImages);
     };
 
     // Validate Product Field

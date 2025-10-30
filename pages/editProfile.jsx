@@ -352,8 +352,9 @@ export default function EditProfile() {
                                 <div className="space-y-1">
                                     <label className="block text-sm font-medium">Phone Number *</label>
                                     <PhoneInput
+                                        key={getProfileData?.phone_number}
                                         country={userCountry}
-                                        value={getProfileData.phone_number}
+                                        value={getProfileData?.phone_number}
                                         onChange={(value, country) => {
                                             const dialCode = country.dialCode;
                                             const rawNumber = value.slice(dialCode.length);

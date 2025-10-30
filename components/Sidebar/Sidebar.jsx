@@ -1,4 +1,8 @@
+"use client";
+
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next';
+import '../../utils/i18n';
 import {
     UserRoundPlus,
     Star,
@@ -31,7 +35,8 @@ export default function Sidebar() {
 
     useEffect(() => {
         getallGroups();
-    }, [])
+    }, []);
+
     // const interests = [
     //     "iPhone 15", "Audi A500", "Vivo All", "Yamaha 1800", "Mercedes Benz",
     //     "iPhone 15 Pro", "Samsung A14", "AC", "Huawei AC", "OPPO M1",
@@ -112,19 +117,26 @@ export default function Sidebar() {
         setOpen(false);
     };
 
+    const { t } = useTranslation();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
+
     return (
         <div className="bg-white p-4 space-y-6 w-full min-h-screen rounded-br-xl rounded-bl-xl">
             <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
                 onClick={() => setOpen(true)}>
                 <UserRoundPlus className="w-4 h-4" />
-                Send Invite
+                {t('send_invite')}
             </button>
 
             {open && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
                     <div className="bg-white rounded-2xl shadow-lg p-6 w-[90%] max-w-md relative animate-fadeIn">
                         <h2 className="text-xl font-semibold mb-5 text-gray-800 text-center">
-                            Share Invite Link
+                            {t('send_invite_link')}
                         </h2>
 
                         {/* Copy section */}
@@ -134,7 +146,7 @@ export default function Sidebar() {
                                 onClick={handleCopy}
                                 className="ml-2 bg-[#000F5C] hover:bg-[#00136e] text-white rounded-full px-3 py-1 text-sm transition"
                             >
-                                Copy
+                                {t('Copy')}
                             </button>
                         </div>
 
@@ -160,7 +172,7 @@ export default function Sidebar() {
                                 onClick={() => setOpen(false)}
                                 className="px-6 py-2 bg-gray-200 rounded-full font-medium hover:bg-gray-300 transition"
                             >
-                                Close
+                                {t('Close')}
                             </button>
                         </div>
                     </div>
@@ -191,12 +203,12 @@ export default function Sidebar() {
                                         <Star key={index} className="h-4 w-4 fill-yellow-500 stroke-yellow-500" />
                                     ))}
                                 </div>
-                                <span className="ml-2 text-gray-700 font-medium">5.0</span>
+                                {/* <span className="ml-2 text-gray-700 font-medium">5.0</span> */}
                             </div>
-                            <p className="text-green-600 text-xs flex items-center gap-1">
+                            {/* <p className="text-green-600 text-xs flex items-center gap-1">
                                 <img src="/verified.png" alt="Verified" className="w-4 h-4" />
                                 <span className='text-[#464E5F] font-poppins'> Verified Profile </span>
-                            </p>
+                            </p> */}
                         </>
                     ) : (
                         <div className="space-y-2">
@@ -212,7 +224,7 @@ export default function Sidebar() {
             {profile?.what_are_you_interested_in ? (
                 <>
                     <div>
-                        <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
+                        <h3 className="text-md font-semibold text-[#13121F] mb-2">{t('Interests')}</h3>
                         <div className="flex flex-wrap gap-2">
                             {profile?.what_are_you_interested_in ? (
                                 <div className="flex flex-wrap gap-2">
@@ -246,12 +258,12 @@ export default function Sidebar() {
             <div>
                 {/* Header */}
                 <div className="flex justify-between items-center">
-                    <h3 className="font-semibold text-md">Groups</h3>
+                    <h3 className="font-semibold text-md">{t('Groups')}</h3>
                     <button
                         onClick={() => setOpenDialog(true)}
                         className="text-sm bg-[#000F5C] text-white px-3 py-2 rounded-md hover:bg-[#00126e]"
                     >
-                        + Create
+                        + {t('Create')}
                     </button>
                 </div>
 
@@ -272,18 +284,18 @@ export default function Sidebar() {
                                 <X size={20} />
                             </button>
 
-                            <h2 className="text-lg font-semibold mb-4 text-[#000F5C]">Create New Group</h2>
+                            <h2 className="text-lg font-semibold mb-4 text-[#000F5C]">{t('Create New Group')}</h2>
 
                             {/* Group Name Field */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Group Name
+                                    {t('Group Name')}
                                 </label>
                                 <input
                                     type="text"
                                     value={groupName}
                                     onChange={(e) => setGroupName(e.target.value)}
-                                    placeholder="Enter group name"
+                                    placeholder={`${t("Enter group name")}`}
                                     className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#000F5C]"
                                 />
                             </div>
@@ -291,7 +303,7 @@ export default function Sidebar() {
                             {/* Group Image Field */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Group Profile Image
+                                    {t('Group Profile Image')}
                                 </label>
                                 <div className="flex items-center gap-3">
                                     {groupImagePreview ? (
@@ -307,7 +319,7 @@ export default function Sidebar() {
                                     )}
 
                                     <label className="cursor-pointer text-sm text-[#000F5C] font-medium hover:underline">
-                                        Choose File
+                                        {t('Choose File')}
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -329,7 +341,8 @@ export default function Sidebar() {
                                     }}
                                     className="text-sm px-4 py-2 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
                                 >
-                                    Cancel
+
+                                    {t('Cancel')}
                                 </button>
                                 <button
                                     onClick={handleCreateGroup}
@@ -339,7 +352,7 @@ export default function Sidebar() {
                                         : "bg-[#000F5C] hover:bg-[#00126e]"
                                         }`}
                                 >
-                                    {isCreating ? "Creating..." : "Create"}
+                                    {isCreating ? `${t('Creating')}...` : `${t('Create')}`}
                                 </button>
 
                             </div>
@@ -365,7 +378,7 @@ export default function Sidebar() {
                             <div>
                                 <p className="text-base font-semibold">{group.group_name}</p>
                                 <p className="text-xs text-gray-500">
-                                    {group.total_member} Members
+                                    {group.total_member}  {t('Members')}
                                 </p>
                             </div>
                         </li>
@@ -391,14 +404,14 @@ export default function Sidebar() {
                     className="flex justify-center text-blue-600 cursor-pointer mt-2 hover:underline"
                     onClick={() => router.push("/allGroups")}
                 >
-                    View all
+                    {t('View all')}
                 </span>
             )}
 
             {gettingallGroups?.length === 0 && (
                 <div className="flex justify-center items-center w-full py-10">
                     <span className="text-center text-gray-500">
-                        No group created yet.
+                        {t('No group created yet')}.
                     </span>
                 </div>
             )}

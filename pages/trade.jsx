@@ -6,6 +6,8 @@ import Layout from "@/components/Layout/Layout";
 import { ChevronLeft, ChevronRight, MessageCircle, Search, Edit3, Plus } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import Image from "next/image";
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n';
 export default function Trade() {
     const router = useRouter();
     const token = Cookies.get("token");
@@ -111,6 +113,12 @@ export default function Trade() {
 
     const hasProfileData = Array.isArray(clientsProductandService) && clientsProductandService.length > 0;
 
+    const { t } = useTranslation();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
     return (
         <Layout>
             <div className="md:px-10">
@@ -121,7 +129,7 @@ export default function Trade() {
                         onClick={() => window.history.back()}
                         className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer transition duration-200"
                     >
-                        Back
+                        {t('Back')}
                     </span>
                 </div>
 
@@ -129,26 +137,26 @@ export default function Trade() {
                     availableLevels?.map((level, index) => (
                         <div key={level.levelKey} className="mb-10">
                             <h3 className="text-[#000F5C] font-semibold text-base mb-3">
-                                Match Item {index + 1}
+                                {t('Match Item')} {index + 1}
                             </h3>
                             <div className="flex items-center justify-between w-full mb-6">
-                                {(getTradeType === "Product" ? [1, 2, 3, 4] : [1, 2]).map((step, idx, arr) => (
+                                {(getTradeType === `${t('Product')}` ? [1, 2, 3, 4] : [1, 2]).map((step, idx, arr) => (
                                     <React.Fragment key={step}>
                                         <div className="relative flex flex-col items-center">
                                             <div
                                                 className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-extrabold
-                                                            ${(getTradeType === "Product" ? step <= level.levelNum : step <= level.levelNum)
+                                                            ${(getTradeType === `${t('Product')}` ? step <= level.levelNum : step <= level.levelNum)
                                                         ? "bg-[#000F5C] text-white"
                                                         : "bg-gray-200 text-gray-500"
                                                     }`}
                                             >
-                                                {getTradeType === "Product" ? step * 25 + "%" : step === 1 ? "50%" : "100%"}
+                                                {getTradeType === `${t('Product')}` ? step * 25 + "%" : step === 1 ? "50%" : "100%"}
                                             </div>
                                         </div>
 
                                         {idx !== arr.length - 1 && (
                                             <div
-                                                className={`flex-1 h-1 mx-2 rounded ${(getTradeType === "Product" ? step < level.levelNum : step < level.levelNum)
+                                                className={`flex-1 h-1 mx-2 rounded ${(getTradeType === `${t('Product')}` ? step < level.levelNum : step < level.levelNum)
                                                     ? "bg-[#000F5C]"
                                                     : "bg-gray-300"
                                                     }`}
@@ -161,7 +169,7 @@ export default function Trade() {
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
                                 <div>
                                     <span className="text-sm font-extrabold text-gray-600">
-                                        Match {matchedData?.main_type}:
+                                        {t('Match')} {matchedData?.main_type}:
                                     </span>
                                     <div className="rounded-2xl shadow-md p-4 flex flex-col items-center bg-white hover:shadow-lg transition mt-4">
                                         <div className="flex items-center space-x-3 w-full mb-2">
@@ -229,7 +237,6 @@ export default function Trade() {
                                             {matchedData?.title}
                                         </h3>
                                         <span className="text-sm font-medium text-gray-500">
-                                            ₹
                                             {(matchedData?.price ||
                                                 matchedData?.day_price ||
                                                 matchedData?.hr_price) || "0.00"}
@@ -243,14 +250,14 @@ export default function Trade() {
                                             className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#000F5C] text-white rounded-lg hover:bg-[#00136e] transition-all shadow-md"
                                         >
                                             <MessageCircle size={18} />
-                                            <span className="text-sm font-extrabold">Chat with {matchedData?.first_name}</span>
+                                            <span className="text-sm font-extrabold">{t('Chat with')} {matchedData?.first_name}</span>
                                         </button>
                                     </div>
                                 </div>
 
                                 <div>
                                     <span className="text-sm font-extrabold text-gray-600">
-                                        Your {level.items?.length > 1 ? `Products (${level.items.length})` : "Product"} :
+                                        {t('Your')} {level.items?.length > 1 ? `${t('Products')} (${level.items.length})` : `${t('Product')}`} :
                                     </span>
 
                                     {level?.items?.map((item, idx) => {
@@ -348,11 +355,11 @@ export default function Trade() {
                     <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 sm:px-6 py-6 text-center">
                         <img src='/notfound.svg' className='w-56 h-56' />
                         <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
-                            Not any Ads ared added.
+                            {t('Not any Ads ared added')}.
                         </h2>
 
                         <p className="mt-2 text-gray-500 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-sm md:max-w-md">
-                            We couldn’t find anything your Ads.
+                            {t('We couldn’t find anything your Ads')}.
                         </p>
 
                         <button
@@ -360,19 +367,18 @@ export default function Trade() {
                             className="flex items-center gap-2 mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
                         >
                             <Plus className="w-4 h-4" />
-                            New Ad
+                            {t('New Ad')}
                         </button>
                     </div>
                 ) : !hasProfileData ? (
                     <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 sm:px-6 py-6 text-center">
-
                         <img src='/notfound.svg' className='w-56 h-56' />
                         <button
                             onClick={() => router.push("./editProfile")}
                             className="flex items-center gap-2 mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
                         >
                             <Edit3 className="w-4 h-4" />
-                            Please Complete Your Profile
+                            {t("Complete Your Profile")}
                         </button>
                     </div>
                 ) : (
@@ -381,18 +387,18 @@ export default function Trade() {
                         <img src='/notfound.svg' className='w-56 h-56' />
 
                         <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
-                            No Ad Match!!
+                            {t('No Ad Match')}!!
                         </h2>
 
                         <p className="mt-2 text-gray-500 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-sm md:max-w-md">
-                            We couldn’t find anything that matches your Ad.
+                            {t('We couldn’t find anything that matches your Ad')}.
                         </p>
 
                         <button
                             onClick={() => router.push("./profile")}
                             className="mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
                         >
-                            Change your settings
+                            {t('Change your settings')}
                         </button>
                     </div>
 
@@ -417,6 +423,14 @@ function DescriptionToggle({ text }) {
 
     if (!text) return null;
 
+    const { t } = useTranslation();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
+
+
     return (
         <div>
             <p
@@ -436,7 +450,7 @@ function DescriptionToggle({ text }) {
                     className="text-blue-600 cursor-pointer hover:underline mt-1 text-xs font-medium"
                     type="button"
                 >
-                    {expanded ? "See less" : "See more"}
+                    {expanded ? `${t('See less')}` : `${t('See more')}`}
                 </button>
             )}
         </div>

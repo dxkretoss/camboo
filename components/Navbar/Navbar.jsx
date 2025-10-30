@@ -22,6 +22,8 @@ import {
     TwitterShareButton,
 } from 'react-share';
 import toast, { Toaster } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
+import '../../utils/i18n';
 
 // const brazilStates = [
 //     { name: "Acre", code: "AC" },
@@ -111,16 +113,18 @@ export default function Navbar() {
 
     const GetAllLocations = async () => {
         const token = Cookies.get("token");
-        try {
-            const res = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-location`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            if (res?.data?.success) {
-                setgetLocations(res?.data?.data)
+        if (token) {
+            try {
+                const res = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-location`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                if (res?.data?.success) {
+                    setgetLocations(res?.data?.data)
+                }
+            } catch (error) {
+                console.error("❌ Error fetching messages:", error);
             }
-        } catch (error) {
-            console.error("❌ Error fetching messages:", error);
         }
     }
 
@@ -253,6 +257,26 @@ export default function Navbar() {
     //     };
     // }, [router?.asPath]);
 
+    const { t, i18n } = useTranslation();
+    const [mounted, setMounted] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return null;
+
+    const languages = [
+        { code: 'en', label: 'English', flag: '🇺🇸' },
+        { code: 'br', label: 'Português', flag: '🇧🇷' },
+    ];
+
+    const currentLang = languages.find((lang) => lang.code === i18n.language) || languages[0];
+
+    const handleChange = (langCode) => {
+        i18n.changeLanguage(langCode);
+        setIsOpen(false);
+    };
 
     return (
         <nav className="h-16 bg-white px-4 md:px-6 py-3 flex items-center justify-between w-full">
@@ -293,7 +317,7 @@ export default function Navbar() {
                     {/* Sidebar */}
                     <div className="absolute top-0 left-0 h-full w-72 bg-white shadow-lg transform transition-transform duration-300">
                         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 ">
-                            <h2 className="text-lg font-semibold text-[#000F5C]">Menu</h2>
+                            <h2 className="text-lg font-semibold text-[#000F5C]">{t('Menu')}</h2>
                             <button onClick={() => setSidebarOpen(false)}>
                                 <X className="w-6 h-6 text-gray-600" />
                             </button>
@@ -304,7 +328,7 @@ export default function Navbar() {
                             <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
                                 onClick={() => setOpen(true)}>
                                 <UserRoundPlus className="w-4 h-4" />
-                                Send Invite
+                                {t('send_invite')}
                             </button>
                         </div>
 
@@ -312,7 +336,7 @@ export default function Navbar() {
                             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
                                 <div className="bg-white rounded-2xl shadow-lg p-6 w-[90%] max-w-md relative animate-fadeIn">
                                     <h2 className="text-xl font-semibold mb-5 text-gray-800 text-center">
-                                        Share Invite Link
+                                        {t('send_invite_link')}
                                     </h2>
 
                                     {/* Copy section */}
@@ -322,7 +346,7 @@ export default function Navbar() {
                                             onClick={handleCopy}
                                             className="ml-2 bg-[#000F5C] hover:bg-[#00136e] text-white rounded-full px-3 py-1 text-sm transition"
                                         >
-                                            Copy
+                                            {t('Copy')}
                                         </button>
                                     </div>
 
@@ -348,7 +372,7 @@ export default function Navbar() {
                                             onClick={() => setOpen(false)}
                                             className="px-6 py-2 bg-gray-200 rounded-full font-medium hover:bg-gray-300 transition"
                                         >
-                                            Close
+                                            {t('Close')}
                                         </button>
                                     </div>
                                 </div>
@@ -361,20 +385,20 @@ export default function Navbar() {
                                 onClick={() => { router.push("/allGroups") }}
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
-                                Groups
+                                {t('Groups')}
                             </button>
                             <button
                                 onClick={() => { router.push('/suggestedtrades') }}
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
-                                Suggested Trade
+                                {t('Suggested Trades')}
                             </button>
 
                             <button
                                 onClick={() => { router.push('/recentChats') }}
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
-                                Recent Chats
+                                {t('Recent Chats')}
                             </button>
                             {/* <button
                                 onClick={() => { }}
@@ -393,12 +417,68 @@ export default function Navbar() {
                 </div>
             )}
 
+            <div style={{ position: 'relative', display: 'inline-block', textAlign: 'left' }}>
+                <button
+                    onClick={() => setIsOpen((prev) => !prev)}
+                    style={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '16px',
+                    }}
+                >
+                    <span>{currentLang.flag}</span> {currentLang.label}
+                    <span style={{ marginLeft: '6px' }}>{isOpen ? '▲' : '▼'}</span>
+                </button>
+
+                {/* Dropdown menu */}
+                {isOpen && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: 0,
+                            marginTop: '4px',
+                            backgroundColor: '#fff',
+                            border: '1px solid #ddd',
+                            borderRadius: '8px',
+                            boxShadow: '0px 2px 6px rgba(0,0,0,0.1)',
+                            zIndex: 10,
+                            minWidth: '160px',
+                        }}
+                    >
+                        {languages.map((lang) => (
+                            <div
+                                key={lang.code}
+                                onClick={() => handleChange(lang.code)}
+                                style={{
+                                    padding: '10px 14px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    cursor: 'pointer',
+                                    backgroundColor: i18n.language === lang.code ? '#f5f5f5' : 'transparent',
+                                    fontWeight: i18n.language === lang.code ? '600' : 'normal',
+                                }}
+                            >
+                                <span>{lang.flag}</span> {lang.label}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
             <div className="flex-1 mx-4 max-w-md hidden sm:block">
                 <div className="flex items-center border border-gray-300 rounded-lg px-4 py-2 relative">
                     <Search className="w-5 h-5 text-[#000F5C]" />
                     <input
                         type="text"
-                        placeholder="Search here..."
+                        placeholder={`${t("Search here")}...`}
                         className="bg-transparent outline-none px-3 w-full text-sm"
                         value={searchItems}
                         onChange={(e) => setsearchItems(e.target.value)}
@@ -464,7 +544,8 @@ export default function Navbar() {
                                 onClick={() => router.push('/addProduct')}
                             >
                                 <Plus className="w-4 h-4" />
-                                New Ad
+
+                                {t('New Ad')}
                             </Button>
                         </div>
                     </>
@@ -483,7 +564,8 @@ export default function Navbar() {
                                 onClick={() => router.push('/editProfile')}
                             >
                                 <Edit3 className="w-4 h-4" />
-                                Complete Your Profile
+
+                                {t('Complete Your Profile')}
                             </Button>
                         </div>
                     </>
@@ -525,7 +607,6 @@ export default function Navbar() {
                         <ChevronDown className="w-4 h-4 text-gray-600" />
                     </div>
 
-
                     {dropdownOpen && (
                         <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                             <ul className="py-1 text-sm text-gray-700">
@@ -538,7 +619,7 @@ export default function Navbar() {
                                         className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
                                     >
                                         <User size={16} />
-                                        Profile
+                                        {t('Profile')}
                                     </button>
                                 </li>
                                 <li>
@@ -550,7 +631,8 @@ export default function Navbar() {
                                         className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
                                     >
                                         <LogOut size={16} />
-                                        Logout
+
+                                        {t('Logout')}
                                     </button>
                                 </li>
                             </ul>

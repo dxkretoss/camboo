@@ -5,6 +5,8 @@ import { ChevronLeft } from 'lucide-react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n';
 
 export default function SuggestedTrades() {
     const { suggestedTrades } = useUser();
@@ -40,13 +42,19 @@ export default function SuggestedTrades() {
         }
     }
 
+    const { t } = useTranslation();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
     return (
         <Layout>
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-xl sm:text-2xl font-bold text-[#000F5C]">
-                        All Suggested Trades
+                        {t("All Suggested Trades")}.
                     </h1>
 
                     <div className="flex items-center gap-1 text-gray-700">
@@ -56,7 +64,7 @@ export default function SuggestedTrades() {
                             onClick={() => window.history.back()}
                             className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer"
                         >
-                            Back
+                            {t('Back')}
                         </span>
                     </div>
                 </div>
@@ -71,7 +79,7 @@ export default function SuggestedTrades() {
                                     onClick={() => { doingTrade(item?.id, item?.main_type) }}
                                 >
                                     <img
-                                        src={item?.image || item?.images[0]}
+                                        src={item?.image}
                                         alt={item?.title}
                                         className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-contain flex-shrink-0"
                                     />
@@ -90,7 +98,6 @@ export default function SuggestedTrades() {
                             ))}
                         </ul>
                     ) : suggestedTrades === undefined ? (
-                        // Skeleton Placeholder (5 rows)
                         <ul className="space-y-4">
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <li
@@ -106,10 +113,9 @@ export default function SuggestedTrades() {
                             ))}
                         </ul>
                     ) : (
-                        // No data found
                         <div className="flex flex-col items-center justify-center py-16 text-gray-400">
                             <img src='/notfound.svg' className='w-100 h-100' />
-                            <p className="text-sm sm:text-base">No suggested trades found</p>
+                            <p className="text-sm sm:text-base">{t("No suggested trades found")}.</p>
                         </div>
                     )}
                 </div>

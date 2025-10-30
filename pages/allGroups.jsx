@@ -5,7 +5,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import toast, { Toaster } from 'react-hot-toast';
-
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n';
 
 export default function AllGroups() {
     const token = Cookies.get("token");
@@ -90,6 +91,13 @@ export default function AllGroups() {
         group.group_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const { t } = useTranslation();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
+
     return (
         <Layout>
             <div className="px-4 sm:px-6 md:px-10 py-6 max-w-6xl mx-auto">
@@ -103,14 +111,14 @@ export default function AllGroups() {
                         onClick={() => window.history.back()}
                         className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer"
                     >
-                        Back
+                        {t('Back')}
                     </span>
                 </div>
 
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                     <h2 className="text-xl sm:text-2xl font-bold text-[#000F5C]">
-                        All Groups
+                        {t('All Groups')}
                     </h2>
 
                     {/* Top right section: search + create button */}
@@ -119,7 +127,7 @@ export default function AllGroups() {
                         <div className="relative w-full sm:w-64">
                             <input
                                 type="text"
-                                placeholder="Search groups..."
+                                placeholder={`${t("Search groups")}...`}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#000F5C]"
@@ -132,7 +140,7 @@ export default function AllGroups() {
                             onClick={() => setOpenDialog(true)}
                             className="text-sm bg-[#000F5C] text-white px-4 py-2 rounded-md hover:bg-[#00126e] transition-colors whitespace-nowrap"
                         >
-                            + Create
+                            + {t('Create')}
                         </button>
                     </div>
                 </div>
@@ -155,19 +163,19 @@ export default function AllGroups() {
                             </button>
 
                             <h2 className="text-lg font-semibold mb-4 text-[#000F5C]">
-                                Create New Group
+                                {t('Create New Group')}
                             </h2>
 
                             {/* Group Name */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Group Name
+                                    {t('Group Name')}
                                 </label>
                                 <input
                                     type="text"
                                     value={groupName}
                                     onChange={(e) => setGroupName(e.target.value)}
-                                    placeholder="Enter group name"
+                                    placeholder={`${t("Enter group name")}`}
                                     className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#000F5C]"
                                 />
                             </div>
@@ -175,7 +183,7 @@ export default function AllGroups() {
                             {/* Group Image */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Group Profile Image
+                                    {t('Group Profile Image')}
                                 </label>
                                 <div className="flex items-center gap-3 flex-wrap">
                                     {groupImagePreview ? (
@@ -191,7 +199,7 @@ export default function AllGroups() {
                                     )}
 
                                     <label className="cursor-pointer text-sm text-[#000F5C] font-medium hover:underline">
-                                        Choose File
+                                        {t('Choose File')}
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -213,7 +221,7 @@ export default function AllGroups() {
                                     }}
                                     className="text-sm px-4 py-2 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
                                 >
-                                    Cancel
+                                    {t('Cancel')}
                                 </button>
                                 <button
                                     onClick={handleCreateGroup}
@@ -223,7 +231,7 @@ export default function AllGroups() {
                                         : "bg-[#000F5C] hover:bg-[#00126e]"
                                         }`}
                                 >
-                                    {isCreating ? "Creating..." : "Create"}
+                                    {isCreating ? `${t('Creating')}...` : `${t('Create')}`}
                                 </button>
                             </div>
                         </div>
@@ -259,13 +267,13 @@ export default function AllGroups() {
                                         {group.group_name}
                                     </h3>
                                     <p className="text-xs text-gray-500">
-                                        {group.total_member} Members
+                                        {group.total_member}  {t('Members')}
                                     </p>
                                 </div>
                             ))
                             : !loading && (
                                 <div className="col-span-full text-center text-gray-500 py-10">
-                                    No groups found
+                                    {t('No group created yet')}.
                                 </div>
                             )}
                 </div>

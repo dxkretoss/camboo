@@ -789,6 +789,10 @@ export default function addProduct() {
                 formData.append(key, tradeforWhat[key]);
             });
 
+            removedImages.forEach(img => {
+                formData.append('remove_images[]', img);
+            });
+
             images.forEach((img, index) => {
                 if (img?.file) {
                     formData.append(`images[${index}]`, img.file);

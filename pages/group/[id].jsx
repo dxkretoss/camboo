@@ -16,7 +16,7 @@ export default function GroupPage() {
     const router = useRouter();
     const { id } = router?.query;
     const token = Cookies.get("token");
-    const { profile } = useUser();
+    const { profile, getallGroups } = useUser();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [sending, setsending] = useState(false);
@@ -39,12 +39,13 @@ export default function GroupPage() {
             router.push("/");
             return;
         }
+        getallGroups();
     }, [token]);
 
     useEffect(() => {
         if (!id) return;
 
-        const getallGroups = async () => {
+        const getsallGroups = async () => {
             try {
                 const getGroups = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-group`,
                     {
@@ -57,7 +58,8 @@ export default function GroupPage() {
                 console.error(err);
             }
         }
-        getallGroups();
+        getsallGroups();
+
     }, [id]);
 
     const getAlluser = async () => {
@@ -407,7 +409,7 @@ export default function GroupPage() {
                                     >
                                         {m.sender_id !== profile?.id && (
                                             <img
-                                                src={m?.sender_image || 'defualtuser.png'}
+                                                src={m?.sender_image || './defualtuser.png'}
                                                 alt="sender"
                                                 className="w-8 h-8 rounded-full object-cover border"
                                             />

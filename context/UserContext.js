@@ -15,6 +15,7 @@ export const UserProvider = ({ children }) => {
   const [suggestedTrades, setsuggestedTrades] = useState(null);
   const [getallNotification, setgetallNotification] = useState(null);
   const [recentchatUsers, setrecentchatUsers] = useState(null);
+  const [gettingallGroups, setgettingallGroups] = useState(null);
 
   useEffect(() => {
     if (!token) {
@@ -29,6 +30,7 @@ export const UserProvider = ({ children }) => {
       getsuggestedTrades(),
       getAllNotification(),
       getrecentchatUsers(),
+      getallGroups(),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -158,6 +160,23 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getallGroups = async () => {
+    try {
+      const token = Cookies.get("token");
+      const getGroups = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-group`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (getGroups?.data?.success) {
+        setgettingallGroups(getGroups?.data?.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -177,6 +196,8 @@ export const UserProvider = ({ children }) => {
         getAllNotification,
         getrecentchatUsers,
         recentchatUsers,
+        gettingallGroups,
+        getallGroups,
       }}
     >
       {children}

@@ -25,23 +25,20 @@ import {
     TelegramShareButton,
     TwitterShareButton,
 } from 'react-share';
+import Pusher from "pusher-js";
 
 export default function Sidebar() {
     const { t } = useTranslation();
-    const { profile } = useUser();
+    const { profile, gettingallGroups, getallGroups } = useUser();
     const token = Cookies.get("token");
     const router = useRouter();
-
-    useEffect(() => {
-        getallGroups();
-    }, []);
 
     const [openDialog, setOpenDialog] = useState(false);
     const [groupName, setGroupName] = useState("");
     const [groupImage, setGroupImage] = useState(null);
     const [groupImagePreview, setGroupImagePreview] = useState(null);
     const [isCreating, setisCreating] = useState(false);
-    const [gettingallGroups, setgettingallGroups] = useState();
+    // const [gettingallGroups, setgettingallGroups] = useState();
     const [open, setOpen] = useState(false);
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -80,19 +77,71 @@ export default function Sidebar() {
         }
     };
 
-    const getallGroups = async () => {
-        try {
-            const getGroups = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-group`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                })
-            if (getGroups?.data?.success) {
-                setgettingallGroups(getGroups?.data?.data)
-            }
-        } catch (err) {
-            console.error(err);
+    // const getallGroups = async () => {
+    //     try {
+    //         const getGroups = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/get-group`,
+    //             {
+    //                 headers: { Authorization: `Bearer ${token}` },
+    //             })
+    //         if (getGroups?.data?.success) {
+    //             setgettingallGroups(getGroups?.data?.data)
+    //         }
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // }
+
+    const [unreadCounts, setUnreadCounts] = useState({});
+
+    useEffect(() => {
+        if (gettingallGroups?.length) {
+            const initialUnread = {};
+
+            gettingallGroups.forEach((group) => {
+                initialUnread[group.id] = group.unread_count || 0;
+            });
+
+            setUnreadCounts(initialUnread);
         }
-    }
+    }, [gettingallGroups]);
+
+    useEffect(() => {
+        if (!profile?.id || !token || !gettingallGroups?.length) return;
+
+        const myId = profile.id;
+        const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
+            cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+            forceTLS: true,
+        });
+
+        const channels = [];
+
+        gettingallGroups.forEach((group) => {
+            const groupId = group.id;
+            const channel = pusher.subscribe(`group.${groupId}`);
+            channels.push(channel);
+
+            // 🔵 Listen for new messages in that group
+            channel.bind("MessageSent", (data) => {
+                // ✅ Increment unread count for that group when a new message arrives
+                if (data?.sender_id !== myId) {
+                    setUnreadCounts((prev) => ({
+                        ...prev,
+                        [groupId]: (prev[groupId] || 0) + 1,
+                    }));
+                }
+            });
+        });
+
+        return () => {
+            channels.forEach((ch) => {
+                ch.unbind_all();
+                ch.unsubscribe();
+            });
+            pusher.disconnect();
+        };
+    }, [profile?.id, token, gettingallGroups]);
+
 
     const [url] = useState("https://camboo-woad.vercel.app");
     const [title] = useState(`${t('Plsjnawsplt')}!`);
@@ -352,29 +401,41 @@ export default function Sidebar() {
                     ? gettingallGroups.slice(0, 5)?.map((group, i) => (
                         <li
                             key={i}
-                            className="flex items-center gap-3 pb-3 border-b border-gray-200 cursor-pointer"
-                            onClick={() => { router.push(`/group/${group?.id}`) }}
+                            className="flex items-center justify-between pb-3 border-b border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors rounded-md px-2"
+                            onClick={() => {
+                                // Reset unread count on open
+                                setUnreadCounts((prev) => ({ ...prev, [group.id]: 0 }));
+                                router.push(`/group/${group?.id}`);
+                            }}
                         >
-                            <img
-                                src={group.group_profile || '/defualtgrp.png'}
-                                alt={group.group_name}
-                                className="w-16 h-16 md:w-12 md:h-12 rounded-full object-cover"
-                            />
-                            <div>
-                                <p className="text-base font-semibold">{group.group_name}</p>
-                                <p className="text-xs text-gray-500">
-                                    {group.total_member}  {t('Mmbrs')}
-                                </p>
+                            <div className="flex items-center gap-3">
+                                <img
+                                    src={group.group_profile || '/defualtgrp.png'}
+                                    alt={group.group_name}
+                                    className="w-12 h-12 rounded-full object-cover"
+                                />
+                                <div>
+                                    <p className="text-base font-semibold">{group.group_name}</p>
+                                    <p className="text-xs text-gray-500">
+                                        {group.total_member} {t('Mmbrs')}
+                                    </p>
+                                </div>
                             </div>
+
+                            {/* 🔵 Unread badge */}
+                            {unreadCounts[group.id] > 0 && (
+                                <div className="bg-[#000F5C] text-white text-xs font-bold px-2 py-1 rounded-full">
+                                    {unreadCounts[group.id]}
+                                </div>
+                            )}
                         </li>
                     ))
-                    :
-                    Array.from({ length: 5 }).map((_, index) => (
+                    : Array.from({ length: 5 }).map((_, index) => (
                         <li
                             key={index}
                             className="flex items-center gap-3 pb-3 border-b border-gray-200 animate-pulse"
                         >
-                            <div className="w-16 h-16 md:w-12 md:h-12 rounded-full bg-gray-300"></div>
+                            <div className="w-12 h-12 rounded-full bg-gray-300"></div>
                             <div className="flex-1 space-y-2">
                                 <div className="w-3/4 h-4 bg-gray-300 rounded"></div>
                                 <div className="w-1/2 h-3 bg-gray-200 rounded"></div>

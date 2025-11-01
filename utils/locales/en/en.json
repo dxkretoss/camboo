@@ -1,6 +1,6 @@
 {
   "SndInvite": "Send Invite",
-  "SndInviteLnk": "",
+  "SndInviteLnk": "Share Invitation Link",
   "Cpy": "Copy",
   "Cls": "Close",
   "Intrst": "Interests",
@@ -231,5 +231,6 @@
   "otpOnmail": "OTP sent to your email",
   "failOtpsend": "Failed to send OTP",
   "otpVerify": "OTP verified",
-  "otpVerifyfail": "OTP verification failed"
+  "otpVerifyfail": "OTP verification failed",
+  "Prodtype": "Product Type"
 }

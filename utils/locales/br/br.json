@@ -31,7 +31,7 @@
   "VwAllCmnts": "Ver todos os comentários",
   "AllCmnts": "Todos os Comentários",
   "Camboo": "Camboo",
-  "Chat": "Chat",
+  "Chat": "Conversar",
   "DenAd": "Denunciar Anúncio",
   "WrCmnt": "Escreva seu comentário abaixo",
   "YrCmnt": "Seu comentário",
@@ -234,5 +234,6 @@
   "otpOnmail": "OTP enviado para seu e-mail",
   "failOtpsend": "Falha ao enviar OTP",
   "otpVerify": "OTP verificado",
-  "otpVerifyfail": "Falha na verificação do OTP"
+  "otpVerifyfail": "Falha na verificação do OTP",
+  "Prodtype": "Tipo de produto"
 }

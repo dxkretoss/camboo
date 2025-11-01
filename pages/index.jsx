@@ -14,7 +14,7 @@ import '../utils/i18n'
 export default function Index() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const { getUserProfileData, getallProdandSer, getClientsProdandSer, getsuggestedTrades, getrecentchatUsers, getAllNotification } = useUser();
+  const { getUserProfileData, getallProdandSer, getClientsProdandSer, getsuggestedTrades, getrecentchatUsers, getallGroups, getAllNotification } = useUser();
   const [loginData, setloginData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -82,6 +82,7 @@ export default function Index() {
         await getsuggestedTrades();
         await getAllNotification();
         await getrecentchatUsers();
+        await getallGroups();
         router.push('/home')
         setloginData({
           email: '', password: ''
@@ -210,6 +211,7 @@ export default function Index() {
         await getsuggestedTrades();
         await getAllNotification();
         await getrecentchatUsers();
+        await getallGroups();
         router.push('/home')
         setloginData({ email: '', password: '' });
       } else {
@@ -272,8 +274,9 @@ export default function Index() {
             fontSize: '16px',
           }}
         >
-          <span>{currentLang.flag}</span> {currentLang.label}
-          <span style={{ marginLeft: '6px' }}>{isOpen ? '▲' : '▼'}</span>
+          <span>{currentLang.flag}</span>
+          <span className='hidden sm:block'>{currentLang.label}</span>
+          <span>{isOpen ? '▲' : '▼'}</span>
         </button>
 
         {isOpen && (

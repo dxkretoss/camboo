@@ -7,9 +7,11 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import '../utils/i18n';
+import Pusher from "pusher-js";
+
 export default function recentChats() {
     const { t, } = useTranslation();
-    const { recentchatUsers } = useUser();
+    const { profile, recentchatUsers } = useUser();
     const [fetching, setfetching] = useState(false);
     const router = useRouter();
     const token = Cookies.get("token");
@@ -19,28 +21,76 @@ export default function recentChats() {
         document.title = "Camboo-Recent Chats";
     }, [token]);
 
-    const doingTrade = async (id, type) => {
-        setfetching(true);
-        try {
-            const token = Cookies.get("token");
-            const letsCamboo = await axios.get(`${process.env.NEXT_PUBLIC_API_CAMBOO}/lets-trade?item_id=${id}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            )
-            if (letsCamboo?.data?.success) {
-                router.push({
-                    pathname: "./trade",
-                    query: {
-                        Type: type,
-                        Trade: letsCamboo?.data?.other_item?.id
-                    },
-                })
-            }
-        } catch (err) {
-            console.log(err)
-        } finally {
-            setfetching(false)
+    const [unreadCounts, setUnreadCounts] = useState({});
+    const [lastMessages, setLastMessages] = useState({});
+
+    useEffect(() => {
+        if (recentchatUsers?.length) {
+            const initialUnread = {};
+            const initialLastMsg = {};
+
+            recentchatUsers.forEach((user) => {
+                initialUnread[user.user_id] = user.unread_count || 0;
+                initialLastMsg[user.user_id] = user.last_message || "";
+            });
+
+            setUnreadCounts(initialUnread);
+            setLastMessages(initialLastMsg);
         }
-    }
+    }, [recentchatUsers]);
+
+    useEffect(() => {
+        if (!profile?.id || !token || !recentchatUsers?.length) return;
+
+        const myId = profile.id;
+        const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
+            cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+            forceTLS: true,
+        });
+
+        const channels = [];
+
+        recentchatUsers.forEach((user) => {
+            const otherId = user.user_id;
+            const chatChannelId =
+                myId < otherId ? `${myId}.${otherId}` : `${otherId}.${myId}`;
+
+            const channel = pusher.subscribe(`chat.${chatChannelId}`);
+            channels.push(channel);
+
+            channel.bind("MessageSent", (data) => {
+                // 📨 Update unread count when message is for me
+                if (data?.receiver_id === myId) {
+                    setUnreadCounts((prev) => ({
+                        ...prev,
+                        [data.sender_id]: (prev[data.sender_id] || 0) + 1,
+                    }));
+
+                    // 🆕 Update last message
+                    setLastMessages((prev) => ({
+                        ...prev,
+                        [data.sender_id]: data.message || "",
+                    }));
+                }
+
+                // 💬 Update last message also for sent messages
+                if (data?.sender_id === myId) {
+                    setLastMessages((prev) => ({
+                        ...prev,
+                        [data.receiver_id]: data.message || "",
+                    }));
+                }
+            });
+        });
+
+        return () => {
+            channels.forEach((ch) => {
+                ch.unbind_all();
+                ch.unsubscribe();
+            });
+            pusher.disconnect();
+        };
+    }, [profile?.id, token, recentchatUsers]);
 
     const [mounted, setMounted] = useState(false);
 
@@ -81,20 +131,35 @@ export default function recentChats() {
                                         alt={item?.name}
                                         className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-contain flex-shrink-0"
                                     />
-                                    <div className="flex-1">
-                                        <p className="text-sm sm:text-base font-semibold text-gray-900">
-                                            {item?.name}
-                                        </p>
-                                        <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                                            {(item?.last_message)?.length > 100
-                                                ? (item?.last_message).substring(0, 100) + '...'
-                                                : item?.last_message}
-                                        </p>
-                                    </div>
 
+                                    <div className="flex-1 flex justify-between items-center">
+                                        <div className="flex-1 pr-2">
+                                            <p className="text-sm sm:text-base font-semibold text-gray-900">
+                                                {item?.name}
+                                            </p>
+                                            <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                                                {(lastMessages[item.user_id] || item?.last_message || "")
+                                                    .slice(0, 100)
+                                                    .concat(
+                                                        (lastMessages[item.user_id] || item?.last_message || "")
+                                                            .length > 100
+                                                            ? "..."
+                                                            : ""
+                                                    )}
+                                            </p>
+                                        </div>
+
+                                        {/* 🔵 Unread badge */}
+                                        {unreadCounts[item.user_id] > 0 && (
+                                            <div className="bg-[#000F5C] text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                {unreadCounts[item.user_id]}
+                                            </div>
+                                        )}
+                                    </div>
                                 </li>
                             ))}
                         </ul>
+
                     ) : recentchatUsers === undefined ? (
                         // Skeleton Placeholder (5 rows)
                         <ul className="space-y-4">

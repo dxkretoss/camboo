@@ -1165,7 +1165,7 @@ export default function addProduct() {
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Product Type *
+                                                    {t('Prodtype')} *
                                                 </label>
                                                 <div className="flex items-center h-[42px] gap-4">
                                                     <label className="flex items-center space-x-2">

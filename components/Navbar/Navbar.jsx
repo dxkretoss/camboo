@@ -433,8 +433,9 @@ export default function Navbar() {
                         fontSize: '16px',
                     }}
                 >
-                    <span>{currentLang.flag}</span> {currentLang.label}
-                    <span style={{ marginLeft: '6px' }}>{isOpen ? '▲' : '▼'}</span>
+                    <span>{currentLang.flag}</span>
+                    <span className='hidden sm:block'>{currentLang.label}</span>
+                    <span>{isOpen ? '▲' : '▼'}</span>
                 </button>
 
                 {/* Dropdown menu */}
@@ -467,7 +468,8 @@ export default function Navbar() {
                                     fontWeight: i18n.language === lang.code ? '600' : 'normal',
                                 }}
                             >
-                                <span>{lang.flag}</span> {lang.label}
+                                <span>{lang.flag}</span>
+                                <span>{lang.label}</span>
                             </div>
                         ))}
                     </div>

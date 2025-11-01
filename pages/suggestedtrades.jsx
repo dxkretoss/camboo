@@ -54,7 +54,7 @@ export default function SuggestedTrades() {
 
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-xl sm:text-2xl font-bold text-[#000F5C]">
-                        {t("All Suggested Trades")}.
+                        {t("AllSgstTrds")}
                     </h1>
 
                     <div className="flex items-center gap-1 text-gray-700">

@@ -7,12 +7,14 @@ import { useRouter } from "next/router";
 import toast, { Toaster } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import '../utils/i18n';
+import { useUser } from '@/context/UserContext';
+import Pusher from "pusher-js";
 
 export default function AllGroups() {
     const token = Cookies.get("token");
     const router = useRouter();
-
-    const [gettingallGroups, setgettingallGroups] = useState(null);
+    const { profile, gettingallGroups, getallGroups } = useUser();
+    // const [gettingallGroups, setgettingallGroups] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(true);
 
@@ -21,7 +23,7 @@ export default function AllGroups() {
             router.push('/');
         }
         document.title = "Camboo-GroupList"
-        getallGroups();
+        // getallGroups();
     }, []);
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -68,27 +70,62 @@ export default function AllGroups() {
         }
     };
 
-    const getallGroups = async () => {
-        try {
-            const res = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_CAMBOO}/get-group`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-            if (res?.data?.success) {
-                setgettingallGroups(res?.data?.data);
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
+    const [unreadCounts, setUnreadCounts] = useState({});
+
+    useEffect(() => {
+        if (gettingallGroups?.length) {
+            const initialUnread = {};
+
+            gettingallGroups.forEach((group) => {
+                initialUnread[group.id] = group.unread_count || 0;
+            });
+
+            setUnreadCounts(initialUnread);
             setLoading(false);
         }
-    };
+    }, [gettingallGroups]);
+
+    useEffect(() => {
+        if (!profile?.id || !token || !gettingallGroups?.length) return;
+
+        const myId = profile.id;
+        const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
+            cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+            forceTLS: true,
+        });
+
+        const channels = [];
+
+        gettingallGroups.forEach((group) => {
+            const groupId = group.id;
+            const channel = pusher.subscribe(`group.${groupId}`);
+            channels.push(channel);
+
+            // 🔵 Listen for new messages in that group
+            channel.bind("MessageSent", (data) => {
+                // ✅ Increment unread count for that group when a new message arrives
+                if (data?.sender_id !== myId) {
+                    setUnreadCounts((prev) => ({
+                        ...prev,
+                        [groupId]: (prev[groupId] || 0) + 1,
+                    }));
+                }
+            });
+        });
+
+        return () => {
+            channels.forEach((ch) => {
+                ch.unbind_all();
+                ch.unsubscribe();
+            });
+            pusher.disconnect();
+        };
+    }, [profile?.id, token, gettingallGroups]);
+
 
     // Filter groups by search input
     const filteredGroups = gettingallGroups?.filter((group) =>
-        group.group_name.toLowerCase().includes(searchTerm.toLowerCase())
+        group?.group_name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const { t } = useTranslation();
@@ -251,13 +288,24 @@ export default function AllGroups() {
                                 <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
                             </div>
                         ))
-                        : filteredGroups && filteredGroups.length > 0
+                        : filteredGroups && filteredGroups?.length > 0
                             ? filteredGroups.map((group) => (
                                 <div
                                     key={group.id}
-                                    onClick={() => router.push(`/group/${group.id}`)}
-                                    className="group p-4 rounded-xl shadow-md bg-white hover:shadow-lg transition-all cursor-pointer flex flex-col items-center text-center"
+                                    onClick={() => {
+                                        // ✅ reset unread count when opening group
+                                        setUnreadCounts((prev) => ({ ...prev, [group.id]: 0 }));
+                                        router.push(`/group/${group.id}`);
+                                    }}
+                                    className="relative group p-4 rounded-xl shadow-md bg-white hover:shadow-lg transition-all cursor-pointer flex flex-col items-center text-center"
                                 >
+                                    {/* Unread badge */}
+                                    {unreadCounts[group.id] > 0 && (
+                                        <span className="absolute top-3 right-3 bg-[#000F5C] text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow">
+                                            {unreadCounts[group.id] > 99 ? '99+' : unreadCounts[group.id]}
+                                        </span>
+                                    )}
+
                                     <img
                                         src={group.group_profile || "/defualtgrp.png"}
                                         alt={group.group_name}
@@ -267,7 +315,7 @@ export default function AllGroups() {
                                         {group.group_name}
                                     </h3>
                                     <p className="text-xs text-gray-500">
-                                        {group.total_member}  {t('Mmbrs')}
+                                        {group.total_member} {t('Mmbrs')}
                                     </p>
                                 </div>
                             ))

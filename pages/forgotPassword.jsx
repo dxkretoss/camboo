@@ -123,8 +123,9 @@ export default function forgotPassword() {
                         fontSize: '16px',
                     }}
                 >
-                    <span>{currentLang.flag}</span> {currentLang.label}
-                    <span style={{ marginLeft: '6px' }}>{isOpen ? '▲' : '▼'}</span>
+                    <span>{currentLang.flag}</span>
+                    <span className='hidden sm:block'>{currentLang.label}</span>
+                    <span>{isOpen ? '▲' : '▼'}</span>
                 </button>
 
                 {isOpen && (

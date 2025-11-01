@@ -15,7 +15,7 @@ export default function ChatPage() {
     const router = useRouter();
     const { id } = router?.query;
     const token = Cookies.get("token");
-    const { profile, allProductandService } = useUser();
+    const { profile, allProductandService, getrecentchatUsers } = useUser();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [sending, setsending] = useState(false);
@@ -70,6 +70,7 @@ export default function ChatPage() {
                 );
                 if (res?.data) {
                     setMessages(res?.data?.messages || []);
+                    getrecentchatUsers();
                     scrollToBottom();
                 }
             } catch (error) {

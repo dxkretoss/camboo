@@ -13,6 +13,8 @@ import Image from 'next/image';
 import { useSearch } from '@/context/SearchContext';
 import { useTranslation } from 'react-i18next';
 import '../utils/i18n';
+import Pusher from "pusher-js";
+
 export default function HomePage() {
     const { t } = useTranslation();
 
@@ -255,6 +257,78 @@ export default function HomePage() {
             setsendDenouceCmt(false);
         }
     }
+
+    const [unreadCounts, setUnreadCounts] = useState({});
+    const [lastMessages, setLastMessages] = useState({});
+
+    useEffect(() => {
+        if (recentchatUsers?.length) {
+            const initialUnread = {};
+            const initialLastMsg = {};
+
+            recentchatUsers.forEach((user) => {
+                initialUnread[user.user_id] = user.unread_count || 0;
+                initialLastMsg[user.user_id] = user.last_message || "";
+            });
+
+            setUnreadCounts(initialUnread);
+            setLastMessages(initialLastMsg);
+        }
+    }, [recentchatUsers]);
+
+    useEffect(() => {
+        if (!profile?.id || !token || !recentchatUsers?.length) return;
+
+        const myId = profile.id;
+        const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY, {
+            cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
+            forceTLS: true,
+        });
+
+        const channels = [];
+
+        recentchatUsers.forEach((user) => {
+            const otherId = user.user_id;
+            const chatChannelId =
+                myId < otherId ? `${myId}.${otherId}` : `${otherId}.${myId}`;
+
+            const channel = pusher.subscribe(`chat.${chatChannelId}`);
+            channels.push(channel);
+
+            channel.bind("MessageSent", (data) => {
+                // 📨 Update unread count when message is for me
+                if (data?.receiver_id === myId) {
+                    setUnreadCounts((prev) => ({
+                        ...prev,
+                        [data.sender_id]: (prev[data.sender_id] || 0) + 1,
+                    }));
+
+                    // 🆕 Update last message
+                    setLastMessages((prev) => ({
+                        ...prev,
+                        [data.sender_id]: data.message || "",
+                    }));
+                }
+
+                // 💬 Update last message also for sent messages
+                if (data?.sender_id === myId) {
+                    setLastMessages((prev) => ({
+                        ...prev,
+                        [data.receiver_id]: data.message || "",
+                    }));
+                }
+            });
+        });
+
+        return () => {
+            channels.forEach((ch) => {
+                ch.unbind_all();
+                ch.unsubscribe();
+            });
+            pusher.disconnect();
+        };
+    }, [profile?.id, token, recentchatUsers]);
+
 
     const [mounted, setMounted] = useState(false);
 
@@ -743,7 +817,7 @@ export default function HomePage() {
 
                             <ul className="space-y-3">
                                 {recentchatUsers
-                                    ? recentchatUsers?.slice(0, 5)?.map((item, index) => (
+                                    ? recentchatUsers.slice(0, 5).map((item, index) => (
                                         <li
                                             key={index}
                                             className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors"
@@ -754,25 +828,37 @@ export default function HomePage() {
                                                 alt={item?.first_name}
                                                 className="w-10 h-10 rounded-full object-contain"
                                             />
-                                            <div>
-                                                <p className="text-sm font-semibold">{item?.name}</p>
-                                                <p className="text-xs text-gray-500 flex justify-between w-full">
-                                                    <span>
-                                                        {(item?.last_message)?.length > 100
-                                                            ? (item?.last_message).substring(0, 45) + "..."
-                                                            : (item?.last_message)}
-                                                    </span>
-                                                    {/* <span>
-                                                        {item?.last_message_time}
-                                                    </span> */}
-                                                </p>
+                                            <div className="w-full flex justify-between items-center">
+                                                <div>
+                                                    <p className="text-sm font-semibold">{item?.name}</p>
+                                                    <p className="text-xs text-gray-500">
+                                                        <span>
+                                                            {(lastMessages[item.user_id] || "")
+                                                                .slice(0, 45)
+                                                                .concat(
+                                                                    (lastMessages[item.user_id] || "")
+                                                                        .length > 45
+                                                                        ? "..."
+                                                                        : ""
+                                                                )}
+                                                        </span>
+                                                    </p>
+                                                </div>
+
+                                                {/* 🔵 Unread badge */}
+                                                {unreadCounts[item.user_id] > 0 && (
+                                                    <div className="bg-[#000F5C] text-white text-xs font-bold px-2 py-1 rounded-full">
+                                                        {unreadCounts[item.user_id]}
+                                                    </div>
+                                                )}
                                             </div>
                                         </li>
-
                                     ))
-                                    :
-                                    Array.from({ length: 5 }).map((_, index) => (
-                                        <li key={index} className="flex items-start gap-3 animate-pulse">
+                                    : Array.from({ length: 5 }).map((_, index) => (
+                                        <li
+                                            key={index}
+                                            className="flex items-start gap-3 animate-pulse"
+                                        >
                                             <div className="w-10 h-10 rounded-full bg-gray-300"></div>
                                             <div className="flex-1 space-y-2">
                                                 <div className="w-3/4 h-4 bg-gray-300 rounded"></div>

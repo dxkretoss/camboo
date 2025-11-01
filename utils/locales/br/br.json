@@ -235,5 +235,7 @@
   "failOtpsend": "Falha ao enviar OTP",
   "otpVerify": "OTP verificado",
   "otpVerifyfail": "Falha na verificação do OTP",
-  "Prodtype": "Tipo de produto"
+  "Prodtype": "Tipo de produto",
+  "reqAccept": "Solicitação aceita com sucesso",
+  "reqReject": "Solicitação rejeitada com sucesso"
 }

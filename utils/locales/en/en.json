@@ -58,7 +58,7 @@
   "ChatWth": "Chat with",
   "Your": "Your",
   "Prods": "Products",
-  "NoAdsAdd": "Not any Ads ared added",
+  "NoAdsAdd": "Not any Ads are added",
   "NoAdsFnd": "We couldn’t find anything your Ads",
   "NoAdMtch": "No Ad Match",
   "NoMtchFnd": "We couldn’t find anything that matches your Ad",
@@ -232,5 +232,7 @@
   "failOtpsend": "Failed to send OTP",
   "otpVerify": "OTP verified",
   "otpVerifyfail": "OTP verification failed",
-  "Prodtype": "Product Type"
+  "Prodtype": "Product Type",
+  "reqAccept": "Request accept successfully",
+  "reqReject": "Request reject successfully"
 }

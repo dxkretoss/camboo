@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { useUser } from '@/context/UserContext';
 import { useTranslation } from 'react-i18next';
 import '../utils/i18n';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function notification() {
     const { t, } = useTranslation();
@@ -83,6 +84,11 @@ export default function notification() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res?.data?.success) {
+                if (action === "accepted") {
+                    toast.success(`${t('reqAccept')}`);
+                } else if (action === "rejected") {
+                    toast.success(`${t('reqReject')}`);
+                }
                 getAllNotification();
             }
         } catch (error) {
@@ -233,6 +239,7 @@ export default function notification() {
                     </div>
                 </div>
             </div>
+            <Toaster />
         </Layout>
     )
 }

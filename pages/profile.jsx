@@ -19,8 +19,11 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n'
 
 export default function Profile() {
+    const { t, } = useTranslation();
     const token = Cookies.get('token');
     const router = useRouter();
 
@@ -151,6 +154,11 @@ export default function Profile() {
             setisDelete(false);
         }
     }
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
     return (
         <Layout>
             <div className="md:px-10">
@@ -161,7 +169,7 @@ export default function Profile() {
                         onClick={() => window.history.back()}
                         className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer transition duration-200"
                     >
-                        Back
+                        {t('Bck')}
                     </span>
                 </div>
 
@@ -196,13 +204,13 @@ export default function Profile() {
                                             {`${getProfileData.first_name} ${getProfileData.last_name}`}
                                         </h2>
                                         <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
-                                            <div className="flex text-yellow-500">
+                                            {/* <div className="flex text-yellow-500">
                                                 {[...Array(5)].map((_, index) => (
                                                     <Star key={index} className="h-4 w-4 fill-yellow-500 stroke-yellow-500" />
                                                 ))}
-                                            </div>
-                                            <span className="ml-2 text-gray-700 font-medium">5.0</span>
-                                            <span className="ml-1 text-gray-500">(248 Reviews)</span>
+                                            </div> */}
+                                            {/* <span className="ml-2 text-gray-700 font-medium">5.0</span>
+                                            <span className="ml-1 text-gray-500">(248 Reviews)</span> */}
                                         </div>
                                         {(getProfileData?.street || getProfileData?.city) ?
                                             <div className="flex gap-1 text-sm text-gray-500 mt-1 items-center">
@@ -227,7 +235,7 @@ export default function Profile() {
                                 onClick={() => router.push('/editProfile')}
                             >
                                 <Pencil className="w-4 h-4" />
-                                Edit Profile
+                                {t('EditPrfl')}
                             </Button>
                         ) : (
                             <div className="w-28 h-9 bg-gray-200 rounded-md animate-pulse" />
@@ -242,7 +250,7 @@ export default function Profile() {
                             {getProfileData?.about_me ? (
                                 <>
                                     <div>
-                                        <h3 className="text-md font-semibold text-[#13121F] mb-1">About Me</h3>
+                                        <h3 className="text-md font-semibold text-[#13121F] mb-1">{t('abtme')}</h3>
                                         {getProfileData?.about_me ? (
                                             <p className="text-sm text-gray-600">{getProfileData.about_me}</p>
                                         ) : (
@@ -256,7 +264,7 @@ export default function Profile() {
                             {getProfileData?.professional_experience ? (
                                 <>
                                     <div>
-                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">Professional Experience</h3>
+                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">{t('prfoexp')}</h3>
                                         {getProfileData?.professional_experience ? (
                                             <ul className="space-y-4 text-sm">{getProfileData.professional_experience}</ul>
                                         ) : (
@@ -274,7 +282,7 @@ export default function Profile() {
                             {socialLinks?.length > 0 ? (
                                 <>
                                     <div>
-                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">Social Links</h3>
+                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">{t('sclink')}</h3>
                                         {socialLinks?.length > 0 ? (
                                             <div className="flex gap-3">
                                                 {socialLinks.map(({ platform, link }, index) => {
@@ -308,7 +316,7 @@ export default function Profile() {
                             {getProfileData?.what_are_you_interested_in ? (
                                 <>
                                     <div>
-                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">Interests</h3>
+                                        <h3 className="text-md font-semibold text-[#13121F] mb-2">{t('Inrst')}</h3>
                                         {getProfileData?.what_are_you_interested_in ? (
                                             <div className="flex flex-wrap gap-2">
                                                 {getProfileData?.what_are_you_interested_in?.split(',').map((item, idx) => (
@@ -316,7 +324,7 @@ export default function Profile() {
                                                         key={idx}
                                                         className="px-3 py-1 rounded-md text-[#06145D] bg-[#06145D1A] text-sm font-semibold"
                                                     >
-                                                        {item.trim()}
+                                                        {item?.trim()}
                                                     </span>
                                                 ))}
                                             </div>
@@ -335,7 +343,7 @@ export default function Profile() {
 
                     <div className="w-full lg:w-3/4">
                         <div className="flex flex-nowrap gap-4 border-b border-gray-300 mb-4">
-                            {tabs.map((tab) => (
+                            {tabs?.map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
@@ -344,7 +352,7 @@ export default function Profile() {
                                         : 'border-transparent text-gray-500 hover:text-blue-600'
                                         }`}
                                 >
-                                    {tab}
+                                    {tab === "My Ads" ? `${t('Myad')}` : `${t('Mysave')}`}
                                 </button>
                             ))}
                         </div>
@@ -400,7 +408,7 @@ export default function Profile() {
                                                                         }
                                                                     >
                                                                         <Pencil className="w-4 h-4 text-blue-600" />
-                                                                        Edit
+                                                                        {t('Edit')}
                                                                     </button>
                                                                     <button
                                                                         className="w-full px-4 py-2 text-left text-sm cursor-pointer rounded-lg flex items-center gap-2 hover:bg-red-200"
@@ -410,7 +418,7 @@ export default function Profile() {
                                                                         }}
                                                                     >
                                                                         <Trash2 className="w-4 h-4 text-red-600" />
-                                                                        Delete
+                                                                        {t('Delete')}
                                                                     </button>
                                                                 </div>
                                                             )}
@@ -422,7 +430,7 @@ export default function Profile() {
                                                             <span className="truncate">{item.title}</span>
                                                             {(item?.price || item?.day_price || item?.hr_price) !== undefined && (
                                                                 <span className="font-medium text-gray-500 text-sm sm:text-sm md:text-sm">
-                                                                    ₹{item?.price || item?.day_price || item?.hr_price}
+                                                                    {item?.price || item?.day_price || item?.hr_price}
                                                                 </span>
                                                             )}
                                                         </h3>
@@ -438,10 +446,10 @@ export default function Profile() {
                                             <div className="fixed inset-0 flex justify-center items-center bg-black/50 backdrop-blur-sm z-50">
                                                 <div ref={dialogRef} className="bg-white rounded-xl shadow-lg p-6 w-80">
                                                     <h2 className="text-lg font-semibold text-gray-800">
-                                                        Confirm Delete
+                                                        {t('Cnfdel')}
                                                     </h2>
                                                     <p className="text-sm text-gray-600 mt-2">
-                                                        Are you sure you want to delete this item?
+                                                        {t('Cnfdelitem')}
                                                     </p>
 
                                                     <div className="mt-6 flex justify-end gap-3">
@@ -449,7 +457,7 @@ export default function Profile() {
                                                             className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700"
                                                             onClick={() => setOpenDialog(false)}
                                                         >
-                                                            Cancel
+                                                            {t('Cncl')}
                                                         </button>
                                                         <button
                                                             className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white"
@@ -461,7 +469,7 @@ export default function Profile() {
                                                                 setSelectedItemId(null);
                                                             }}
                                                         >
-                                                            Delete
+                                                            {t('Delete')}
                                                         </button>
                                                     </div>
                                                 </div>
@@ -471,7 +479,7 @@ export default function Profile() {
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-12 text-gray-500">
                                         <Package size={48} className="mb-3 text-gray-400" />
-                                        <p className="text-sm font-medium">No product or service added yet</p>
+                                        <p className="text-sm font-medium">{t('noadded')}</p>
                                     </div>
                                 )
                             )}
@@ -479,7 +487,7 @@ export default function Profile() {
                             {activeTab === 'My History of Trades' &&
                                 <div className="flex flex-col items-center justify-center py-12 text-gray-500">
                                     <Package size={48} className="mb-3 text-gray-400" />
-                                    <p className="text-sm font-medium">No trades yet</p>
+                                    <p className="text-sm font-medium"> {t('notrd')}</p>
                                 </div>
                             }
 
@@ -548,7 +556,7 @@ export default function Profile() {
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-12 text-gray-500">
                                         <Package size={48} className="mb-3 text-gray-400" />
-                                        <p className="text-sm font-medium">No product or service saved yet</p>
+                                        <p className="text-sm font-medium">{t('noadded')}</p>
                                     </div>
                                 )
                             )}

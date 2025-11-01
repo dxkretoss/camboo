@@ -7,6 +7,8 @@ import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n';
 const productcategoriesData = {
     "Cars, Motorcycles, Mopeds, and Boats": [
         "Cars & Trucks",
@@ -202,6 +204,7 @@ const servicecategoriesData = {
 }
 
 export default function addProduct() {
+    const { t, } = useTranslation();
     const token = Cookies.get('token');
     const router = useRouter();
     useEffect(() => {
@@ -348,16 +351,16 @@ export default function addProduct() {
     const validateProductForm = () => {
         let newErrors = {};
 
-        if (!productData.title.trim()) newErrors.title = "Title is required";
-        if (!productData.description.trim()) newErrors.description = "Description is required";
-        if (!productData.category.trim()) newErrors.category = "Category is required";
-        if (!productData.sub_category.trim()) newErrors.sub_category = "Sub-Category is required";
+        if (!productData.title.trim()) newErrors.title = `${t('TitleReq')}`;
+        if (!productData.description.trim()) newErrors.description = `${t('DescReq')}`;
+        if (!productData.category.trim()) newErrors.category = `${t('CatReq')}`;
+        if (!productData.sub_category.trim()) newErrors.sub_category = `${t('SubCatReq')}`;
         // if (!productData.brand.trim() && productData?.unbranded_product !== 'check') newErrors.brand = "Brand is required";
         // if (!productData.model.trim()) newErrors.model = "Model is required";
         if (!productData.price.trim()) {
-            newErrors.price = "Price is required";
+            newErrors.price = `${t('PriceReq')}`;
         } else if (!priceRegex.test(productData.price)) {
-            newErrors.price = "Enter a valid price (e.g. 1199 or 115.90)";
+            newErrors.price = `${t('PriceInvalid')}`;
         }
 
         // if (images.length !== 4 || images.some(img => !(img?.file || img?.preview))) newErrors.images = "All images are required";
@@ -365,16 +368,16 @@ export default function addProduct() {
         const validImages = images.filter(img => img?.file || img?.preview);
 
         if (validImages.length < 2) {
-            newErrors.images = "At least 2 images are required";
+            newErrors.images = `${t('ImgReq')}`;
         }
         if (tradeType === '1') {
-            if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
-            if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = "Trade product sub-category is required";
+            if (!tradeforWhat.product_category.trim()) newErrors.product_category = `${t('TradeProdCatReq')}`;
+            if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = `${t('TradeProdSubCatReq')}`;
             // if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
             // if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
         } else {
-            if (!tradeforWhat.service_category.trim()) newErrors.service_category = "Trade service category is required";
-            if (!tradeforWhat.service_sub_category.trim()) newErrors.service_sub_category = "Trade service sub-category is required";
+            if (!tradeforWhat.service_category.trim()) newErrors.service_category = `${t('TradeSrvCatReq')}`;
+            if (!tradeforWhat.service_sub_category.trim()) newErrors.service_sub_category = `${t('TradeSrvSubCatReq')}`;
         }
 
         setErrors(newErrors);
@@ -385,23 +388,23 @@ export default function addProduct() {
     const validateServiceForm = () => {
         let newErrors = {};
 
-        if (!serviceData.title.trim()) newErrors.title = "Title is required";
-        if (!serviceData.description.trim()) newErrors.description = "Description is required";
-        if (!serviceData.category.trim()) newErrors.category = "Category is required";
-        if (!serviceData.sub_category.trim()) newErrors.sub_category = "Sub-Category is required";
-        if (!serviceData.range_of_service_delivery.trim()) newErrors.range_of_service_delivery = "Range of service Delivery is required";
+        if (!serviceData.title.trim()) newErrors.title = `${t('TitleReq')}`;
+        if (!serviceData.description.trim()) newErrors.description = `${t('DescReq')}`;
+        if (!serviceData.category.trim()) newErrors.category = `${t('CatReq')}`;
+        if (!serviceData.sub_category.trim()) newErrors.sub_category = `${t('SubCatReq')}`;
+        if (!serviceData.range_of_service_delivery.trim()) newErrors.range_of_service_delivery = `${t('RangeDeliveryReq')}`;
 
         if (serviceData.cost_of_service === '1') {
             if (!serviceData.hr_price.trim()) {
-                newErrors.hr_price = "Hourly price is required";
+                newErrors.hr_price = `${t('HrPriceReq')}`;
             } else if (!priceRegex.test(serviceData.hr_price)) {
-                newErrors.hr_price = "Enter a valid hourly price";
+                newErrors.hr_price = `${t('HrPriceInvalid')}`;
             }
         } else {
             if (!serviceData.day_price.trim()) {
-                newErrors.day_price = "Daily price is required";
+                newErrors.day_price = `${t('DayPriceReq')}`;
             } else if (!priceRegex.test(serviceData.day_price)) {
-                newErrors.day_price = "Enter a valid daily price";
+                newErrors.day_price = `${t('DayPriceInvalid')}`;
             }
         }
 
@@ -410,16 +413,16 @@ export default function addProduct() {
         const validImages = images.filter(img => img?.file || img?.preview);
 
         if (validImages.length < 2) {
-            newErrors.images = "At least 2 images are required";
+            newErrors.images = `${t('ImgReq')}`;
         }
         if (tradeType === '1') {
-            if (!tradeforWhat.product_category.trim()) newErrors.product_category = "Trade product category is required";
-            if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = "Trade product sub-category is required";
+            if (!tradeforWhat.product_category.trim()) newErrors.product_category = `${t('TradeProdCatReq')}`;
+            if (!tradeforWhat.product_sub_category.trim()) newErrors.product_sub_category = `${t('TradeProdSubCatReq')}`
             // if (!tradeforWhat.product_brand.trim()) newErrors.product_brand = "Trade product brand is required";
             // if (!tradeforWhat.product_model.trim()) newErrors.product_model = "Trade product model is required";
         } else {
-            if (!tradeforWhat.service_category.trim()) newErrors.service_category = "Trade service category is required";
-            if (!tradeforWhat.service_sub_category.trim()) newErrors.service_sub_category = "Trade service sub-category is required";
+            if (!tradeforWhat.service_category.trim()) newErrors.service_category = `${t('TradeSrvCatReq')}`;
+            if (!tradeforWhat.service_sub_category.trim()) newErrors.service_sub_category = `${t('TradeSrvSubCatReq')}`;
         }
 
         setErrors(newErrors);
@@ -497,17 +500,17 @@ export default function addProduct() {
                 }
             );
             if (addProd?.data?.success) {
-                toast.success("Product created successfully");
+                toast.success(`${t('Prdcrtsucess')}!`);
                 await getallProdandSer();
                 await getClientsProdandSer();
                 clearState();
                 router.push('/home')
             } else {
-                toast.error(`${addProd?.data?.message || 'something went wrong with add product'}`);
+                toast.error(`${addProd?.data?.message || `${t('Smtwntwrng')}!`}`);
             }
         } catch (error) {
             console.log(error);
-            toast.error(`${error?.response?.data?.message || 'something went wrong with add product'}`);
+            toast.error(`${error?.response?.data?.message || `${t('Smtwntwrng')}!`}`);
         } finally {
             setadding(false);
         }
@@ -545,17 +548,17 @@ export default function addProduct() {
             );
 
             if (addSer?.data?.success) {
-                toast.success("Service created successfully");
+                toast.success(`${t('Srvcrtsucess')}!`);
                 await getallProdandSer();
                 await getClientsProdandSer();
                 clearState();
                 router.push('/home')
             } else {
-                toast.error("Something went wrong.");
+                toast.error(`${t('Smtwntwrng')}!`);
             }
         } catch (error) {
             console.log(error)
-            toast.error("Something went wrong.");
+            toast.error(`${t('Smtwntwrng')}!`);
         } finally {
             setadding(false);
         }
@@ -758,17 +761,17 @@ export default function addProduct() {
                 }
             );
             if (addProd?.data?.success) {
-                toast.success("Product Edit successfully");
+                toast.success(`${t('Prdedtsucess')}!`);
                 await getallProdandSer();
                 await getClientsProdandSer();
                 router.push('/profile')
                 clearState();
             } else {
-                toast.error("Something went wrong.");
+                toast.error(`${t('Smtwntwrng')}!`);
             }
         } catch (error) {
             console.log(error);
-            toast.error("Something went wrong.");
+            toast.error(`${t('Smtwntwrng')}!`);
         } finally {
             setadding(false);
         }
@@ -810,21 +813,27 @@ export default function addProduct() {
             );
 
             if (addSer?.data?.success) {
-                toast.success("Service Edit successfully");
+                toast.success(`${t('Srvedtsucess')}!`);
                 await getallProdandSer();
                 await getClientsProdandSer();
                 router.push('/profile')
                 clearState();
             } else {
-                toast.error("Something went wrong.");
+                toast.error(`${t('Smtwntwrng')}!`);
             }
         } catch (error) {
             console.log(error)
-            toast.error("Something went wrong.");
+            toast.error(`${t('Smtwntwrng')}!`);
         } finally {
             setadding(false);
         }
     }
+
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
 
     return (
         <Layout>
@@ -836,7 +845,7 @@ export default function addProduct() {
                         onClick={() => window.history.back()}
                         className="text-xs sm:text-sm md:text-base font-medium text-gray-700 hover:text-blue-600 cursor-pointer transition duration-200"
                     >
-                        Back
+                        {t('Bck')}
                     </span>
                 </div>
                 {(adding || fetchEditData) &&
@@ -855,7 +864,7 @@ export default function addProduct() {
                             onDragOver={(e) => e.preventDefault()}
                             onDrop={handleDrop} >
                             <h2 className="text-base sm:text-lg font-semibold text-gray-800">
-                                {selectedTab === 'Product' ? "Product Images" : "Service Images"}
+                                {selectedTab === 'Product' ? `${t('Prdimg')}` : `${t('Srving')}`}
                             </h2>
 
                             {/* <label className="relative cursor-pointer border border-dashed border-gray-300 rounded-lg sm:rounded-xl w-full aspect-square flex items-center justify-center overflow-hidden hover:border-blue-400 transition-colors">
@@ -986,8 +995,8 @@ export default function addProduct() {
 
                         <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-6 w-full lg:w-1/2 space-y-4 sm:space-y-6">
                             <h2 className="text-base sm:text-lg font-semibold text-gray-800">
-                                {selectedTab === 'Product' ? router?.query?.Editid ? "Edit Product Details" : "Add Product Details" :
-                                    router?.query?.Editid ? "Edit Service Details" : "Add Service Details"}
+                                {selectedTab === 'Product' ? router?.query?.Editid ? `${t('Edtprd')}` : `${t('Addprd')}` :
+                                    router?.query?.Editid ? `${t('Edtsrv')}` : `${t('Addsrv')}`}
                             </h2>
 
                             <div className="flex justify-center items-center border-b border-gray-200">
@@ -1004,7 +1013,7 @@ export default function addProduct() {
                                             : 'border-transparent text-gray-500 hover:text-blue-600'
                                             }`}
                                     >
-                                        {tab}
+                                        {tab === "Product" ? `${t('Prod')}` : `${t('Srv')}`}
                                     </button>
                                 ))}
                             </div>
@@ -1014,10 +1023,10 @@ export default function addProduct() {
                                 {selectedTab === 'Product' ? (
                                     <>
                                         <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Title *</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700"> {t('Ttl')} *</label>
                                             <input
                                                 type="text"
-                                                placeholder="ex: Yamaha Y12 2024 New Model"
+                                                placeholder={`${t("prodPlace")}`}
                                                 value={productData?.title}
                                                 onChange={(e) => {
                                                     setproductData({
@@ -1031,10 +1040,10 @@ export default function addProduct() {
                                         </div>
 
                                         <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Description *</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700"> {t('Desc')} *</label>
                                             <textarea
                                                 rows="3"
-                                                placeholder="Describe your product here..."
+                                                placeholder={`${t("Decyrprod")}`}
                                                 value={productData?.description}
                                                 onChange={(e) => {
                                                     setproductData({
@@ -1050,7 +1059,7 @@ export default function addProduct() {
                                         <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Category *
+                                                    {t('Cate')} *
                                                 </label>
                                                 <select
                                                     value={productData.category}
@@ -1063,7 +1072,7 @@ export default function addProduct() {
                                                     }
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 >
-                                                    <option value="">-- Select Category --</option>
+                                                    <option value="">-- {t('SltCate')}  --</option>
                                                     {Object.keys(productcategoriesData)?.map((cat) => (
                                                         <option key={cat} value={cat}>
                                                             {cat}
@@ -1075,7 +1084,7 @@ export default function addProduct() {
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Sub-Category *
+                                                    {t('subCate')} *
                                                 </label>
                                                 <select
                                                     value={productData.sub_category}
@@ -1085,7 +1094,7 @@ export default function addProduct() {
                                                     disabled={!productData.category}
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 >
-                                                    <option value="">-- Select Sub-Category --</option>
+                                                    <option value="">-- {t('SltsubCate')} --</option>
                                                     {productData?.category &&
                                                         productcategoriesData[productData?.category]?.map((sub) => (
                                                             <option key={sub} value={sub}>
@@ -1109,14 +1118,14 @@ export default function addProduct() {
                                                                 brand: ''
                                                             })}
                                                     />
-                                                    <span className="text-xs sm:text-sm text-gray-700 font-medium">Unbranded Product</span>
+                                                    <span className="text-xs sm:text-sm text-gray-700 font-medium">{t('unbrdprd')}</span>
                                                 </label>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand (Optional)</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700"> {t('brnd')} ({t('optnl')})</label>
                                                 <input
                                                     type="text"
                                                     placeholder="ex: YAMAHA"
@@ -1135,7 +1144,7 @@ export default function addProduct() {
 
                                             </div>
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Model (Optional)</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">{t('Mdl')} ({t('optnl')})</label>
                                                 <input
                                                     type="text"
                                                     placeholder="ex: Y12 2024"
@@ -1173,7 +1182,7 @@ export default function addProduct() {
                                                             }}
                                                             className="accent-blue-600 cursor-pointer w-4 h-4"
                                                         />
-                                                        <span className="text-xs sm:text-sm text-gray-700">Used Product</span>
+                                                        <span className="text-xs sm:text-sm text-gray-700"> {t('UsdPrd')}</span>
                                                     </label>
                                                     <label className="flex items-center space-x-2">
                                                         <input
@@ -1189,14 +1198,14 @@ export default function addProduct() {
                                                             }}
                                                             className="accent-blue-600 cursor-pointer w-4 h-4"
                                                         />
-                                                        <span className="text-xs sm:text-sm text-gray-700">New Product</span>
+                                                        <span className="text-xs sm:text-sm text-gray-700"> {t('NwPrd')}</span>
                                                     </label>
                                                 </div>
                                             </div>
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Price *
+                                                    {t('Price')} *
                                                 </label>
                                                 <input
                                                     type="text"
@@ -1223,10 +1232,10 @@ export default function addProduct() {
                                 ) : (
                                     <>
                                         <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Title *</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">{t('Ttl')}  *</label>
                                             <input
                                                 type="text"
-                                                placeholder="ex: Make the Swimming pool to my home"
+                                                placeholder={`${t("SerPlace")}`}
                                                 value={serviceData?.title}
                                                 onChange={(e) => {
                                                     setserviceData({
@@ -1241,10 +1250,10 @@ export default function addProduct() {
                                         </div>
 
                                         <div className="space-y-1 sm:space-y-2">
-                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Description *</label>
+                                            <label className="block text-xs sm:text-sm font-medium text-gray-700">{t('Desc')} *</label>
                                             <textarea
                                                 rows="3"
-                                                placeholder="Describe your service here..."
+                                                placeholder={`${t("Decyrser")}`}
                                                 value={serviceData?.description}
                                                 onChange={(e) => {
                                                     setserviceData({
@@ -1261,7 +1270,7 @@ export default function addProduct() {
                                         <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Category *
+                                                    {t('Cate')} *
                                                 </label>
                                                 <select
                                                     value={serviceData.category}
@@ -1274,7 +1283,7 @@ export default function addProduct() {
                                                     }
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 >
-                                                    <option value="">-- Select Category --</option>
+                                                    <option value="">-- {t('SltCate')} --</option>
                                                     {Object.keys(servicecategoriesData)?.map((cat) => (
                                                         <option key={cat} value={cat}>
                                                             {cat}
@@ -1286,7 +1295,7 @@ export default function addProduct() {
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Sub-Category *
+                                                    {t('subCate')} *
                                                 </label>
                                                 <select
                                                     value={serviceData.sub_category}
@@ -1296,7 +1305,7 @@ export default function addProduct() {
                                                     disabled={!serviceData.category}
                                                     className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                 >
-                                                    <option value="">-- Select Sub-Category --</option>
+                                                    <option value="">-- {t('SltsubCate')} --</option>
                                                     {serviceData?.category &&
                                                         servicecategoriesData[serviceData?.category]?.map((sub) => (
                                                             <option key={sub} value={sub}>
@@ -1311,7 +1320,7 @@ export default function addProduct() {
                                         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-3 sm:gap-4">
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    Cost of service *
+                                                    {t('CstofSrv')}  *
                                                 </label>
                                                 <div className="flex items-start h-[42px] gap-4">
                                                     <label className="flex items-center space-x-2">
@@ -1330,7 +1339,7 @@ export default function addProduct() {
                                                             }}
                                                             className="accent-blue-600 cursor-pointer w-4 h-4"
                                                         />
-                                                        <span className="text-xs sm:text-sm text-gray-700">R$/Hr</span>
+                                                        <span className="text-xs sm:text-sm text-gray-700">{t('R$/Hr')}</span>
                                                     </label>
                                                     <label className="flex items-center space-x-2">
                                                         <input
@@ -1348,13 +1357,13 @@ export default function addProduct() {
                                                             }}
                                                             className="accent-blue-600 cursor-pointer w-4 h-4"
                                                         />
-                                                        <span className="text-xs sm:text-sm text-gray-700">R$/Day</span>
+                                                        <span className="text-xs sm:text-sm text-gray-700">{t('R$/Day')}</span>
                                                     </label>
                                                 </div>
 
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                                                        Range of Service Delivery *
+                                                        {t('RngofSrvDel')} *
                                                     </label>
                                                     <select
                                                         value={serviceData?.range_of_service_delivery || ""}
@@ -1366,7 +1375,7 @@ export default function addProduct() {
                                                         }
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
-                                                        <option value="">-- Select Range --</option>
+                                                        <option value="">-- {t('SlcRng')} --</option>
                                                         <option value="<25km">&lt;25km</option>
                                                         <option value="<50km">&lt;50km</option>
                                                         <option value="100km">100km</option>
@@ -1378,7 +1387,7 @@ export default function addProduct() {
 
                                             <div className="space-y-1 sm:space-y-2">
                                                 <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                    {serviceData?.cost_of_service === '1' ? 'R$/Hr' : 'R$/Day'} *
+                                                    {serviceData?.cost_of_service === '1' ? `${t('R$/Hr')}` : `${t('R$/Day')}`} *
                                                 </label>
                                                 <input
                                                     type="text"
@@ -1420,7 +1429,7 @@ export default function addProduct() {
 
                                 <div className="bg-[#f7f9ff] p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl space-y-3 sm:space-y-4">
                                     <div className="space-y-2">
-                                        <label className="block text-xs sm:text-sm font-medium text-gray-700">Trade for what? *</label>
+                                        <label className="block text-xs sm:text-sm font-medium text-gray-700">{t('TrdforWht')} *</label>
                                         <div className="flex xs:flex-row gap-2 xs:gap-6">
                                             <label className="flex items-center space-x-2">
                                                 <input
@@ -1444,7 +1453,7 @@ export default function addProduct() {
                                                     }}
                                                     className="accent-blue-600 cursor-pointer w-4 h-4"
                                                 />
-                                                <span className="text-xs sm:text-sm text-gray-700">Product</span>
+                                                <span className="text-xs sm:text-sm text-gray-700">{t('Prod')}</span>
                                             </label>
                                             <label className="flex items-center space-x-2">
                                                 <input
@@ -1468,7 +1477,7 @@ export default function addProduct() {
                                                     }}
                                                     className="accent-blue-600 cursor-pointer w-4 h-4"
                                                 />
-                                                <span className="text-xs sm:text-sm text-gray-700">Service</span>
+                                                <span className="text-xs sm:text-sm text-gray-700">{t('Srv')}</span>
                                             </label>
                                         </div>
                                     </div>
@@ -1478,7 +1487,7 @@ export default function addProduct() {
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                        Category *
+                                                        {t('Cate')} *
                                                     </label>
                                                     <select
                                                         value={tradeforWhat.product_category}
@@ -1491,7 +1500,7 @@ export default function addProduct() {
                                                         }
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
-                                                        <option value="">-- Select Category --</option>
+                                                        <option value="">-- {t('SltCate')} --</option>
                                                         {Object.keys(productcategoriesData)?.map((cat) => (
                                                             <option key={cat} value={cat}>
                                                                 {cat}
@@ -1503,7 +1512,7 @@ export default function addProduct() {
 
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                        Sub-Category *
+                                                        {t('subCate')} *
                                                     </label>
                                                     <select
                                                         value={tradeforWhat.product_sub_category}
@@ -1513,7 +1522,7 @@ export default function addProduct() {
                                                         disabled={!tradeforWhat.product_category}
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
-                                                        <option value="">-- Select Sub-Category --</option>
+                                                        <option value="">-- {t('SltsubCate')} --</option>
                                                         {tradeforWhat?.product_category &&
                                                             productcategoriesData[tradeforWhat?.product_category]?.map((sub) => (
                                                                 <option key={sub} value={sub}>
@@ -1527,7 +1536,7 @@ export default function addProduct() {
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
-                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Brand (Optional)</label>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">{t('brnd')} ({t('optnl')})</label>
                                                     <input
                                                         type="text"
                                                         placeholder="ex: YAMAHA"
@@ -1544,7 +1553,7 @@ export default function addProduct() {
 
                                                 </div>
                                                 <div className="space-y-1 sm:space-y-2">
-                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Model (Optional)</label>
+                                                    <label className="block text-xs sm:text-sm font-medium text-gray-700">{t('Mdl')} ({t('optnl')})</label>
                                                     <input
                                                         type="text"
                                                         placeholder="ex: Y12 2024"
@@ -1566,7 +1575,7 @@ export default function addProduct() {
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                        Category *
+                                                        {t('Cate')} *
                                                     </label>
                                                     <select
                                                         value={tradeforWhat.service_category}
@@ -1579,7 +1588,7 @@ export default function addProduct() {
                                                         }
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
-                                                        <option value="">-- Select Category --</option>
+                                                        <option value="">-- {t('SltCate')} --</option>
                                                         {Object.keys(servicecategoriesData)?.map((cat) => (
                                                             <option key={cat} value={cat}>
                                                                 {cat}
@@ -1591,7 +1600,7 @@ export default function addProduct() {
 
                                                 <div className="space-y-1 sm:space-y-2">
                                                     <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                                                        Sub-Category *
+                                                        {t('subCate')} *
                                                     </label>
                                                     <select
                                                         value={tradeforWhat.service_sub_category}
@@ -1601,7 +1610,7 @@ export default function addProduct() {
                                                         disabled={!tradeforWhat.service_category}
                                                         className="w-full border border-gray-300 rounded-md sm:rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     >
-                                                        <option value="">-- Select Sub-Category --</option>
+                                                        <option value="">-- {t('SltsubCate')} --</option>
                                                         {tradeforWhat?.service_category &&
                                                             servicecategoriesData[tradeforWhat?.service_category]?.map((sub) => (
                                                                 <option key={sub} value={sub}>
@@ -1613,10 +1622,10 @@ export default function addProduct() {
                                                 </div>
                                             </div>
                                             <div className="space-y-1 sm:space-y-2">
-                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">Description (Optional)</label>
+                                                <label className="block text-xs sm:text-sm font-medium text-gray-700">{t('Desc')} ({t('optnl')})</label>
                                                 <textarea
                                                     rows="3"
-                                                    placeholder="Describe your product here..."
+                                                    placeholder={`${t("Decyrprod")}`}
                                                     value={tradeforWhat?.service_description}
                                                     onChange={(e) => {
                                                         settradeforWhat({
@@ -1655,10 +1664,15 @@ export default function addProduct() {
                                             }}
                                         >
                                             {adding
-                                                ? "Saving..."
+                                                ? t("Saving")
                                                 : selectedTab === 'Product'
-                                                    ? router?.query?.Editid ? "Edit Product" : "Save Product"
-                                                    : router?.query?.Editid ? "Edit Service" : "Save Service"}
+                                                    ? router?.query?.Editid
+                                                        ? t("EditProduct")
+                                                        : t("SaveProduct")
+                                                    : router?.query?.Editid
+                                                        ? t("EditService")
+                                                        : t("SaveService")}
+
                                         </Button>
                                     </div>
 

@@ -14,6 +14,8 @@ import { useSearch } from '@/context/SearchContext';
 import { useTranslation } from 'react-i18next';
 import '../utils/i18n';
 export default function HomePage() {
+    const { t } = useTranslation();
+
     const router = useRouter();
     const token = Cookies.get('token');
     useEffect(() => {
@@ -155,7 +157,7 @@ export default function HomePage() {
                         className="text-blue-600 cursor-pointer hover:underline mt-1 text-xs font-medium"
                         type="button"
                     >
-                        {expanded ? `${t('See less')}` : `${t('See more')}`}
+                        {expanded ? `${t('SeeLess')}` : `${t('SeeMore')}`}
                     </button>
                 )}
             </div>
@@ -254,7 +256,6 @@ export default function HomePage() {
         }
     }
 
-    const { t } = useTranslation();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => setMounted(true), []);
@@ -387,7 +388,7 @@ export default function HomePage() {
                                             />
                                             <input
                                                 type="text"
-                                                placeholder={`${t("comment here")}...`}
+                                                placeholder={`${t("CmntHere")}...`}
                                                 value={sendComments[user.id] || ""}
                                                 onChange={(e) =>
                                                     setsendComments((prev) => ({ ...prev, [user.id]: e.target.value }))
@@ -415,7 +416,7 @@ export default function HomePage() {
 
                                         {user?.comments.length > 0 ?
                                             <div>
-                                                <span className='text-sm text-gray-400'>{t('comments')}</span>
+                                                <span className='text-sm text-gray-400'>{t('Cmnts')}</span>
                                             </div>
                                             : null}
 
@@ -449,7 +450,7 @@ export default function HomePage() {
                                                         onClick={() => handleOpenDialog(user?.id)}
                                                         className="text-xs text-blue-600 hover:underline"
                                                     >
-                                                        {t('View all comments')} ({user.comments.length})
+                                                        {t('VwAllCmnts')} ({user.comments.length})
                                                     </button>
                                                 )}
 
@@ -466,7 +467,7 @@ export default function HomePage() {
                                                                 <X />
                                                             </button>
 
-                                                            <h3 className="text-lg font-semibold mb-3 text-[#000F5C]">{t('All Comments')}</h3>
+                                                            <h3 className="text-lg font-semibold mb-3 text-[#000F5C]">{t('AllCmnts')}</h3>
 
                                                             {/* Scrollable content */}
                                                             <div className="max-h-[400px] overflow-y-auto">
@@ -531,7 +532,7 @@ export default function HomePage() {
                                                         setopenDenounceadDialog(true);
                                                     }}>
                                                     <img src="/denouce.png" alt="Verified" className="w-4 h-4" />
-                                                    <span className="hidden xl:inline">{t('Denounce Ad')}</span>
+                                                    <span className="hidden xl:inline">{t('DenAd')}</span>
                                                 </button>
 
                                                 {openDenounceadDialog && (
@@ -552,11 +553,11 @@ export default function HomePage() {
 
                                                             <div className="flex items-center gap-2 mb-4">
                                                                 <img src="/denouce.png" alt="Verified" className="w-4 h-4" />
-                                                                <span className="text-lg font-semibold">{t('Denounce Ad')}</span>
+                                                                <span className="text-lg font-semibold">{t('DenAd')}</span>
                                                             </div>
 
                                                             <p className="mb-2 text-sm text-gray-600">
-                                                                {t('Write your comment below')}:
+                                                                {t('WrCmnt')}:
                                                             </p>
 
                                                             <textarea
@@ -564,7 +565,7 @@ export default function HomePage() {
                                                                 onChange={(e) => setDenounceadComment(e.target.value)}
                                                                 className="w-full border border-gray-300 rounded-md p-2 mb-4 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
                                                                 rows={4}
-                                                                placeholder={`${t("Your comment")}...`}
+                                                                placeholder={`${t("YrCmnt")}...`}
                                                             />
 
                                                             <div className="flex justify-end">
@@ -598,12 +599,12 @@ export default function HomePage() {
                                                                                     d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                                                                                 ></path>
                                                                             </svg>
-                                                                            <span>{t("Sending")}...</span>
+                                                                            <span>{t("Sndng")}...</span>
                                                                         </>
                                                                     ) : (
                                                                         <>
                                                                             <SendHorizonal size={20} />
-                                                                            <span>{t("Send Comment")}</span>
+                                                                            <span>{t("SndCmnt")}</span>
                                                                         </>
                                                                     )}
                                                                 </Button>
@@ -622,7 +623,7 @@ export default function HomePage() {
                                                         })
                                                     }}>
                                                     <img src="/dummy.png" alt="Verified" className="w-4 h-4" />
-                                                    <span className="hidden xl:inline">{t("Copy ad")}</span>
+                                                    <span className="hidden xl:inline">{t("CpyAd")}</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -634,7 +635,7 @@ export default function HomePage() {
                         ) : (
                             <div className="flex flex-col items-center justify-center  bg-white rounded-xl shadow">
                                 <img src='/notfound.svg' className='w-100 h-100' />
-                                <p className="text-gray-500 text-xl font-extrabold mb-6">{t("No products or services found")}</p>
+                                <p className="text-gray-500 text-xl font-extrabold mb-6">{t("NoProd")}</p>
                             </div>
                         )}
 
@@ -649,11 +650,11 @@ export default function HomePage() {
                                             : "bg-[#000F5C] text-white hover:bg-[#00136e]"
                                             }`}
                                     >
-                                        {t("Previous")}
+                                        {t("Prev")}
                                     </button>
 
                                     <span className="text-sm font-medium text-gray-600">
-                                        {t("Page")} {currentPage} of {Math.ceil(filteredProducts.length / itemsPerPage)}
+                                        {t("pg")} {currentPage} of {Math.ceil(filteredProducts.length / itemsPerPage)}
                                     </span>
 
                                     <button
@@ -671,7 +672,7 @@ export default function HomePage() {
                                             : "bg-[#000F5C] text-white hover:bg-[#00136e]"
                                             }`}
                                     >
-                                        {t("Next")}
+                                        {t("Nxt")}
                                     </button>
                                 </div>
                             )
@@ -681,9 +682,9 @@ export default function HomePage() {
                     <div className="hidden lg:block w-full lg:w-[300px] xl:w-[340px] space-y-2">
                         <div className="bg-white shadow rounded-lg p-2 mb-2">
                             <div className="flex justify-between items-center mb-3">
-                                <h3 className="font-semibold text-sm"> {t("Suggested Trades")}</h3>
+                                <h3 className="font-semibold text-sm"> {t("SgstTrds")}</h3>
                                 {suggestedTrades?.length > 0 &&
-                                    <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>{t("View All")}</button>
+                                    <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/suggestedtrades') }}>{t("VwAllTxt")}</button>
                                 }
                             </div>
 
@@ -726,7 +727,7 @@ export default function HomePage() {
                             {suggestedTrades?.length === 0 && (
                                 <div className="flex justify-center items-center w-full py-10">
                                     <span className="text-center text-gray-500">
-                                        {t("No suggested trades found")}.
+                                        {t("NoSgstTrds")}.
                                     </span>
                                 </div>
                             )}
@@ -734,9 +735,9 @@ export default function HomePage() {
 
                         <div className="bg-white shadow rounded-lg p-2 mb-2">
                             <div className="flex justify-between items-center mb-3">
-                                <h3 className="font-semibold text-sm">{t("Recent Chats")}</h3>
+                                <h3 className="font-semibold text-sm">{t("RcntChats")}</h3>
                                 {recentchatUsers?.length > 0 &&
-                                    <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/recentChats') }}>{t("View All")}</button>
+                                    <button className="text-xs cursor-pointer text-blue-600 hover:underline" onClick={() => { router.push('/recentChats') }}>{t("VwAllTxt")}</button>
                                 }
                             </div>
 
@@ -784,7 +785,7 @@ export default function HomePage() {
                             {recentchatUsers?.length === 0 && (
                                 <div className="flex justify-center items-center w-full py-10">
                                     <span className="text-center text-gray-500">
-                                        {t("No recent chats found")}.
+                                        {t("NoRcntChats")}.
                                     </span>
                                 </div>
                             )}

@@ -130,7 +130,11 @@ export const UserProvider = ({ children }) => {
         }
       );
       if (getNoti?.data?.success) {
-        setgetallNotification(getNoti?.data?.data);
+        if (getNoti?.data?.data?.length > 0) {
+          setgetallNotification(getNoti?.data?.data);
+        }
+      } else {
+        setgetallNotification(null);
       }
     } catch (error) {
       console.log(error);

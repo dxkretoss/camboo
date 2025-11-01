@@ -11,8 +11,10 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
-
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n'
 export default function signup() {
+    const { t, i18n } = useTranslation();
     const router = useRouter();
 
     useEffect(() => {
@@ -41,25 +43,25 @@ export default function signup() {
         const newErrors = {};
 
         if (userData.first_name.length < 3 || userData.first_name.length > 20)
-            newErrors.first_name = "First name must be between 3 and 20 characters";
+            newErrors.first_name = t('FirstNameLength');
 
         if (userData.last_name.length < 3 || userData.last_name.length > 20)
-            newErrors.last_name = "Last name must be between 3 and 20 characters";
+            newErrors.last_name = t('LastNameLength');
 
         if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(userData.email))
-            newErrors.email = "Enter a valid email";
+            newErrors.email = t('EmailInvalid');
 
         if (!/^\+\d{1,3} \d{7,14}$/.test(userData.phone_number))
-            newErrors.phone_number = "Enter a valid phone number";
+            newErrors.phone_number = t('PhoneInvalid');
 
         if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(userData.password))
-            newErrors.password = "Password must be at least 8 characters, include 1 uppercase, 1 number, and 1 symbol";
+            newErrors.password = t('PasswordInvalid');
 
         if (userData.password !== userData.confirmPassword)
-            newErrors.confirmPassword = "Passwords do not match";
+            newErrors.confirmPassword = t('ConfirmPasswordMismatch');
 
         if (!agreeTerms)
-            newErrors.terms = "You must agree to terms";
+            newErrors.terms = t('TermsAgreeReq');
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -72,7 +74,7 @@ export default function signup() {
             const signup = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/register`, userData);
 
             if (signup?.data?.success) {
-                toast.success("User registered successfully.");
+                toast.success(`${t('signupsuccess')}`);
                 router.push('/');
                 setuserData({
                     first_name: '',
@@ -83,7 +85,7 @@ export default function signup() {
                     confirmPassword: '',
                 })
             } else {
-                toast.error("Registration failed.");
+                toast.error(`${t('signupfail')}`);
             }
         } catch (error) {
             console.log(error);
@@ -139,7 +141,7 @@ export default function signup() {
                 last_name = profile.family_name;
                 deviceToken = credentialResponse.access_token;
             } else {
-                toast.error("No Google credential or token returned!");
+                toast.error(`${t('gglloginfail')}!`);
                 return;
             }
 
@@ -155,7 +157,7 @@ export default function signup() {
             const res = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/social-login`, payload);
 
             if (res?.data?.success) {
-                toast.success("User registered successfully.");
+                toast.success(`${t('signupsuccess')}`);
                 Cookies.set("token", res?.data?.data?.token, { expires: endOfDay });
                 await getallProdandSer();
                 await getUserProfileData();
@@ -163,7 +165,7 @@ export default function signup() {
                 await getsuggestedTrades();
                 router.push('/');
             } else {
-                toast.error("Google login failed");
+                toast.error(`${t('gglloginfail')}`);
             }
 
         } catch (err) {
@@ -178,6 +180,24 @@ export default function signup() {
         onError: () => toast.error("Google login failed!")
     });
 
+    const [mounted, setMounted] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
+
+    const languages = [
+        { code: 'en', label: 'English', flag: '🇺🇸' },
+        { code: 'br', label: 'Português', flag: '🇧🇷' },
+    ];
+
+    const currentLang = languages.find((lang) => lang.code === i18n.language) || languages[0];
+
+    const handleLanguageChange = (langCode) => {
+        i18n.changeLanguage(langCode);
+        setIsOpen(false);
+    };
+
     return (
         <div className="flex xl:flex-row min-h-screen bg-gray-100">
             <div className="hidden xl:block xl:w-1/2">
@@ -190,6 +210,63 @@ export default function signup() {
                     }}
                 />
             </div>
+
+            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 50 }}>
+                <button
+                    onClick={() => setIsOpen((prev) => !prev)}
+                    style={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '16px',
+                    }}
+                >
+                    <span>{currentLang.flag}</span> {currentLang.label}
+                    <span style={{ marginLeft: '6px' }}>{isOpen ? '▲' : '▼'}</span>
+                </button>
+
+                {isOpen && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '100%',
+                            right: 0,
+                            marginTop: '4px',
+                            backgroundColor: '#fff',
+                            border: '1px solid #ddd',
+                            borderRadius: '8px',
+                            boxShadow: '0px 2px 6px rgba(0,0,0,0.1)',
+                            zIndex: 10,
+                            minWidth: '160px',
+                        }}
+                    >
+                        {languages.map((lang) => (
+                            <div
+                                key={lang.code}
+                                onClick={() => handleLanguageChange(lang.code)}
+                                style={{
+                                    padding: '10px 14px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    cursor: 'pointer',
+                                    backgroundColor: i18n.language === lang.code ? '#f5f5f5' : 'transparent',
+                                    fontWeight: i18n.language === lang.code ? '600' : 'normal',
+                                }}
+                            >
+                                <span>{lang.flag}</span> {lang.label}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             {isSignup && (
                 <div className="fixed inset-0 flex justify-center items-center bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300">
                     <div className="flex space-x-2">
@@ -211,16 +288,16 @@ export default function signup() {
                 <div className="flex justify-center items-center w-full px-4 py-8">
                     <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 md:p-8 w-full max-w-xl">
                         <h2 className="text-xl sm:text-2xl text-[#000F5C] font-semibold mb-1 sm:mb-2 text-center">
-                            Register
+                            {t('regi')}
                         </h2>
                         <p className="text-gray-500 text-sm sm:text-base mb-4 sm:mb-6 text-center">
-                            Let’s get you all set up so you can access your account
+                            {t('regiHeader')}
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <TextField
-                                    label="First Name"
+                                    label={`${t('Fname')}`}
                                     value={userData.first_name}
                                     onChange={(e) => {
                                         const value = e.target.value;
@@ -242,7 +319,7 @@ export default function signup() {
 
                             <div>
                                 <TextField
-                                    label="Last Name"
+                                    label={`${t('Lname')}`}
                                     value={userData.last_name}
                                     onChange={(e) => {
                                         const value = e.target.value;
@@ -266,7 +343,7 @@ export default function signup() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                             <div>
                                 <TextField
-                                    label="Email"
+                                    label={`${t('eml')}`}
                                     type="email"
                                     value={userData.email}
                                     onChange={(e) => {
@@ -313,7 +390,7 @@ export default function signup() {
 
                         <div className="relative mt-4 md:mt-2">
                             <TextField
-                                label="Password"
+                                label={`${t('Password')}`}
                                 type={showPassword ? 'text' : 'password'}
                                 value={userData.password}
                                 onChange={(e) => {
@@ -343,7 +420,7 @@ export default function signup() {
 
                         <div className="relative mt-4">
                             <TextField
-                                label="Confirm Password"
+                                label={`${t('CPassword')}`}
                                 type={showConfirmPassword ? 'text' : 'password'}
                                 value={userData.confirmPassword}
                                 onChange={(e) => {
@@ -382,26 +459,26 @@ export default function signup() {
                                 className="mt-1 mr-2"
                             />
                             <span>
-                                I agree to all the{' '}
-                                <a href="#" className="text-blue-600 hover:underline">Terms</a> and{' '}
-                                <a href="#" className="text-blue-600 hover:underline">Privacy Policies</a>
+                                {t('agree')}{' '}
+                                <a href="#" className="text-blue-600 hover:underline">{t('terms')}</a> {t('and')}{' '}
+                                <a href="#" className="text-blue-600 hover:underline">{t('pvcpoli')}</a>
                             </span>
                         </div>
                         {errors.terms && <p className="text-red-500 text-xs mt-1">{errors.terms}</p>}
 
                         <Button className="w-full mt-6 disabled:cursor-not-allowed" disabled={isSignup} onClick={() => { handleSignup() }}>
-                            {isSignup ? 'Processing...' : 'Sign up'}
+                            {isSignup ? `${t('Processing')}` : `${t('signup')}`}
                         </Button>
 
 
                         <p className="mt-4 text-sm text-black text-center">
-                            Already have an account?{' '}
-                            <button onClick={() => router.push('/')} className="text-blue-600 cursor-pointer hover:underline">Login</button>
+                            {t('alredyacc')} ?{' '}
+                            <button onClick={() => router.push('/')} className="text-blue-600 cursor-pointer hover:underline">{t('login')}</button>
                         </p>
 
                         <div className="my-6 border-t relative">
                             <span className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-white px-2 text-sm text-gray-400">
-                                Or Sign up with
+                                {t('orsignwith')}
                             </span>
                         </div>
 

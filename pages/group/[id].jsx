@@ -9,8 +9,10 @@ import { motion } from "framer-motion";
 import Pusher from "pusher-js";
 import Button from "@/components/ui/Button";
 import toast, { Toaster } from 'react-hot-toast';
-
+import { useTranslation } from 'react-i18next';
+import '../../utils/i18n'
 export default function GroupPage() {
+    const { t } = useTranslation();
     const router = useRouter();
     const { id } = router?.query;
     const token = Cookies.get("token");
@@ -93,7 +95,7 @@ export default function GroupPage() {
             }
         } catch (error) {
             if (error.response?.data?.message === "User already invited or in group.") {
-                toast.error('User already invited or in group.')
+                toast.error(`${t('alreadygrp')}!`);
             } else {
                 console.error("❌ Unexpected error sending invite:", error);
             }
@@ -237,6 +239,11 @@ export default function GroupPage() {
         return fullName.includes(searchTerm.toLowerCase());
     });
 
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
     return (
         <Layout>
             <div className="md:px-10">
@@ -257,7 +264,6 @@ export default function GroupPage() {
                                         className="object-cover w-full h-full"
                                     />
                                 ) : (
-                                    // Skeleton Avatar
                                     <div className="w-full h-full bg-gray-300 animate-pulse" />
                                 )}
                             </div>
@@ -274,7 +280,7 @@ export default function GroupPage() {
                                 {gettingGroup?.total_member ? (
                                     <div>
                                         <span className="text-xs text-gray-500">
-                                            {`${gettingGroup?.total_member}`} Members
+                                            {`${gettingGroup?.total_member}`} {t('Mmbrs')}
                                         </span>
                                     </div>
                                 ) : (
@@ -288,7 +294,7 @@ export default function GroupPage() {
                                     getAlluser();
                                     setIsDialogOpen(true);
                                 }}>
-                                    Add Members
+                                    {t('AddMmbrs')}
                                 </Button>
                             </div>
                         }
@@ -305,11 +311,11 @@ export default function GroupPage() {
                                 &times;
                             </button>
 
-                            <h2 className="text-lg font-semibold mb-4">Add Members</h2>
+                            <h2 className="text-lg font-semibold mb-4">{t('AddMmbrs')}</h2>
 
                             <input
                                 type="text"
-                                placeholder="Search by name..."
+                                placeholder={`${t("serchbyname")}...`}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -350,22 +356,22 @@ export default function GroupPage() {
                                                 onClick={() => sendInvite(id, user.id)}
                                             >
                                                 {invitedUsers.includes(user.id)
-                                                    ? "Sent ✅"
+                                                    ? t("Sent")
                                                     : sendingFor === user.id
-                                                        ? "Sending..."
-                                                        : "Send Invite"}
+                                                        ? t("Sending")
+                                                        : t("SendInvite")}
                                             </Button>
                                         </div>
                                     ))
                                 ) : (
                                     <p className="text-sm text-gray-500 text-center py-4">
-                                        No users available
+                                        {t("Nouser")}
                                     </p>
                                 )}
                             </div>
 
                             <div className="mt-4 text-right">
-                                <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
+                                <Button onClick={() => setIsDialogOpen(false)}>{t("Cls")}</Button>
                             </div>
                         </div>
                     </div>
@@ -382,7 +388,7 @@ export default function GroupPage() {
                     >
                         {loading ? (
                             <div className="flex justify-center items-center h-full text-sm text-[#000F5C]">
-                                Loading messages...
+                                {t("LoadMess")}
                             </div>
                         ) : Array.isArray(messages) &&
                             messages.length > 0 ? (
@@ -447,8 +453,7 @@ export default function GroupPage() {
                                                         }
                                                         type="video/mp4"
                                                     />
-                                                    Your browser does not
-                                                    support video.
+                                                    {t("vdenotsup")}
                                                 </video>
                                             )}
 
@@ -463,7 +468,7 @@ export default function GroupPage() {
                                                     rel="noopener noreferrer"
                                                     className="underline text-sm flex items-center gap-1"
                                                 >
-                                                    📄 Download Document
+                                                    {t("Dwndoc")}
                                                 </a>
                                             )}
 
@@ -485,7 +490,7 @@ export default function GroupPage() {
                                 ))
                         ) : (
                             <div className="flex justify-center items-center h-full text-sm text-gray-500">
-                                No messages yet
+                                {t("nomess")}
                             </div>
                         )}
                     </div>
@@ -512,7 +517,7 @@ export default function GroupPage() {
                                     !selectedFile.type.startsWith("image/") &&
                                     !selectedFile.type.startsWith("video/") && (
                                         <span className="text-sm">
-                                            📄 {filePreview}
+                                            {filePreview}
                                         </span>
                                     )}
                                 <button
@@ -549,7 +554,7 @@ export default function GroupPage() {
                                     }
                                 }}
                                 className="flex-1 px-3 py-2 bg-transparent focus:outline-none text-sm"
-                                placeholder="Type a message..."
+                                placeholder={`${t("typemess")}...`}
                             />
 
                             {/* Send button */}
@@ -581,12 +586,12 @@ export default function GroupPage() {
                                                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                                             ></path>
                                         </svg>
-                                        <span className="hidden sm:inline">Sending...</span>
+                                        <span className="hidden sm:inline">{t('Sndng')}...</span>
                                     </span>
                                 ) : (
                                     <>
                                         <Send size={16} />
-                                        <span className="hidden sm:inline">Send</span>
+                                        <span className="hidden sm:inline">{t('Snd')}</span>
                                     </>
                                 )}
                             </button>

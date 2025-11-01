@@ -5,8 +5,10 @@ import { ChevronLeft } from 'lucide-react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n';
 export default function recentChats() {
+    const { t, } = useTranslation();
     const { recentchatUsers } = useUser();
     const [fetching, setfetching] = useState(false);
     const router = useRouter();
@@ -40,13 +42,17 @@ export default function recentChats() {
         }
     }
 
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
     return (
         <Layout>
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-xl sm:text-2xl font-bold text-[#000F5C]">
-                        All Recent Chats
+                        {t('recentChts')}
                     </h1>
 
                     <div className="flex items-center gap-1 text-gray-700">
@@ -56,7 +62,7 @@ export default function recentChats() {
                             onClick={() => window.history.back()}
                             className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer"
                         >
-                            Back
+                            {t('Bck')}
                         </span>
                     </div>
                 </div>
@@ -109,7 +115,7 @@ export default function recentChats() {
                         // No data found
                         <div className="flex flex-col items-center justify-center py-16 text-gray-400">
                             <img src='/notfound.svg' className='w-100 h-100' />
-                            <p className="text-sm sm:text-base">No recent chats found</p>
+                            <p className="text-sm sm:text-base"> {t('norecentChts')}</p>
                         </div>
                     )}
                 </div>

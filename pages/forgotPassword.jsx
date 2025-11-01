@@ -5,8 +5,11 @@ import Button from '@/components/ui/Button';
 import { useRouter } from 'next/router';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
-
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n'
 export default function forgotPassword() {
+    const { t, i18n } = useTranslation();
+
     const router = useRouter();
     const getMail = router.query.email;
     const [forgotData, setforgotData] = useState({
@@ -34,10 +37,10 @@ export default function forgotPassword() {
         const newErrors = {};
 
         if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(forgotData.new_password))
-            newErrors.new_password = "Password must be at least 8 characters, include 1 uppercase, 1 number, and 1 symbol";
+            newErrors.new_password = t('PasswordInvalid');
 
         if (forgotData.new_password !== forgotData.confirmPassword)
-            newErrors.confirmPassword = "Passwords do not match";
+            newErrors.confirmPassword = t('ConfirmPasswordMismatch');
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -51,10 +54,10 @@ export default function forgotPassword() {
             const forgotPassword = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/create-new_password`, forgotData);
 
             if (forgotPassword?.data?.success) {
-                toast.success("Password Change successfully.");
+                toast.success(`${t('Passchngsuccess')}`);
                 router.push('/');
             } else {
-                toast.error("Something went wrong.");
+                toast.error(`${t('Smtwntwrng')}!`);
             }
         } catch (error) {
             console.log(error);
@@ -71,12 +74,31 @@ export default function forgotPassword() {
 
                 messages.forEach(msg => toast.error(msg));
             } else {
-                toast.error("Something went wrong.");
+                toast.error(`${t('Smtwntwrng')}!`);
             }
 
         } finally {
             setisForgotting(false);
         }
+    };
+
+    const [mounted, setMounted] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
+
+    const languages = [
+        { code: 'en', label: 'English', flag: '🇺🇸' },
+        { code: 'br', label: 'Português', flag: '🇧🇷' },
+    ];
+
+    const currentLang = languages.find((lang) => lang.code === i18n.language) || languages[0];
+
+    const handleLanguageChange = (langCode) => {
+        i18n.changeLanguage(langCode);
+        setIsOpen(false);
     };
 
     return (
@@ -85,14 +107,70 @@ export default function forgotPassword() {
                 <img src="/loginbg.png" alt="Login Visual" className="w-full h-full object-cover" />
             </div>
 
+            <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 50 }}>
+                <button
+                    onClick={() => setIsOpen((prev) => !prev)}
+                    style={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '16px',
+                    }}
+                >
+                    <span>{currentLang.flag}</span> {currentLang.label}
+                    <span style={{ marginLeft: '6px' }}>{isOpen ? '▲' : '▼'}</span>
+                </button>
+
+                {isOpen && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '100%',
+                            right: 0,
+                            marginTop: '4px',
+                            backgroundColor: '#fff',
+                            border: '1px solid #ddd',
+                            borderRadius: '8px',
+                            boxShadow: '0px 2px 6px rgba(0,0,0,0.1)',
+                            zIndex: 10,
+                            minWidth: '160px',
+                        }}
+                    >
+                        {languages.map((lang) => (
+                            <div
+                                key={lang.code}
+                                onClick={() => handleLanguageChange(lang.code)}
+                                style={{
+                                    padding: '10px 14px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    cursor: 'pointer',
+                                    backgroundColor: i18n.language === lang.code ? '#f5f5f5' : 'transparent',
+                                    fontWeight: i18n.language === lang.code ? '600' : 'normal',
+                                }}
+                            >
+                                <span>{lang.flag}</span> {lang.label}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             <div className="w-full flex flex-col justify-center items-center md:w-1/2 overflow-y-auto">
                 <img src="/logo1.jpeg" alt="Logo" className="mx-auto mt-6 w-36 h-auto" />
                 <div className="flex justify-center items-center w-full px-4 py-8">
                     <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-xl">
-                        <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center">Forget Password</h2>
+                        <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center"> {t('ForPass')}</h2>
                         <div>
                             <TextField
-                                label="Email"
+                                label={t('Email')}
                                 type="email"
                                 value={getMail}
                                 readOnly
@@ -102,7 +180,7 @@ export default function forgotPassword() {
 
                         <div className="relative mt-3">
                             <TextField
-                                label="Password"
+                                label={t('Password')}
                                 type={showPassword ? 'text' : 'password'}
                                 value={forgotData.new_password}
                                 onChange={(e) => {
@@ -126,7 +204,7 @@ export default function forgotPassword() {
 
                         <div className="relative mt-3">
                             <TextField
-                                label="Confirm Password"
+                                label={t('CPassword')}
                                 type={showConfirmPassword ? 'text' : 'password'}
                                 value={forgotData.confirmPassword}
                                 onChange={(e) => {
@@ -151,7 +229,7 @@ export default function forgotPassword() {
                         <Button className="w-full disabled:cursor-not-allowed" disabled={isForgotting} onClick={() => {
                             handleForgotPass();
                         }}>
-                            {isForgotting ? 'Processing...' : 'Forgot Password'}
+                            {isForgotting ? `${t('Processing')}` : `${t('ForPass')}`}
                         </Button>
                     </div>
                 </div>

@@ -9,8 +9,11 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import toast, { Toaster } from 'react-hot-toast';
 import { useUser } from '@/context/UserContext';
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n'
 
 export default function EditProfile() {
+    const { t } = useTranslation();
     const token = Cookies.get('token');
     const router = useRouter();
     const { profile, getUserProfileData } = useUser();
@@ -109,46 +112,47 @@ export default function EditProfile() {
         let error = '';
         switch (field) {
             case 'first_name':
-                if (!value.trim()) error = 'First name is required';
+                if (!value.trim()) error = t('FirstNameReq');
                 break;
             case 'last_name':
-                if (!value.trim()) error = 'Last name is required';
+                if (!value.trim()) error = t('LastNameReq');
                 break;
             case 'email':
                 if (!value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                    error = 'Valid email is required';
+                    error = t('ValidEmailReq');
                 }
                 break;
             case 'phone_number':
                 if (!value.trim()) {
-                    error = 'Phone number is required';
+                    error = t('PhoneReq');
                 } else if (!/^\+\d{1,3} \d{7,14}$/.test(value)) {
-                    error = 'Enter valid phone number';
+                    error = t('ValidPhone');
                 }
                 break;
             case 'street':
-                if (!value.trim()) error = 'Street is required';
+                if (!value.trim()) error = t('StreetReq');
                 break;
             case 'city':
-                if (!value.trim()) error = 'City is required';
+                if (!value.trim()) error = t('CityReq');
                 break;
             case 'post_code':
-                if (!value.trim()) error = 'Post-Code is required';
+                if (!value.trim()) error = t('PostCodeReq');
                 break;
             case 'about_me':
-                if (!value.trim()) error = 'About Me is required';
+                if (!value.trim()) error = t('AboutReq');
                 break;
             case 'what_are_you_interested_in':
-                if (!value.trim()) error = 'This field is required';
+                if (!value.trim()) error = t('InterestReq');
                 break;
-            // case 'professional_experience':
-            //     if (!value.trim()) error = 'Professional Experience is required';
-            //     break;
+            // case 'professional_experience': 
+            //      if (!value.trim()) error = 'Professional Experience is required'; 
+            //      break;
             default:
                 break;
         }
         setErrors((prev) => ({ ...prev, [field]: error }));
     };
+
 
     const validateForm = () => {
         const newErrors = {};
@@ -248,11 +252,11 @@ export default function EditProfile() {
             );
 
             if (updateData?.data?.success) {
-                toast.success("User profile updated successfully.");
+                toast.success(`${t('profileupdate')}!`);
                 await getUserProfileData();
                 router.push('/profile')
             } else {
-                toast.error("Something went wrong.");
+                toast.error(`${t('Smtwntwrng')}!`);
             }
         } catch (error) {
             console.log(error);
@@ -261,6 +265,11 @@ export default function EditProfile() {
         }
     };
 
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
     return (
         <Layout>
             <div className="md:px-10">
@@ -271,7 +280,7 @@ export default function EditProfile() {
                         onClick={() => window.history.back()}
                         className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer"
                     >
-                        Back
+                        {t('Bck')}
                     </span>
                 </div>
                 {(isEditing) &&
@@ -286,7 +295,7 @@ export default function EditProfile() {
 
                 <div className="flex justify-center px-4 pt-5 min-h-[70vh]">
                     <div className="flex flex-col w-full max-w-xl bg-white rounded-md p-6 space-y-6">
-                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 self-start">Edit Profile</h2>
+                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 self-start"> {t('EditPrfl')}</h2>
 
                         <div className="relative self-center mb-4">
                             <img
@@ -315,7 +324,7 @@ export default function EditProfile() {
                         <div className="space-y-4 w-full">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">First Name *</label>
+                                    <label className="block text-sm font-medium">{t('Fname')} *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.first_name}
@@ -326,7 +335,7 @@ export default function EditProfile() {
                                     {errors.first_name && <p className="text-red-500 text-xs">{errors.first_name}</p>}
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Last Name *</label>
+                                    <label className="block text-sm font-medium">{t('Lname')} *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.last_name}
@@ -340,7 +349,7 @@ export default function EditProfile() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Email *</label>
+                                    <label className="block text-sm font-medium">{t('eml')} *</label>
                                     <input
                                         type="email"
                                         value={getProfileData.email}
@@ -350,7 +359,7 @@ export default function EditProfile() {
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Phone Number *</label>
+                                    <label className="block text-sm font-medium">{t('Phone')} *</label>
                                     <PhoneInput
                                         key={getProfileData?.phone_number}
                                         country={userCountry}
@@ -370,7 +379,7 @@ export default function EditProfile() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Street *</label>
+                                    <label className="block text-sm font-medium">{t('Street')} *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.street}
@@ -381,7 +390,7 @@ export default function EditProfile() {
                                     {errors.street && <p className="text-red-500 text-xs">{errors.street}</p>}
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">City *</label>
+                                    <label className="block text-sm font-medium">{t('City')} *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.city}
@@ -395,7 +404,7 @@ export default function EditProfile() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="block text-sm font-medium">Post-Code *</label>
+                                    <label className="block text-sm font-medium">{t('Pcode')} *</label>
                                     <input
                                         type="text"
                                         value={getProfileData.post_code}
@@ -408,7 +417,7 @@ export default function EditProfile() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium">Social Links</label>
+                                <label className="block text-sm font-medium">{t('sclink')}</label>
                                 {socialLinks.map((link, index) => {
                                     const selected = socialLinks.map((l) => l.platform);
                                     const available = allPlatforms.filter((p) => !selected.includes(p) || p === link.platform);
@@ -437,12 +446,12 @@ export default function EditProfile() {
                                                         if (!val.trim()) {
                                                             setErrors((prev) => ({
                                                                 ...prev,
-                                                                [`social_${index}`]: 'URL is required',
+                                                                [`social_${index}`]: `${t('urlReq')}`,
                                                             }));
                                                         } else if (!/^https?:\/\//i.test(val)) {
                                                             setErrors((prev) => ({
                                                                 ...prev,
-                                                                [`social_${index}`]: 'URL must start with http:// or https://',
+                                                                [`social_${index}`]: `${t('urlnvlid')}`,
                                                             }));
                                                         } else {
                                                             setErrors((prev) => {
@@ -460,7 +469,7 @@ export default function EditProfile() {
                                                     onClick={() => removeSocialLink(index)}
                                                     className="text-red-600 cursor-pointer text-sm"
                                                 >
-                                                    <span className="hidden sm:inline">Remove</span>
+                                                    <span className="hidden sm:inline">{t('rmv')}</span>
                                                     <span className="sm:hidden">✕</span>
                                                 </button>
                                             </div>
@@ -475,12 +484,12 @@ export default function EditProfile() {
                                     );
                                 })}
                                 {socialLinks.length < allPlatforms.length && (
-                                    <button type="button" onClick={addSocialLink} className="text-blue-600 cursor-pointer text-sm">+ Add Social Link</button>
+                                    <button type="button" onClick={addSocialLink} className="text-blue-600 cursor-pointer text-sm">+ {t('addsclink')}</button>
                                 )}
                             </div>
 
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium">About Me *</label>
+                                <label className="block text-sm font-medium">{t('abtme')} *</label>
                                 <textarea
                                     rows="3"
                                     value={getProfileData.about_me}
@@ -492,7 +501,7 @@ export default function EditProfile() {
                             </div>
 
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium">What are you interested in? *</label>
+                                <label className="block text-sm font-medium">{t('whtinter')} *</label>
 
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                                     <input
@@ -503,7 +512,7 @@ export default function EditProfile() {
                                             validateField("what_are_you_interested_in", getProfileData?.what_are_you_interested_in)
                                         }
                                         className="flex-1 border rounded-lg px-4 py-2"
-                                        placeholder="Type interest..."
+                                        placeholder={`${t("typeint")}...`}
                                     />
                                     <button
                                         type="button"
@@ -514,7 +523,7 @@ export default function EditProfile() {
                                         }}
                                         className="px-4 py-2 bg-[#000F5C] text-white rounded-lg sm:w-auto w-full"
                                     >
-                                        Add
+                                        {t('Add')}
                                     </button>
                                 </div>
 
@@ -543,7 +552,7 @@ export default function EditProfile() {
 
 
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium">Professional Experience</label>
+                                <label className="block text-sm font-medium">{t('prfoexp')}</label>
                                 <textarea
                                     rows="3"
                                     value={getProfileData.professional_experience}
@@ -557,7 +566,7 @@ export default function EditProfile() {
                             <div className="pt-2">
                                 <Button className={`w-full md:w-auto ${isEditing ? "cursor-not-allowed opacity-70" : ""}`}
                                     disabled={isEditing} onClick={() => { updateUserProfileData(); }}>
-                                    {isEditing ? "Updating" : 'Save Changes'}
+                                    {isEditing ? t("Updating") : t("SaveChanges")}
                                 </Button>
                             </div>
                         </div>

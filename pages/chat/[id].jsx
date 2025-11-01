@@ -7,21 +7,15 @@ import { ChevronLeft, Send, Paperclip, X } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { motion } from "framer-motion";
 import Pusher from "pusher-js";
-
+import { useTranslation } from 'react-i18next';
+import '../../utils/i18n'
 export default function ChatPage() {
+    const { t } = useTranslation();
+
     const router = useRouter();
     const { id } = router?.query;
-
-    // const getTradeid = router?.query?.trade;
-    // useEffect(() => {
-    //     if (getTradeid) {
-    //         doingTrade(getTradeid);
-    //     }
-    // }, [getTradeid]);
     const token = Cookies.get("token");
     const { profile, allProductandService } = useUser();
-
-
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [sending, setsending] = useState(false);
@@ -186,21 +180,11 @@ export default function ChatPage() {
         }
     };
 
-    // const doingTrade = async (id) => {
-    //     try {
-    //         const token = Cookies.get("token");
-    //         const letsCamboo = await axios.get(
-    //             `${process.env.NEXT_PUBLIC_API_CAMBOO}/lets-trade?item_id=${id}`,
-    //             { headers: { Authorization: `Bearer ${token}` } }
-    //         );
-    //         if (letsCamboo?.data?.success) {
-    //             setmatchUser(letsCamboo?.data?.other_item);
-    //         }
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // };
+    const [mounted, setMounted] = useState(false);
 
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
     return (
         <Layout>
             <div className="md:px-10">
@@ -249,7 +233,7 @@ export default function ChatPage() {
                     >
                         {loading ? (
                             <div className="flex justify-center items-center h-full text-sm text-[#000F5C]">
-                                Loading messages...
+                                {t('LoadMess')}
                             </div>
                         ) : Array.isArray(messages) &&
                             messages.length > 0 ? (
@@ -300,8 +284,7 @@ export default function ChatPage() {
                                                         }
                                                         type="video/mp4"
                                                     />
-                                                    Your browser does not
-                                                    support video.
+                                                    {t('vdenotsup')}
                                                 </video>
                                             )}
 
@@ -316,7 +299,7 @@ export default function ChatPage() {
                                                     rel="noopener noreferrer"
                                                     className="underline text-sm flex items-center gap-1"
                                                 >
-                                                    📄 Download Document
+                                                    {t('Dwndoc')}
                                                 </a>
                                             )}
 
@@ -338,7 +321,7 @@ export default function ChatPage() {
                                 ))
                         ) : (
                             <div className="flex justify-center items-center h-full text-sm text-gray-500">
-                                No messages yet
+                                {t('nomess')}
                             </div>
                         )}
                     </div>
@@ -365,7 +348,7 @@ export default function ChatPage() {
                                     !selectedFile.type.startsWith("image/") &&
                                     !selectedFile.type.startsWith("video/") && (
                                         <span className="text-sm">
-                                            📄 {filePreview}
+                                            {filePreview}
                                         </span>
                                     )}
                                 <button
@@ -402,7 +385,7 @@ export default function ChatPage() {
                                     }
                                 }}
                                 className="flex-1 px-3 py-2 bg-transparent focus:outline-none text-sm"
-                                placeholder="Type a message..."
+                                placeholder={`${t("typemess")}...`}
                             />
 
                             {/* Send button */}
@@ -434,12 +417,12 @@ export default function ChatPage() {
                                                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                                             ></path>
                                         </svg>
-                                        <span className="hidden sm:inline">Sending...</span>
+                                        <span className="hidden sm:inline">{t('Sndng')}...</span>
                                     </span>
                                 ) : (
                                     <>
                                         <Send size={16} />
-                                        <span className="hidden sm:inline">Send</span>
+                                        <span className="hidden sm:inline">{t('Snd')}</span>
                                     </>
                                 )}
                             </button>

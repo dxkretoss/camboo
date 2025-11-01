@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import '../../utils/i18n';
@@ -29,6 +27,7 @@ import {
 } from 'react-share';
 
 export default function Sidebar() {
+    const { t } = useTranslation();
     const { profile } = useUser();
     const token = Cookies.get("token");
     const router = useRouter();
@@ -37,18 +36,6 @@ export default function Sidebar() {
         getallGroups();
     }, []);
 
-    // const interests = [
-    //     "iPhone 15", "Audi A500", "Vivo All", "Yamaha 1800", "Mercedes Benz",
-    //     "iPhone 15 Pro", "Samsung A14", "AC", "Huawei AC", "OPPO M1",
-    // ];
-
-    // const groups = [
-    //     { name: "Old New iPhones Sell", members: 481, image: "https://randomuser.me/api/portraits/men/1.jpg" },
-    //     { name: "Car Bike Zone", members: 58, image: "https://randomuser.me/api/portraits/men/2.jpg" },
-    //     { name: "Mobiles For Sell", members: 104, image: "https://randomuser.me/api/portraits/men/3.jpg" },
-    //     { name: "Tech Product", members: 12, image: "https://randomuser.me/api/portraits/men/4.jpg" },
-    //     { name: "Wholesale Zone", members: 0, image: "https://randomuser.me/api/portraits/men/5.jpg" },
-    // ];
     const [openDialog, setOpenDialog] = useState(false);
     const [groupName, setGroupName] = useState("");
     const [groupImage, setGroupImage] = useState(null);
@@ -79,12 +66,11 @@ export default function Sidebar() {
                     "Content-Type": "multipart/form-data",
                 })
             if (create?.data?.success) {
-                toast.success("Group created successfully");
+                toast.success(`${t('Grpcrtsucess')}`);
                 setGroupName("");
                 setGroupImage(null);
                 setGroupImagePreview(null);
                 setOpenDialog(false);
-
                 getallGroups();
             }
         } catch (err) {
@@ -109,15 +95,14 @@ export default function Sidebar() {
     }
 
     const [url] = useState("https://camboo-woad.vercel.app");
-    const [title] = useState("Please Join this awesome platform!");
+    const [title] = useState(`${t('Plsjnawsplt')}!`);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(url);
-        toast.success("Invite link copied successfully!");
+        toast.success(`${t('Ivtlinkcpsuccess')}!`);
         setOpen(false);
     };
 
-    const { t } = useTranslation();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => setMounted(true), []);
@@ -129,14 +114,14 @@ export default function Sidebar() {
             <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
                 onClick={() => setOpen(true)}>
                 <UserRoundPlus className="w-4 h-4" />
-                {t('send_invite')}
+                {t('SndInvite')}
             </button>
 
             {open && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
                     <div className="bg-white rounded-2xl shadow-lg p-6 w-[90%] max-w-md relative animate-fadeIn">
                         <h2 className="text-xl font-semibold mb-5 text-gray-800 text-center">
-                            {t('send_invite_link')}
+                            {t('SndInviteLnk')}
                         </h2>
 
                         {/* Copy section */}
@@ -146,7 +131,7 @@ export default function Sidebar() {
                                 onClick={handleCopy}
                                 className="ml-2 bg-[#000F5C] hover:bg-[#00136e] text-white rounded-full px-3 py-1 text-sm transition"
                             >
-                                {t('Copy')}
+                                {t('Cpy')}
                             </button>
                         </div>
 
@@ -172,7 +157,7 @@ export default function Sidebar() {
                                 onClick={() => setOpen(false)}
                                 className="px-6 py-2 bg-gray-200 rounded-full font-medium hover:bg-gray-300 transition"
                             >
-                                {t('Close')}
+                                {t('Cls')}
                             </button>
                         </div>
                     </div>
@@ -198,11 +183,11 @@ export default function Sidebar() {
                         <>
                             <h2 className="text-md md:text-md font-semibold text-gray-800">{profile?.first_name}</h2>
                             <div className="flex items-center gap-1 text-sm mt-1 flex-wrap">
-                                <div className="flex text-yellow-500">
+                                {/* <div className="flex text-yellow-500">
                                     {[...Array(5)].map((_, index) => (
                                         <Star key={index} className="h-4 w-4 fill-yellow-500 stroke-yellow-500" />
                                     ))}
-                                </div>
+                                </div> */}
                                 {/* <span className="ml-2 text-gray-700 font-medium">5.0</span> */}
                             </div>
                             {/* <p className="text-green-600 text-xs flex items-center gap-1">
@@ -224,7 +209,7 @@ export default function Sidebar() {
             {profile?.what_are_you_interested_in ? (
                 <>
                     <div>
-                        <h3 className="text-md font-semibold text-[#13121F] mb-2">{t('Interests')}</h3>
+                        <h3 className="text-md font-semibold text-[#13121F] mb-2">{t('Intrst')}</h3>
                         <div className="flex flex-wrap gap-2">
                             {profile?.what_are_you_interested_in ? (
                                 <div className="flex flex-wrap gap-2">
@@ -258,12 +243,12 @@ export default function Sidebar() {
             <div>
                 {/* Header */}
                 <div className="flex justify-between items-center">
-                    <h3 className="font-semibold text-md">{t('Groups')}</h3>
+                    <h3 className="font-semibold text-md">{t('Grps')}</h3>
                     <button
                         onClick={() => setOpenDialog(true)}
                         className="text-sm bg-[#000F5C] text-white px-3 py-2 rounded-md hover:bg-[#00126e]"
                     >
-                        + {t('Create')}
+                        + {t('Crt')}
                     </button>
                 </div>
 
@@ -284,18 +269,18 @@ export default function Sidebar() {
                                 <X size={20} />
                             </button>
 
-                            <h2 className="text-lg font-semibold mb-4 text-[#000F5C]">{t('Create New Group')}</h2>
+                            <h2 className="text-lg font-semibold mb-4 text-[#000F5C]">{t('CrtNewGrp')}</h2>
 
                             {/* Group Name Field */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    {t('Group Name')}
+                                    {t('GrpNm')}
                                 </label>
                                 <input
                                     type="text"
                                     value={groupName}
                                     onChange={(e) => setGroupName(e.target.value)}
-                                    placeholder={`${t("Enter group name")}`}
+                                    placeholder={`${t("EntGrpNm")}`}
                                     className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#000F5C]"
                                 />
                             </div>
@@ -303,7 +288,7 @@ export default function Sidebar() {
                             {/* Group Image Field */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    {t('Group Profile Image')}
+                                    {t('GrpImg')}
                                 </label>
                                 <div className="flex items-center gap-3">
                                     {groupImagePreview ? (
@@ -319,7 +304,7 @@ export default function Sidebar() {
                                     )}
 
                                     <label className="cursor-pointer text-sm text-[#000F5C] font-medium hover:underline">
-                                        {t('Choose File')}
+                                        {t('ChsFile')}
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -342,7 +327,7 @@ export default function Sidebar() {
                                     className="text-sm px-4 py-2 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
                                 >
 
-                                    {t('Cancel')}
+                                    {t('Cncl')}
                                 </button>
                                 <button
                                     onClick={handleCreateGroup}
@@ -352,7 +337,7 @@ export default function Sidebar() {
                                         : "bg-[#000F5C] hover:bg-[#00126e]"
                                         }`}
                                 >
-                                    {isCreating ? `${t('Creating')}...` : `${t('Create')}`}
+                                    {isCreating ? `${t('Crting')}...` : `${t('Crt')}`}
                                 </button>
 
                             </div>
@@ -378,7 +363,7 @@ export default function Sidebar() {
                             <div>
                                 <p className="text-base font-semibold">{group.group_name}</p>
                                 <p className="text-xs text-gray-500">
-                                    {group.total_member}  {t('Members')}
+                                    {group.total_member}  {t('Mmbrs')}
                                 </p>
                             </div>
                         </li>
@@ -404,14 +389,14 @@ export default function Sidebar() {
                     className="flex justify-center text-blue-600 cursor-pointer mt-2 hover:underline"
                     onClick={() => router.push("/allGroups")}
                 >
-                    {t('View all')}
+                    {t('VwAll')}
                 </span>
             )}
 
             {gettingallGroups?.length === 0 && (
                 <div className="flex justify-center items-center w-full py-10">
                     <span className="text-center text-gray-500">
-                        {t('No group created yet')}.
+                        {t('NoGrpYet')}.
                     </span>
                 </div>
             )}

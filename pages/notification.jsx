@@ -4,8 +4,11 @@ import { ChevronLeft } from 'lucide-react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useUser } from '@/context/UserContext';
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n';
 
 export default function notification() {
+    const { t, } = useTranslation();
     const [selectedTab, setSelectedTab] = useState('Notifications');
     const token = Cookies.get("token");
     const { getallNotification, getAllNotification } = useUser();
@@ -65,9 +68,11 @@ export default function notification() {
     // }
 
     const [processingId, setProcessingId] = useState(null);
+    const [processingAction, setProcessingAction] = useState(null);
 
     const handleFriendAction = async (notificationId, action) => {
         setProcessingId(notificationId);
+        setProcessingAction(action);
         try {
             const res = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_CAMBOO}/group/invite/action`,
@@ -84,12 +89,19 @@ export default function notification() {
             console.error("❌ Error fetching messages:", error);
         } finally {
             setProcessingId(null);
+            setProcessingAction(null);
         }
     };
+
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
     return (
         <Layout>
             <div className="px-4 sm:px-6 md:px-10 py-4 md:py-6">
-                {/* 🔙 Back Button */}
+                {/*  Back Button */}
                 <div className="flex items-center gap-1 text-gray-700 mb-4 md:mb-6">
                     <ChevronLeft
                         className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer"
@@ -99,7 +111,7 @@ export default function notification() {
                         onClick={() => window.history.back()}
                         className="text-sm sm:text-base font-medium text-gray-700 hover:text-blue-600 cursor-pointer transition"
                     >
-                        Back
+                        {t('Bck')}
                     </span>
                 </div>
 
@@ -109,7 +121,7 @@ export default function notification() {
 
                         {/* 🔔 Title */}
                         <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">
-                            Notifications
+                            {t('Noti')}
                         </h2>
 
                         {/* 🔘 Tabs */}
@@ -123,7 +135,7 @@ export default function notification() {
                                         : "border-transparent text-gray-500 hover:text-blue-600"
                                         }`}
                                 >
-                                    {tab}
+                                    {tab === 'Notifications' ? `${t('Noti')}` : `${t('Notinwpt')}`}
                                 </button>
                             ))}
                         </div>
@@ -152,7 +164,7 @@ export default function notification() {
                                                     );
                                                 })()}
                                                 <div className="text-xs sm:text-sm text-[#464E5F] mt-1">
-                                                    {noti.time_display}
+                                                    {noti?.time_display}
                                                 </div>
                                             </div>
 
@@ -161,39 +173,40 @@ export default function notification() {
                                                 <div className="flex gap-2 sm:gap-3">
                                                     {/* Accept */}
                                                     <button
-                                                        onClick={() =>
-                                                            handleFriendAction(noti?.group_id, "accepted")
-                                                        }
+                                                        onClick={() => handleFriendAction(noti?.group_id, "accepted")}
                                                         disabled={processingId === noti?.group_id}
-                                                        className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg transition border font-semibold ${processingId === noti?.group_id
+                                                        className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg transition border font-semibold ${processingId === noti?.group_id && processingAction === "accepted"
                                                             ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                                                             : "bg-[#4370C21F] border-[#4370C266] text-[#4370C2]"
                                                             }`}
                                                     >
-                                                        {processingId === noti?.group_id ? "Accepting..." : "Accept"}
+                                                        {processingId === noti?.group_id && processingAction === "accepted"
+                                                            ? t('Accepting')
+                                                            : t('Accept')}
                                                     </button>
 
                                                     {/* Refuse */}
                                                     <button
-                                                        onClick={() =>
-                                                            handleFriendAction(noti?.group_id, "rejected")
-                                                        }
+                                                        onClick={() => handleFriendAction(noti?.group_id, "rejected")}
                                                         disabled={processingId === noti?.group_id}
-                                                        className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg transition border font-semibold ${processingId === noti?.group_id
+                                                        className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg transition border font-semibold ${processingId === noti?.group_id && processingAction === "rejected"
                                                             ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                                                             : "bg-[#E73E391F] border-[#E73E3966] text-[#E73E39]"
                                                             }`}
                                                     >
-                                                        {processingId === noti?.group_id ? "Refusing..." : "Refuse"}
+                                                        {processingId === noti?.group_id && processingAction === "rejected"
+                                                            ? t('Refusing')
+                                                            : t('Refuse')}
                                                     </button>
                                                 </div>
                                             )}
+
                                         </div>
                                     ))
                                 ) : (getallNotification?.length === 0 || getallNotification === null) ? (
                                     <div className="flex justify-center items-center w-full py-10">
                                         <span className="text-center text-gray-500 text-sm sm:text-base">
-                                            No notification found.
+                                            {t('Notintfound')}
                                         </span>
                                     </div>
                                 ) : (
@@ -213,8 +226,8 @@ export default function notification() {
 
                         {/* 📈 Other Tab */}
                         {selectedTab === "New Potential Trades" && (
-                            <div className="text-center text-gray-500 py-8 sm:py-12">
-                                Coming soon 🚀
+                            <div className="text-center text-gray-500 py-10">
+                                {t('cmgsoon')} 🚀
                             </div>
                         )}
                     </div>

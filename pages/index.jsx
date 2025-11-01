@@ -9,8 +9,10 @@ import Cookies from 'js-cookie';
 import { useUser } from '@/context/UserContext';
 import { useGoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
-
+import { useTranslation } from 'react-i18next';
+import '../utils/i18n'
 export default function Index() {
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { getUserProfileData, getallProdandSer, getClientsProdandSer, getsuggestedTrades, getrecentchatUsers, getAllNotification } = useUser();
   const [loginData, setloginData] = useState({ email: '', password: '' });
@@ -41,11 +43,11 @@ export default function Index() {
     const newErrors = {};
 
     if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(loginData.email)) {
-      newErrors.email = "Enter a valid email";
+      newErrors.email = t('EmailInvalid');
     }
 
     if (!loginData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = t('PassInvalid');
     }
 
     setErrors(newErrors);
@@ -61,7 +63,7 @@ export default function Index() {
     try {
       const login = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/login`, loginData);
       if (login?.data?.success) {
-        toast.success('User logged in successfully.');
+        toast.success(`${t('loginsuccess')}`);
         Cookies.set("token", login?.data?.data?.token, { expires: endOfDay });
 
         if (rememberMe) {
@@ -85,10 +87,10 @@ export default function Index() {
           email: '', password: ''
         })
       } else {
-        toast.error(login?.data?.message || 'Login failed.');
+        toast.error(login?.data?.message || `${t('loginfail')}`);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Login failed.');
+      toast.error(error?.response?.data?.message || `${t('loginfail')}`);
     } finally {
       setisLogin(false);
     }
@@ -103,7 +105,7 @@ export default function Index() {
 
   const handleForgotSubmit = async () => {
     if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(forgotEmail)) {
-      toast.error("Please enter a valid email.");
+      toast.error(`${t('enterValidMail')}`);
       return;
     }
 
@@ -111,13 +113,13 @@ export default function Index() {
     try {
       const forgot = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/forget-Password`, { email: forgotEmail });
       if (forgot?.data?.success) {
-        toast.success("OTP sent to your email.");
+        toast.success(`${t('otpOnmail')}`);
         setShowOtpField(true);
       } else {
-        toast.error(forgot?.data?.message || "Failed to send OTP.");
+        toast.error(forgot?.data?.message || `${t('failOtpsend')}`);
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Error sending OTP.");
+      toast.error(err?.response?.data?.message || `${t('Smtwntwrng')}`);
     } finally {
       setIsOtpSending(false);
     }
@@ -125,7 +127,7 @@ export default function Index() {
 
   const handleVerifyOtp = async () => {
     if (!otp) {
-      toast.error("Please enter the OTP.");
+      toast.error(`${t('plsentOtp')}!`);
       return;
     }
 
@@ -137,13 +139,13 @@ export default function Index() {
       });
 
       if (verifyOtp?.data?.success) {
-        toast.success("OTP verified");
+        toast.success(`${t('otpVerify')}`);
         router.push(`/forgotPassword?email=${forgotEmail}`);
       } else {
-        toast.error(verifyOtp.data.message || "OTP verification failed.");
+        toast.error(verifyOtp.data.message || `${t('otpVerifyfail')}`);
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || "OTP verification error.");
+      toast.error(err?.response?.data?.message || `${t('otpVerifyfail')}`);
     } finally {
       setIsOtpVerifying(false);
     }
@@ -184,7 +186,7 @@ export default function Index() {
         last_name = profile.family_name;
         deviceToken = credentialResponse.access_token;
       } else {
-        toast.error("No Google credential or token returned!");
+        toast.error(`${t('Smtwntwrng')}!`);
         return;
       }
 
@@ -200,7 +202,7 @@ export default function Index() {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_API_CAMBOO}/social-login`, payload);
 
       if (res.data.success) {
-        toast.success('User logged in successfully.');
+        toast.success(`${t('loginsuccess')}`);
         Cookies.set("token", res?.data?.data?.token, { expires: endOfDay });
         await getallProdandSer();
         await getUserProfileData();
@@ -211,7 +213,7 @@ export default function Index() {
         router.push('/home')
         setloginData({ email: '', password: '' });
       } else {
-        toast.error("Google login failed");
+        toast.error(`${t('gglloginfail')}!`);
       }
 
     } catch (err) {
@@ -223,8 +225,25 @@ export default function Index() {
 
   const loginGoogle = useGoogleLogin({
     onSuccess: handleGoogleSuccess,
-    onError: () => toast.error("Google login failed!")
+    onError: () => toast.error(`${t('gglloginfail')}`)
   });
+
+  const [mounted, setMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
+  const languages = [
+    { code: 'en', label: 'English', flag: '🇺🇸' },
+    { code: 'br', label: 'Português', flag: '🇧🇷' },
+  ];
+
+  const currentLang = languages.find((lang) => lang.code === i18n.language) || languages[0];
+
+  const handleLanguageChange = (langCode) => {
+    i18n.changeLanguage(langCode);
+    setIsOpen(false);
+  };
 
   return (
     <div className="flex xl:flex-row h-screen bg-gray-100">
@@ -235,6 +254,62 @@ export default function Index() {
           className="w-full h-full object-cover" onContextMenu={(event) => {
             event.preventDefault();
           }} />
+      </div>
+
+      <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 50 }}>
+        <button
+          onClick={() => setIsOpen((prev) => !prev)}
+          style={{
+            backgroundColor: '#fff',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            padding: '8px 12px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '16px',
+          }}
+        >
+          <span>{currentLang.flag}</span> {currentLang.label}
+          <span style={{ marginLeft: '6px' }}>{isOpen ? '▲' : '▼'}</span>
+        </button>
+
+        {isOpen && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              marginTop: '4px',
+              backgroundColor: '#fff',
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              boxShadow: '0px 2px 6px rgba(0,0,0,0.1)',
+              zIndex: 10,
+              minWidth: '160px',
+            }}
+          >
+            {languages.map((lang) => (
+              <div
+                key={lang.code}
+                onClick={() => handleLanguageChange(lang.code)}
+                style={{
+                  padding: '10px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  cursor: 'pointer',
+                  backgroundColor: i18n.language === lang.code ? '#f5f5f5' : 'transparent',
+                  fontWeight: i18n.language === lang.code ? '600' : 'normal',
+                }}
+              >
+                <span>{lang.flag}</span> {lang.label}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {isLogin && (
@@ -258,12 +333,12 @@ export default function Index() {
 
         <div className="flex justify-center items-center w-full px-4 py-8">
           <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-xl">
-            <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center">Login</h2>
-            <p className="text-gray-500 text-sm mb-6 text-center">Login to access your Camboo Account</p>
+            <h2 className="text-2xl text-[#000F5C] font-semibold mb-2 text-center"> {t('login')}</h2>
+            <p className="text-gray-500 text-sm mb-6 text-center">{t('loginHeader')}</p>
 
             <div>
               <TextField
-                label="Email"
+                label={`${t('Email')}`}
                 name="email"
                 type="email"
                 value={loginData.email}
@@ -281,7 +356,7 @@ export default function Index() {
 
             <div className="relative mt-4">
               <TextField
-                label="Password"
+                label={`${t('Password')}`}
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 value={loginData.password}
@@ -312,27 +387,27 @@ export default function Index() {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
-                Remember me
+                {t('RemMe')}
               </label>
               <button onClick={() => setForgotOpen(true)} className="text-red-600 cursor-pointer hover:underline">
-                Forgot Password
+                {t('ForPass')}
               </button>
             </div>
 
             <Button className="w-full disabled:cursor-not-allowed" disabled={isLogin} onClick={() => { handleLogin() }}>
-              {isLogin ? 'Processing...' : 'Login'}
+              {isLogin ? `${t('Processing')}...` : `${t('login')}`}
             </Button>
 
             <p className="mt-4 text-sm text-black text-center">
-              Don’t have an account?{" "}
+              {t('dntacc')}{" "}
               <button onClick={() => router.push('signup')} className="text-blue-600 hover:underline cursor-pointer">
-                Sign up
+                {t('signup')}
               </button>
             </p>
 
             <div className="my-6 border-t relative">
               <span className="absolute top-[-12px] left-1/2 transform -translate-x-1/2 bg-white px-2 text-sm text-gray-400">
-                Or login with
+                {t('orloginwith')}
               </span>
             </div>
 
@@ -368,10 +443,10 @@ export default function Index() {
             }}>
               <X size={20} />
             </button>
-            <h3 className="text-lg font-semibold mb-4">Forgot Password</h3>
+            <h3 className="text-lg font-semibold mb-4"> {t('ForPass')}</h3>
 
             <TextField
-              label="Email"
+              label={`${t('Email')}`}
               type="email"
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}
@@ -384,12 +459,12 @@ export default function Index() {
                 className="w-full mt-4 disabled:cursor-not-allowed"
                 disabled={isOtpSending}
               >
-                {isOtpSending ? "Sending OTP..." : "Send OTP"}
+                {isOtpSending ? `${t('sndingOtp')}...` : `${t('sndOtp')}`}
               </Button>
             ) : (
               <>
                 <TextField
-                  label="OTP"
+                  label={`${t('otp')}`}
                   type="text"
                   value={otp}
                   onChange={(e) => {

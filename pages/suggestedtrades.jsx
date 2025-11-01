@@ -64,7 +64,7 @@ export default function SuggestedTrades() {
                             onClick={() => window.history.back()}
                             className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer"
                         >
-                            {t('Back')}
+                            {t('Bck')}
                         </span>
                     </div>
                 </div>

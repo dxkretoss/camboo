@@ -56,6 +56,7 @@ import '../../utils/i18n';
 // ];
 
 export default function Navbar() {
+    const { t, i18n } = useTranslation();
     const router = useRouter();
     const token = Cookies.get("token");
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -193,11 +194,11 @@ export default function Navbar() {
     const [open, setOpen] = useState(false);
 
     const [url] = useState("https://camboo-woad.vercel.app");
-    const [title] = useState("Please Join this awesome platform!");
+    const [title] = useState(`${t('Plsjnawsplt')}!`);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(url);
-        toast.success("Invite link copied successfully!");
+        toast.success(`${t('Ivtlinkcpsuccess')}!`);
         setOpen(false);
     };
 
@@ -257,7 +258,6 @@ export default function Navbar() {
     //     };
     // }, [router?.asPath]);
 
-    const { t, i18n } = useTranslation();
     const [mounted, setMounted] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     useEffect(() => {
@@ -317,7 +317,7 @@ export default function Navbar() {
                     {/* Sidebar */}
                     <div className="absolute top-0 left-0 h-full w-72 bg-white shadow-lg transform transition-transform duration-300">
                         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 ">
-                            <h2 className="text-lg font-semibold text-[#000F5C]">{t('Menu')}</h2>
+                            <h2 className="text-lg font-semibold text-[#000F5C]">{t('Mnu')}</h2>
                             <button onClick={() => setSidebarOpen(false)}>
                                 <X className="w-6 h-6 text-gray-600" />
                             </button>
@@ -328,7 +328,7 @@ export default function Navbar() {
                             <button className="w-full bg-[#4370C2] text-white cursor-pointer py-2 rounded-md font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2"
                                 onClick={() => setOpen(true)}>
                                 <UserRoundPlus className="w-4 h-4" />
-                                {t('send_invite')}
+                                {t('SndInvite')}
                             </button>
                         </div>
 
@@ -336,7 +336,7 @@ export default function Navbar() {
                             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 h-screen">
                                 <div className="bg-white rounded-2xl shadow-lg p-6 w-[90%] max-w-md relative animate-fadeIn">
                                     <h2 className="text-xl font-semibold mb-5 text-gray-800 text-center">
-                                        {t('send_invite_link')}
+                                        {t('SndInviteLnk')}
                                     </h2>
 
                                     {/* Copy section */}
@@ -346,7 +346,7 @@ export default function Navbar() {
                                             onClick={handleCopy}
                                             className="ml-2 bg-[#000F5C] hover:bg-[#00136e] text-white rounded-full px-3 py-1 text-sm transition"
                                         >
-                                            {t('Copy')}
+                                            {t('Cpy')}
                                         </button>
                                     </div>
 
@@ -372,7 +372,7 @@ export default function Navbar() {
                                             onClick={() => setOpen(false)}
                                             className="px-6 py-2 bg-gray-200 rounded-full font-medium hover:bg-gray-300 transition"
                                         >
-                                            {t('Close')}
+                                            {t('Cls')}
                                         </button>
                                     </div>
                                 </div>
@@ -385,20 +385,20 @@ export default function Navbar() {
                                 onClick={() => { router.push("/allGroups") }}
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
-                                {t('Groups')}
+                                {t('Grps')}
                             </button>
                             <button
                                 onClick={() => { router.push('/suggestedtrades') }}
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
-                                {t('Suggested Trades')}
+                                {t('SgstTrds')}
                             </button>
 
                             <button
                                 onClick={() => { router.push('/recentChats') }}
                                 className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 text-[#000F5C]"
                             >
-                                {t('Recent Chats')}
+                                {t('RcntChats')}
                             </button>
                             {/* <button
                                 onClick={() => { }}
@@ -478,7 +478,7 @@ export default function Navbar() {
                     <Search className="w-5 h-5 text-[#000F5C]" />
                     <input
                         type="text"
-                        placeholder={`${t("Search here")}...`}
+                        placeholder={`${t("SrchHere")}...`}
                         className="bg-transparent outline-none px-3 w-full text-sm"
                         value={searchItems}
                         onChange={(e) => setsearchItems(e.target.value)}
@@ -505,7 +505,7 @@ export default function Navbar() {
                             {locsetting ? (
                                 <span className="inline-block bg-gray-200 rounded-md h-4 w-24 animate-pulse"></span>
                             ) : (
-                                <span className="text-sm">{profile?.location || "Select Area"}</span>
+                                <span className="text-sm">{profile?.location || `${t("Sltarea")}`}</span>
                             )}
 
                             <ChevronDown
@@ -520,7 +520,7 @@ export default function Navbar() {
                                             key={idx}
                                             className="w-full text-left px-4 py-2 text-sm hover:bg-blue-100 cursor-pointer"
                                             onClick={() => {
-                                                selectedLocation(state.id);
+                                                selectedLocation(state?.id);
                                                 setshowArea(false);
                                             }}
                                         >
@@ -545,7 +545,7 @@ export default function Navbar() {
                             >
                                 <Plus className="w-4 h-4" />
 
-                                {t('New Ad')}
+                                {t('NewAd')}
                             </Button>
                         </div>
                     </>
@@ -565,7 +565,7 @@ export default function Navbar() {
                             >
                                 <Edit3 className="w-4 h-4" />
 
-                                {t('Complete Your Profile')}
+                                {t('CmpltPrfl')}
                             </Button>
                         </div>
                     </>
@@ -619,7 +619,7 @@ export default function Navbar() {
                                         className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-left hover:bg-gray-100"
                                     >
                                         <User size={16} />
-                                        {t('Profile')}
+                                        {t('Prfl')}
                                     </button>
                                 </li>
                                 <li>
@@ -632,7 +632,7 @@ export default function Navbar() {
                                     >
                                         <LogOut size={16} />
 
-                                        {t('Logout')}
+                                        {t('Lgout')}
                                     </button>
                                 </li>
                             </ul>
@@ -648,7 +648,6 @@ export default function Navbar() {
                             </div>
                         </div>
                     )}
-
                 </div>
             </div>
             <Toaster />

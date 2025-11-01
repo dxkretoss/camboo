@@ -129,7 +129,7 @@ export default function Trade() {
                         onClick={() => window.history.back()}
                         className="text-sm md:text-base font-medium hover:text-blue-600 cursor-pointer transition duration-200"
                     >
-                        {t('Back')}
+                        {t('Bck')}
                     </span>
                 </div>
 
@@ -137,26 +137,26 @@ export default function Trade() {
                     availableLevels?.map((level, index) => (
                         <div key={level.levelKey} className="mb-10">
                             <h3 className="text-[#000F5C] font-semibold text-base mb-3">
-                                {t('Match Item')} {index + 1}
+                                {t('MtchItm')} {index + 1}
                             </h3>
                             <div className="flex items-center justify-between w-full mb-6">
-                                {(getTradeType === `${t('Product')}` ? [1, 2, 3, 4] : [1, 2]).map((step, idx, arr) => (
+                                {(getTradeType === 'Product' ? [1, 2, 3, 4] : [1, 2]).map((step, idx, arr) => (
                                     <React.Fragment key={step}>
                                         <div className="relative flex flex-col items-center">
                                             <div
                                                 className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-extrabold
-                                                            ${(getTradeType === `${t('Product')}` ? step <= level.levelNum : step <= level.levelNum)
+                                                            ${(getTradeType === 'Product' ? step <= level.levelNum : step <= level.levelNum)
                                                         ? "bg-[#000F5C] text-white"
                                                         : "bg-gray-200 text-gray-500"
                                                     }`}
                                             >
-                                                {getTradeType === `${t('Product')}` ? step * 25 + "%" : step === 1 ? "50%" : "100%"}
+                                                {getTradeType === 'Product' ? step * 25 + "%" : step === 1 ? "50%" : "100%"}
                                             </div>
                                         </div>
 
                                         {idx !== arr.length - 1 && (
                                             <div
-                                                className={`flex-1 h-1 mx-2 rounded ${(getTradeType === `${t('Product')}` ? step < level.levelNum : step < level.levelNum)
+                                                className={`flex-1 h-1 mx-2 rounded ${(getTradeType === 'Product' ? step < level.levelNum : step < level.levelNum)
                                                     ? "bg-[#000F5C]"
                                                     : "bg-gray-300"
                                                     }`}
@@ -169,7 +169,7 @@ export default function Trade() {
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
                                 <div>
                                     <span className="text-sm font-extrabold text-gray-600">
-                                        {t('Match')} {matchedData?.main_type}:
+                                        {t('Mtch')} {matchedData?.main_type}:
                                     </span>
                                     <div className="rounded-2xl shadow-md p-4 flex flex-col items-center bg-white hover:shadow-lg transition mt-4">
                                         <div className="flex items-center space-x-3 w-full mb-2">
@@ -257,7 +257,7 @@ export default function Trade() {
 
                                 <div>
                                     <span className="text-sm font-extrabold text-gray-600">
-                                        {t('Your')} {level.items?.length > 1 ? `${t('Products')} (${level.items.length})` : `${t('Product')}`} :
+                                        {t('Your')} {level.items?.length > 1 ? `${t('Prods')} (${level.items.length})` : `${t('Prod')}`} :
                                     </span>
 
                                     {level?.items?.map((item, idx) => {
@@ -333,7 +333,6 @@ export default function Trade() {
                                                 </h3>
 
                                                 <span className="text-sm font-medium text-gray-500">
-                                                    ₹
                                                     {(item?.price ||
                                                         item?.day_price ||
                                                         item?.hr_price) || "0.00"}
@@ -355,11 +354,11 @@ export default function Trade() {
                     <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 sm:px-6 py-6 text-center">
                         <img src='/notfound.svg' className='w-56 h-56' />
                         <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
-                            {t('Not any Ads ared added')}.
+                            {t('NoAdsAdd')}.
                         </h2>
 
                         <p className="mt-2 text-gray-500 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-sm md:max-w-md">
-                            {t('We couldn’t find anything your Ads')}.
+                            {t('NoAdsFnd')}.
                         </p>
 
                         <button
@@ -367,7 +366,7 @@ export default function Trade() {
                             className="flex items-center gap-2 mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
                         >
                             <Plus className="w-4 h-4" />
-                            {t('New Ad')}
+                            {t('NewAd')}
                         </button>
                     </div>
                 ) : !hasProfileData ? (
@@ -378,7 +377,7 @@ export default function Trade() {
                             className="flex items-center gap-2 mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
                         >
                             <Edit3 className="w-4 h-4" />
-                            {t("Complete Your Profile")}
+                            {t("CmpltPrfl")}
                         </button>
                     </div>
                 ) : (
@@ -387,18 +386,18 @@ export default function Trade() {
                         <img src='/notfound.svg' className='w-56 h-56' />
 
                         <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
-                            {t('No Ad Match')}!!
+                            {t('NoAdMtch')}!!
                         </h2>
 
                         <p className="mt-2 text-gray-500 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-sm md:max-w-md">
-                            {t('We couldn’t find anything that matches your Ad')}.
+                            {t('NoMtchFnd')}.
                         </p>
 
                         <button
                             onClick={() => router.push("./profile")}
                             className="mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
                         >
-                            {t('Change your settings')}
+                            {t('ChngStng')}
                         </button>
                     </div>
 
@@ -450,7 +449,7 @@ function DescriptionToggle({ text }) {
                     className="text-blue-600 cursor-pointer hover:underline mt-1 text-xs font-medium"
                     type="button"
                 >
-                    {expanded ? `${t('See less')}` : `${t('See more')}`}
+                    {expanded ? `${t('SeeLess')}` : `${t('SeeMore')}`}
                 </button>
             )}
         </div>

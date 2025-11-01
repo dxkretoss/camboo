@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import Navbar from '@/components/Navbar/Navbar';
 import SectionCard from '@/components/Cards/SectionCard';
-import { Heart, Inbox, ChevronLeft, ChevronRight, MessageCircle, SendHorizonal, EllipsisVertical, X } from 'lucide-react';
+import { Heart, Inbox, ChevronLeft, ChevronRight, MessageCircle, SendHorizonal, EllipsisVertical, X, Edit3 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useUser } from '@/context/UserContext';
 import Cookies from 'js-cookie';
@@ -29,6 +29,7 @@ export default function HomePage() {
 
     const { page } = router.query;
     const [currentPage, setCurrentPage] = useState(Number(page) || 1);
+    const [showPopup, setShowPopup] = useState(false);
     const itemsPerPage = 10;
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
@@ -257,6 +258,38 @@ export default function HomePage() {
             setsendDenouceCmt(false);
         }
     }
+
+    const requiredFields = [
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "about_me",
+        "what_are_you_interested_in",
+        // "professional_experience",
+        "street",
+        "city",
+        "post_code",
+    ];
+
+    const isComplete = requiredFields.every((field) => {
+        const value = profile?.[field];
+        if (Array.isArray(value)) {
+            return value.length > 0;
+        }
+        return value !== null && value !== undefined && value !== "";
+    });
+
+    const handleClick = (id) => {
+        if (isComplete) {
+            router.push({
+                pathname: "./addProduct",
+                query: { Copyad: id },
+            });
+        } else {
+            setShowPopup(true);
+        }
+    };
 
     const [unreadCounts, setUnreadCounts] = useState({});
     const [lastMessages, setLastMessages] = useState({});
@@ -688,17 +721,34 @@ export default function HomePage() {
                                                     </div>
                                                 )}
 
-
-                                                <button className="flex-1 xl:flex-none border border-[#003EFF] text-[#003EFF] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
-                                                    onClick={() => {
-                                                        router.push({
-                                                            pathname: './addProduct',
-                                                            query: { Copyad: user?.id }
-                                                        })
-                                                    }}>
+                                                <button
+                                                    onClick={() => { handleClick(user?.id) }}
+                                                    className="flex-1 xl:flex-none border border-[#003EFF] text-[#003EFF] bg-transparent cursor-pointer text-sm px-4 py-2 rounded-md flex items-center justify-center gap-2 font-medium"
+                                                >
                                                     <img src="/dummy.png" alt="Verified" className="w-4 h-4" />
                                                     <span className="hidden xl:inline">{t("CpyAd")}</span>
                                                 </button>
+
+                                                {/* Popup Modal */}
+                                                {showPopup && (
+                                                    <div className="fixed inset-0 bg-black/20 flex justify-center items-center z-50">
+                                                        <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-center items-center text-center w-[90%] max-w-sm">
+                                                            <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-[#000F5C]">
+                                                                {t('completeProfile')}!!
+                                                            </h2>
+                                                            <button
+                                                                onClick={() => {
+                                                                    router.push("./editProfile")
+                                                                    setShowPopup(false);
+                                                                }}
+                                                                className="flex items-center gap-2 mt-4 px-4 sm:px-6 md:px-8 py-2 sm:py-2.5 bg-[#000F5C] hover:bg-[#00136e] text-white text-sm sm:text-base font-medium rounded-lg shadow transition-all"
+                                                            >
+                                                                <Edit3 className="w-4 h-4" />
+                                                                {t("CmpltPrfl")}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
 

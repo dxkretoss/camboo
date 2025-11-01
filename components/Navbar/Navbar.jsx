@@ -424,13 +424,13 @@ export default function Navbar() {
                         backgroundColor: '#fff',
                         border: '1px solid #ccc',
                         borderRadius: '8px',
-                        padding: '8px 12px',
+                        padding: '8px',
                         cursor: 'pointer',
                         fontWeight: 'bold',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        fontSize: '16px',
+                        gap: '6px',
+                        fontSize: '14px',
                     }}
                 >
                     <span>{currentLang.flag}</span>
